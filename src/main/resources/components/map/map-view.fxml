@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <StackPane xmlns="http://javafx.com/javafx/17.0.12"
            xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.MapViewController"
            styleClass="map-root"
            stylesheets="@../map-view-styles.css">
 
-    <StackPane fx:id="mapContainer" styleClass="map-container" />
+    <StackPane fx:id="mapContainer" styleClass="map-container"/>
 
     <VBox alignment="TOP_RIGHT"
           mouseTransparent="true"

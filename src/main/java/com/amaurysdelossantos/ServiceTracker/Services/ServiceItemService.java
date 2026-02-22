@@ -19,12 +19,14 @@ public class ServiceItemService {
     private ServiceItemRepo serviceItemRepo;
 
     public StringProperty query = new SimpleStringProperty("");
-    public StringProperty searchTextProperty() {return query;}
+
+    public StringProperty searchTextProperty() {
+        return query;
+    }
 
     @Getter
     private final ObservableList<ServiceItem> items =
             FXCollections.observableArrayList();
-
 
 
     public void loadInitialData() {
@@ -35,7 +37,7 @@ public class ServiceItemService {
         return serviceItemRepo.findByDeletedAtIsNullAndCompletedAtIsNull();
     }
 
-    public List<ServiceItem> getCompletedItems(){
+    public List<ServiceItem> getCompletedItems() {
         return serviceItemRepo.findByDeletedAtIsNullAndCompletedAtIsNotNull();
     }
 

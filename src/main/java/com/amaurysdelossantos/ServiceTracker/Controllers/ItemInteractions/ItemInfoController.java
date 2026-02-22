@@ -35,13 +35,20 @@ import java.util.function.Consumer;
 
 public class ItemInfoController {
 
-    @FXML public Button editBtn;
-    @FXML public Button closeBtn;
-    @FXML private StackPane rootPane;
-    @FXML private Label     tailLabel;
-    @FXML private VBox      flightInfoBox;
-    @FXML private VBox      servicesBox;
-    @FXML private VBox      timestampsBox;
+    @FXML
+    public Button editBtn;
+    @FXML
+    public Button closeBtn;
+    @FXML
+    private StackPane rootPane;
+    @FXML
+    private Label tailLabel;
+    @FXML
+    private VBox flightInfoBox;
+    @FXML
+    private VBox servicesBox;
+    @FXML
+    private VBox timestampsBox;
 
     @Setter
     private ServiceItem item;
@@ -54,7 +61,8 @@ public class ItemInfoController {
 
     private Consumer<ServiceItem> onDeleteCallback;
 
-    @Setter private Runnable refreshCallback;
+    @Setter
+    private Runnable refreshCallback;
 
     private static final DateTimeFormatter FMT =
             DateTimeFormatter.ofPattern("MM/dd/yyyy  HH:mm").withZone(ZoneId.systemDefault());
@@ -87,9 +95,9 @@ public class ItemInfoController {
     private void buildFlightInfo() {
         flightInfoBox.getChildren().clear();
 
-        boolean hasArrival   = item.getArrival()   != null;
+        boolean hasArrival = item.getArrival() != null;
         boolean hasDeparture = item.getDeparture() != null;
-        boolean hasDesc      = item.getDescription() != null && !item.getDescription().isBlank();
+        boolean hasDesc = item.getDescription() != null && !item.getDescription().isBlank();
 
         if (!hasArrival && !hasDeparture && !hasDesc) {
             flightInfoBox.getChildren().add(
@@ -97,8 +105,9 @@ public class ItemInfoController {
             return;
         }
 
-        if (hasArrival)   flightInfoBox.getChildren().add(infoRow("Arrival",   FMT.format(item.getArrival()),   false));
-        if (hasDeparture) flightInfoBox.getChildren().add(infoRow("Departure", FMT.format(item.getDeparture()), !hasDesc));
+        if (hasArrival) flightInfoBox.getChildren().add(infoRow("Arrival", FMT.format(item.getArrival()), false));
+        if (hasDeparture)
+            flightInfoBox.getChildren().add(infoRow("Departure", FMT.format(item.getDeparture()), !hasDesc));
         if (hasDesc) {
             VBox descBlock = new VBox(4);
             descBlock.setPadding(new Insets(10, 14, 10, 14));
@@ -152,7 +161,7 @@ public class ItemInfoController {
             });
             row.setStyle(row.getStyle() + "; -fx-cursor: hand;");
 
-            row.setOnMouseClicked(e->{
+            row.setOnMouseClicked(e -> {
                 handleEdit(st);
             });
 
@@ -191,6 +200,7 @@ public class ItemInfoController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/components/ItemInteraction/item-edit-modal.fxml")
             );
+            loader.setClassLoader(getClass().getClassLoader());
             Parent root = loader.load();
             ItemEditController controller = loader.getController();
 
@@ -204,7 +214,7 @@ public class ItemInfoController {
             stage.initModality(Modality.APPLICATION_MODAL);
             //stage.setResizable(false);
 
-            stage.show(); // Wait until closed
+            stage.showAndWait(); // Wait until closed
 
 
         } catch (IOException e) {
@@ -217,6 +227,7 @@ public class ItemInfoController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/components/ItemInteraction/item-edit-modal.fxml")
             );
+            loader.setClassLoader(getClass().getClassLoader());
             Parent root = loader.load();
             ItemEditController controller = loader.getController();
 
@@ -249,11 +260,15 @@ public class ItemInfoController {
         }
     }
 
-    private void onClose() { closeModal(); }
+    private void onClose() {
+        closeModal();
+    }
 
     // ── Helpers ────────────────────────────────────────────────────────────────
 
-    /** Two-column info row matching the Next.js `<div className="flex justify-between">` pattern */
+    /**
+     * Two-column info row matching the Next.js `<div className="flex justify-between">` pattern
+     */
     private HBox infoRow(String key, String value, boolean isLast) {
         Label k = new Label(key);
         k.setStyle("-fx-font-size:12px; -fx-font-weight:600; -fx-text-fill:#374151;");
@@ -288,13 +303,16 @@ public class ItemInfoController {
                 for (int x = 0; x < bi.getWidth(); x++) {
                     int argb = bi.getRGB(x, y);
                     int a = (argb >> 24) & 0xff;
-                    if (a > 0) out.setRGB(x, y, (a << 24) | (awt.getRed() << 16) | (awt.getGreen() << 8) | awt.getBlue());
+                    if (a > 0)
+                        out.setRGB(x, y, (a << 24) | (awt.getRed() << 16) | (awt.getGreen() << 8) | awt.getBlue());
                 }
             }
             WritableImage wi = SwingFXUtils.toFXImage(out, null);
             ImageView iv = new ImageView(wi);
-            iv.setFitWidth(size); iv.setFitHeight(size);
-            iv.setPreserveRatio(true); iv.setSmooth(true);
+            iv.setFitWidth(size);
+            iv.setFitHeight(size);
+            iv.setPreserveRatio(true);
+            iv.setSmooth(true);
             return iv;
         } catch (Exception e) {
             return new ImageView();
@@ -303,45 +321,46 @@ public class ItemInfoController {
 
     private boolean isActive(ServiceType t) {
         return switch (t) {
-            case FUEL                -> item.getFuel()               != null;
-            case CATERING            -> item.getCatering()           != null && !item.getCatering().isEmpty();
-            case GPU                 -> item.getGpu()                != null;
-            case LAVATORY            -> item.getLavatory()           != null;
-            case POTABLE_WATER       -> item.getPotableWater()       != null;
+            case FUEL -> item.getFuel() != null;
+            case CATERING -> item.getCatering() != null && !item.getCatering().isEmpty();
+            case GPU -> item.getGpu() != null;
+            case LAVATORY -> item.getLavatory() != null;
+            case POTABLE_WATER -> item.getPotableWater() != null;
             case WINDSHIELD_CLEANING -> item.getWindshieldCleaning() != null;
-            case OIL_SERVICE         -> item.getOilService()         != null;
+            case OIL_SERVICE -> item.getOilService() != null;
         };
     }
 
     private boolean isCompleted(ServiceType t) {
         return switch (t) {
-            case FUEL                -> item.getFuel()               != null && item.getFuel().getCompletedAt()               != null;
-            case CATERING            -> item.getCatering()           != null && !item.getCatering().isEmpty()
+            case FUEL -> item.getFuel() != null && item.getFuel().getCompletedAt() != null;
+            case CATERING -> item.getCatering() != null && !item.getCatering().isEmpty()
                     && item.getCatering().stream().allMatch(c -> c.getCompletedAt() != null);
-            case GPU                 -> item.getGpu()                != null && item.getGpu().getCompletedAt()                != null;
-            case LAVATORY            -> item.getLavatory()           != null && item.getLavatory().getCompletedAt()           != null;
-            case POTABLE_WATER       -> item.getPotableWater()       != null && item.getPotableWater().getCompletedAt()       != null;
-            case WINDSHIELD_CLEANING -> item.getWindshieldCleaning() != null && item.getWindshieldCleaning().getCompletedAt() != null;
-            case OIL_SERVICE         -> item.getOilService()         != null && item.getOilService().getCompletedAt()         != null;
+            case GPU -> item.getGpu() != null && item.getGpu().getCompletedAt() != null;
+            case LAVATORY -> item.getLavatory() != null && item.getLavatory().getCompletedAt() != null;
+            case POTABLE_WATER -> item.getPotableWater() != null && item.getPotableWater().getCompletedAt() != null;
+            case WINDSHIELD_CLEANING ->
+                    item.getWindshieldCleaning() != null && item.getWindshieldCleaning().getCompletedAt() != null;
+            case OIL_SERVICE -> item.getOilService() != null && item.getOilService().getCompletedAt() != null;
         };
     }
 
     private String label(ServiceType t) {
         return switch (t) {
-            case FUEL                -> "Fuel";
-            case CATERING            -> "Catering";
-            case GPU                 -> "GPU";
-            case LAVATORY            -> "Lavatory";
-            case POTABLE_WATER       -> "Potable Water";
+            case FUEL -> "Fuel";
+            case CATERING -> "Catering";
+            case GPU -> "GPU";
+            case LAVATORY -> "Lavatory";
+            case POTABLE_WATER -> "Potable Water";
             case WINDSHIELD_CLEANING -> "Windshield Cleaning";
-            case OIL_SERVICE         -> "Oil Service";
+            case OIL_SERVICE -> "Oil Service";
         };
     }
 
     private String toHex(Color c, double alpha) {
         int a = (int) (alpha * 255);
         return String.format("#%02x%02x%02x%02x",
-                (int)(c.getRed()*255), (int)(c.getGreen()*255), (int)(c.getBlue()*255), a);
+                (int) (c.getRed() * 255), (int) (c.getGreen() * 255), (int) (c.getBlue() * 255), a);
     }
 
     private void closeModal() {

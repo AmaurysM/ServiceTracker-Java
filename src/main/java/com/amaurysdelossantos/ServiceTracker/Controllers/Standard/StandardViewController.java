@@ -1,6 +1,5 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Standard;
 
-import com.amaurysdelossantos.ServiceTracker.Helper.Lib;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.Services.TopControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
@@ -8,19 +7,20 @@ import com.amaurysdelossantos.ServiceTracker.models.enums.ActivityFilter;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceFilter;
 import com.amaurysdelossantos.ServiceTracker.models.enums.StandardView;
 import com.amaurysdelossantos.ServiceTracker.models.enums.TimeFilter;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.util.List;
@@ -79,7 +79,7 @@ public class StandardViewController {
     @FXML
     public void initialize() {
 
-        CardViewToggleButton.setOnAction(e-> {
+        CardViewToggleButton.setOnAction(e -> {
             topStateService.activeViewProperty().set(StandardView.CARD);
             onViewToggleChanged(StandardView.CARD);
         });
@@ -163,13 +163,13 @@ public class StandardViewController {
 //
 //    }
 
-    private void isSelectedChoice(StandardView newVal){
-        if (newVal == StandardView.CARD){
+    private void isSelectedChoice(StandardView newVal) {
+        if (newVal == StandardView.CARD) {
             CardViewToggleButton.setSelected(true);
             return;
         }
 
-        if (newVal == StandardView.LIST){
+        if (newVal == StandardView.LIST) {
             ListViewToggleButton.setSelected(true);
             return;
         }

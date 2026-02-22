@@ -9,7 +9,7 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Lavatory{
+public class Lavatory {
     private String id;
     private Double backInGallons;     // nullable
     private String itemId;

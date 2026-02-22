@@ -3,17 +3,15 @@ package com.amaurysdelossantos.ServiceTracker.Controllers.Standard;
 import com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Item.CardItemController;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
-import javafx.animation.PauseTransition;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.*;
-import javafx.util.Duration;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -23,14 +21,19 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 @Component
 public class GridViewController {
 
-    @FXML public GridPane mainGridPane;
-    @FXML public ScrollPane mainScrollPane;
+    @FXML
+    public GridPane mainGridPane;
+    @FXML
+    public ScrollPane mainScrollPane;
 
-    @Autowired private ServiceItemService serviceItemService;
-    @Autowired private ApplicationContext applicationContext;
+    @Autowired
+    private ServiceItemService serviceItemService;
+    @Autowired
+    private ApplicationContext applicationContext;
 
     private ObservableList<ServiceItem> items;
     private final Map<ServiceItem, Node> nodeCache = new LinkedHashMap<>();

@@ -16,20 +16,28 @@ import java.time.Instant;
 
 public class ItemDeleteController {
 
-    @FXML private StackPane rootPane;
-    @FXML private Label     tailLabel;
-    @FXML private Label     completionCountLabel;
-    @FXML private Label     itemStatusLabel;
-    @FXML private GridPane  servicesGrid;
+    @FXML
+    private StackPane rootPane;
+    @FXML
+    private Label tailLabel;
+    @FXML
+    private Label completionCountLabel;
+    @FXML
+    private Label itemStatusLabel;
+    @FXML
+    private GridPane servicesGrid;
 
-    @Setter private ServiceItemService serviceItemService;
-    @Setter private Runnable onDeletedCallback;
+    @Setter
+    private ServiceItemService serviceItemService;
+    @Setter
+    private Runnable onDeletedCallback;
 
     @Setter
     private ServiceItem item;
 
     @FXML
-    public void initialize() { }
+    public void initialize() {
+    }
 
     public void populate() {
         if (item == null) return;
@@ -60,9 +68,11 @@ public class ItemDeleteController {
         servicesGrid.getColumnConstraints().clear();
 
         ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(50); col1.setHgrow(Priority.ALWAYS);
+        col1.setPercentWidth(50);
+        col1.setHgrow(Priority.ALWAYS);
         ColumnConstraints col2 = new ColumnConstraints();
-        col2.setPercentWidth(50); col2.setHgrow(Priority.ALWAYS);
+        col2.setPercentWidth(50);
+        col2.setHgrow(Priority.ALWAYS);
         servicesGrid.getColumnConstraints().addAll(col1, col2);
 
         int col = 0, row = 0;
@@ -74,7 +84,9 @@ public class ItemDeleteController {
 
             // Color dot
             Region dot = new Region();
-            dot.setPrefSize(10, 10); dot.setMinSize(10, 10); dot.setMaxSize(10, 10);
+            dot.setPrefSize(10, 10);
+            dot.setMinSize(10, 10);
+            dot.setMaxSize(10, 10);
             dot.setStyle("-fx-background-color: rgb("
                     + awtColor.getRed() + "," + awtColor.getGreen() + "," + awtColor.getBlue() + ");"
                     + "-fx-background-radius: 5;");
@@ -97,7 +109,10 @@ public class ItemDeleteController {
 
             servicesGrid.add(chip, col, row);
             col++;
-            if (col > 1) { col = 0; row++; }
+            if (col > 1) {
+                col = 0;
+                row++;
+            }
         }
     }
 
@@ -121,42 +136,51 @@ public class ItemDeleteController {
     }
 
     @FXML
-    private void onCancel() { closeModal(); }
+    private void onCancel() {
+        closeModal();
+    }
 
     // ── Helpers ────────────────────────────────────────────────────────────────
 
     private boolean isActive(ServiceType t) {
         return switch (t) {
-            case FUEL                -> item.getFuel()               != null;
-            case CATERING            -> item.getCatering()           != null && !item.getCatering().isEmpty();
-            case GPU                 -> item.getGpu()                != null;
-            case LAVATORY            -> item.getLavatory()           != null;
-            case POTABLE_WATER       -> item.getPotableWater()       != null;
+            case FUEL -> item.getFuel() != null;
+            case CATERING -> item.getCatering() != null && !item.getCatering().isEmpty();
+            case GPU -> item.getGpu() != null;
+            case LAVATORY -> item.getLavatory() != null;
+            case POTABLE_WATER -> item.getPotableWater() != null;
             case WINDSHIELD_CLEANING -> item.getWindshieldCleaning() != null;
-            case OIL_SERVICE         -> item.getOilService()         != null;
+            case OIL_SERVICE -> item.getOilService() != null;
         };
     }
 
     private boolean isCompleted(ServiceType t) {
         return switch (t) {
-            case FUEL                -> item.getFuel()               != null && item.getFuel().getCompletedAt()               != null;
-            case CATERING            -> item.getCatering()           != null && !item.getCatering().isEmpty()
+            case FUEL -> item.getFuel() != null && item.getFuel().getCompletedAt() != null;
+            case CATERING -> item.getCatering() != null && !item.getCatering().isEmpty()
                     && item.getCatering().stream().allMatch(c -> c.getCompletedAt() != null);
-            case GPU                 -> item.getGpu()                != null && item.getGpu().getCompletedAt()                != null;
-            case LAVATORY            -> item.getLavatory()           != null && item.getLavatory().getCompletedAt()           != null;
-            case POTABLE_WATER       -> item.getPotableWater()       != null && item.getPotableWater().getCompletedAt()       != null;
-            case WINDSHIELD_CLEANING -> item.getWindshieldCleaning() != null && item.getWindshieldCleaning().getCompletedAt() != null;
-            case OIL_SERVICE         -> item.getOilService()         != null && item.getOilService().getCompletedAt()         != null;
+            case GPU -> item.getGpu() != null && item.getGpu().getCompletedAt() != null;
+            case LAVATORY -> item.getLavatory() != null && item.getLavatory().getCompletedAt() != null;
+            case POTABLE_WATER -> item.getPotableWater() != null && item.getPotableWater().getCompletedAt() != null;
+            case WINDSHIELD_CLEANING ->
+                    item.getWindshieldCleaning() != null && item.getWindshieldCleaning().getCompletedAt() != null;
+            case OIL_SERVICE -> item.getOilService() != null && item.getOilService().getCompletedAt() != null;
         };
     }
 
     private String label(ServiceType t) {
         return switch (t) {
-            case FUEL -> "Fuel"; case CATERING -> "Catering"; case GPU -> "GPU";
-            case LAVATORY -> "Lavatory"; case POTABLE_WATER -> "Potable Water";
-            case WINDSHIELD_CLEANING -> "Windshield Cleaning"; case OIL_SERVICE -> "Oil Service";
+            case FUEL -> "Fuel";
+            case CATERING -> "Catering";
+            case GPU -> "GPU";
+            case LAVATORY -> "Lavatory";
+            case POTABLE_WATER -> "Potable Water";
+            case WINDSHIELD_CLEANING -> "Windshield Cleaning";
+            case OIL_SERVICE -> "Oil Service";
         };
     }
 
-    private void closeModal() { ((Stage) rootPane.getScene().getWindow()).close(); }
+    private void closeModal() {
+        ((Stage) rootPane.getScene().getWindow()).close();
+    }
 }

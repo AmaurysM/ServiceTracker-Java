@@ -19,30 +19,32 @@ import netscape.javascript.JSObject;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Map view using JavaFX WebView + Leaflet.js + OpenStreetMap.
- *
+ * <p>
  * NOTE: buildLeafletHtml() uses plain string concatenation — NOT String.formatted()
  * or String.format() — because the HTML/CSS/JS contains many literal '%' characters
  * and '{' '}' braces that would be misinterpreted as format specifiers.
  */
 public class MapViewController {
 
-    @FXML private StackPane mapContainer;
+    @FXML
+    private StackPane mapContainer;
 
-    @FXML private Text      coordText;     // optional — null if info bar is hidden in FXML
-    @FXML private Text      itemCountText; // optional — null if info bar is hidden in FXML
+    @FXML
+    private Text coordText;     // optional — null if info bar is hidden in FXML
+    @FXML
+    private Text itemCountText; // optional — null if info bar is hidden in FXML
 
-    private WebView   webView;
+    private WebView webView;
     private WebEngine engine;
-    private boolean   mapReady     = false;
+    private boolean mapReady = false;
     private List<ServiceItem> pendingItems = null;
 
-    private static final double DEFAULT_LAT  = 25.7959;
-    private static final double DEFAULT_LON  = -80.2870;
-    private static final int    DEFAULT_ZOOM = 14;
+    private static final double DEFAULT_LAT = 25.7959;
+    private static final double DEFAULT_LON = -80.2870;
+    private static final int DEFAULT_ZOOM = 14;
 
     private static final Interpolator EASE = Interpolator.SPLINE(0.4, 0.0, 0.2, 1.0);
 
@@ -152,7 +154,7 @@ public class MapViewController {
         if (pos == null) return null;
         Object x = pos.get("x"), y = pos.get("y");
         if (!(x instanceof Number) || !(y instanceof Number)) return null;
-        return new Double[]{ ((Number) x).doubleValue(), ((Number) y).doubleValue() };
+        return new Double[]{((Number) x).doubleValue(), ((Number) y).doubleValue()};
     }
 
     @SuppressWarnings("unchecked")
@@ -174,8 +176,11 @@ public class MapViewController {
 
     private void runJs(String script) {
         Platform.runLater(() -> {
-            try { engine.executeScript(script); }
-            catch (Exception ex) { ex.printStackTrace(); }
+            try {
+                engine.executeScript(script);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
     }
 
@@ -183,7 +188,7 @@ public class MapViewController {
         if (s == null) return "";
         return s.replace("\\", "\\\\")
                 .replace("\"", "\\\"")
-                .replace("'",  "\\'")
+                .replace("'", "\\'")
                 .replace("\n", "\\n")
                 .replace("\r", "");
     }
@@ -191,14 +196,14 @@ public class MapViewController {
     private String buildTooltip(ServiceItem item) {
         StringBuilder sb = new StringBuilder();
         sb.append("Tail: ").append(item.getTail() != null ? item.getTail() : "N/A").append("\n");
-        if (item.getFuel()               != null) sb.append("Fuel: ✓\n");
-        if (item.getCatering()           != null && !item.getCatering().isEmpty())
+        if (item.getFuel() != null) sb.append("Fuel: ✓\n");
+        if (item.getCatering() != null && !item.getCatering().isEmpty())
             sb.append("Catering: ").append(item.getCatering().size()).append(" item(s)\n");
-        if (item.getGpu()                != null) sb.append("GPU: ✓\n");
-        if (item.getLavatory()           != null) sb.append("Lavatory: ✓\n");
-        if (item.getPotableWater()       != null) sb.append("Potable Water: ✓\n");
+        if (item.getGpu() != null) sb.append("GPU: ✓\n");
+        if (item.getLavatory() != null) sb.append("Lavatory: ✓\n");
+        if (item.getPotableWater() != null) sb.append("Potable Water: ✓\n");
         if (item.getWindshieldCleaning() != null) sb.append("Windshield: ✓\n");
-        if (item.getOilService()         != null) sb.append("Oil Service: ✓\n");
+        if (item.getOilService() != null) sb.append("Oil Service: ✓\n");
         if (item.getDescription() != null && !item.getDescription().isBlank())
             sb.append("Note: ").append(item.getDescription());
         return sb.toString().trim();
@@ -206,22 +211,29 @@ public class MapViewController {
 
     // ── Java ↔ JS Bridge ─────────────────────────────────────────────────────
 
-    /** Public inner class — methods callable from JS as window.java.xxx() */
+    /**
+     * Public inner class — methods callable from JS as window.java.xxx()
+     */
     public class JavaBridge {
         public void updateCoords(String text) {
-            Platform.runLater(() -> { if (coordText != null) coordText.setText(text); });
+            Platform.runLater(() -> {
+                if (coordText != null) coordText.setText(text);
+            });
         }
+
         public void updateCount(String text) {
-            Platform.runLater(() -> { if (itemCountText != null) itemCountText.setText(text); });
+            Platform.runLater(() -> {
+                if (itemCountText != null) itemCountText.setText(text);
+            });
         }
     }
 
     // ── Button animations ─────────────────────────────────────────────────────
 
     private void attachBtnAnim(Button btn) {
-        btn.setOnMouseEntered (e -> scale(btn, 1.12));
-        btn.setOnMouseExited  (e -> scale(btn, 1.00));
-        btn.setOnMousePressed (e -> scale(btn, 0.93));
+        btn.setOnMouseEntered(e -> scale(btn, 1.12));
+        btn.setOnMouseExited(e -> scale(btn, 1.00));
+        btn.setOnMousePressed(e -> scale(btn, 0.93));
         btn.setOnMouseReleased(e -> scale(btn, 1.12));
     }
 

@@ -8,5 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ServiceTrackerService {
     private final ObjectProperty<View> activeView = new SimpleObjectProperty<>();
-    public ObjectProperty<View> activeViewProperty() { return activeView; }
+
+    public ObjectProperty<View> activeViewProperty() {
+        return activeView;
+    }
 }

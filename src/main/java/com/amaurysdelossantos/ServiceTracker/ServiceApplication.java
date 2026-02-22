@@ -1,12 +1,9 @@
 package com.amaurysdelossantos.ServiceTracker;
 
 
-import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
-import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceFilter;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ConfigurableApplicationContext;

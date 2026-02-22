@@ -31,29 +31,45 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class ItemEditController {
 
     // ── FXML ────────────────────────────────────────────────────────────────────
-    @FXML private StackPane  rootPane;
-    @FXML private Label      tailPreviewLabel;
-    @FXML private HBox       tabBar;
-    @FXML private VBox       basicPane;
-    @FXML private StackPane  servicePane;
-    @FXML private VBox       serviceFormBox;
+    @FXML
+    private StackPane rootPane;
+    @FXML
+    private Label tailPreviewLabel;
+    @FXML
+    private HBox tabBar;
+    @FXML
+    private VBox basicPane;
+    @FXML
+    private StackPane servicePane;
+    @FXML
+    private VBox serviceFormBox;
 
     // Basic info fields
-    @FXML private TextField  tailField;
-    @FXML private DatePicker arrivalDatePicker;
-    @FXML private TextField  arrivalTimeField;
-    @FXML private DatePicker departureDatePicker;
-    @FXML private TextField  departureTimeField;
-    @FXML private TextArea   descriptionField;
+    @FXML
+    private TextField tailField;
+    @FXML
+    private DatePicker arrivalDatePicker;
+    @FXML
+    private TextField arrivalTimeField;
+    @FXML
+    private DatePicker departureDatePicker;
+    @FXML
+    private TextField departureTimeField;
+    @FXML
+    private TextArea descriptionField;
 
     // ── Dependencies ───────────────────────────────────────────────────────────
-    @Setter private ServiceItemService serviceItemService;
-    @Setter private Runnable onSavedCallback;
+    @Setter
+    private ServiceItemService serviceItemService;
+    @Setter
+    private Runnable onSavedCallback;
 
     private ServiceItem item;
 
@@ -61,23 +77,24 @@ public class ItemEditController {
     private ServiceType initialService = null;
 
     // ── State ──────────────────────────────────────────────────────────────────
-    private enum ActiveTab { BASIC, SERVICE }
+    private enum ActiveTab {BASIC, SERVICE}
+
     private ActiveTab currentTab = ActiveTab.BASIC;
     private ServiceType activeService = null;
 
     // Local copies of service data (edited in place, committed on save)
-    private Fuel            fuel;
-    private List<Catering>  catering;
-    private GPU             gpu;
-    private Lavatory        lavatory;
-    private PotableWater    potableWater;
+    private Fuel fuel;
+    private List<Catering> catering;
+    private GPU gpu;
+    private Lavatory lavatory;
+    private PotableWater potableWater;
     private WindshieldCleaning windshieldCleaning;
-    private OilService      oilService;
+    private OilService oilService;
 
-    private static final String NAVY  = "#1e3a5f";
-    private static final String BLUE  = "#1d4ed8";
-    private static final String GREY  = "#f8f9fb";
-    private static final String BORD  = "#dde3eb";
+    private static final String NAVY = "#1e3a5f";
+    private static final String BLUE = "#1d4ed8";
+    private static final String GREY = "#f8f9fb";
+    private static final String BORD = "#dde3eb";
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm");
@@ -90,9 +107,12 @@ public class ItemEditController {
     }
 
     @FXML
-    public void initialize() { }
+    public void initialize() {
+    }
 
-    /** Called after setItem() — wires up all UI from item state */
+    /**
+     * Called after setItem() — wires up all UI from item state
+     */
     public void populate() {
         if (item == null) return;
 
@@ -170,7 +190,9 @@ public class ItemEditController {
         // Green dot indicator if completed
         if (done) {
             Region dot = new Region();
-            dot.setPrefSize(6, 6); dot.setMinSize(6, 6); dot.setMaxSize(6, 6);
+            dot.setPrefSize(6, 6);
+            dot.setMinSize(6, 6);
+            dot.setMaxSize(6, 6);
             dot.setStyle("-fx-background-color:#16a34a; -fx-background-radius:3;");
             content.getChildren().add(dot);
         }
@@ -230,8 +252,10 @@ public class ItemEditController {
     private void showBasicTab() {
         currentTab = ActiveTab.BASIC;
         activeService = null;
-        basicPane.setVisible(true);  basicPane.setManaged(true);
-        servicePane.setVisible(false); servicePane.setManaged(false);
+        basicPane.setVisible(true);
+        basicPane.setManaged(true);
+        servicePane.setVisible(false);
+        servicePane.setManaged(false);
         refreshTabStyles();
         fadeIn(basicPane);
     }
@@ -239,8 +263,10 @@ public class ItemEditController {
     private void showServiceTab(ServiceType st) {
         currentTab = ActiveTab.SERVICE;
         activeService = st;
-        basicPane.setVisible(false);  basicPane.setManaged(false);
-        servicePane.setVisible(true); servicePane.setManaged(true);
+        basicPane.setVisible(false);
+        basicPane.setManaged(false);
+        servicePane.setVisible(true);
+        servicePane.setManaged(true);
 
         buildServiceForm(st);
         refreshTabStyles();
@@ -276,7 +302,8 @@ public class ItemEditController {
             }
         });
 
-        Region spacer = new Region(); HBox.setHgrow(spacer, Priority.ALWAYS);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
         HBox actionRow = new HBox(8, spacer, toggleBtn, removeBtn);
         actionRow.setAlignment(Pos.CENTER_RIGHT);
         actionRow.setPadding(new Insets(4, 0, 4, 0));
@@ -298,9 +325,9 @@ public class ItemEditController {
         if (fuel == null) return;
         serviceFormBox.getChildren().addAll(
                 fieldRow("Fuel Type", boundTextField(fuel.getType(), v -> fuel.setType(v))),
-                fieldRow("Gallons",   doubleField(fuel.getGallons(), v -> fuel.setGallons(v))),
+                fieldRow("Gallons", doubleField(fuel.getGallons(), v -> fuel.setGallons(v))),
                 fieldRow("Weight (lbs)", doubleField(fuel.getWeight(), v -> fuel.setWeight(v))),
-                fieldRow("Note",      boundTextArea(fuel.getNote(), v -> fuel.setNote(v)))
+                fieldRow("Note", boundTextArea(fuel.getNote(), v -> fuel.setNote(v)))
         );
     }
 
@@ -322,8 +349,10 @@ public class ItemEditController {
             Catering c = new Catering();
             c.setId(UUID.randomUUID().toString());
             c.setItemId(item.getId());
-            c.setNote(""); c.setCateringNumber(catering.size() + 1);
-            c.setCreatedAt(Instant.now()); c.setUpdatedAt(Instant.now());
+            c.setNote("");
+            c.setCateringNumber(catering.size() + 1);
+            c.setCreatedAt(Instant.now());
+            c.setUpdatedAt(Instant.now());
             catering.add(c);
             rows.getChildren().add(cateringRow(c, rows));
         });
@@ -332,11 +361,15 @@ public class ItemEditController {
     }
 
     private HBox cateringRow(Catering c, VBox rows) {
-        TextField numF  = styledField("#");
-        numF.setPrefWidth(60); numF.setMaxWidth(60);
+        TextField numF = styledField("#");
+        numF.setPrefWidth(60);
+        numF.setMaxWidth(60);
         numF.setText(c.getCateringNumber() > 0 ? String.valueOf(c.getCateringNumber()) : "");
         numF.textProperty().addListener((obs, o, n) -> {
-            try { c.setCateringNumber(Integer.parseInt(n)); } catch (Exception ignored) {}
+            try {
+                c.setCateringNumber(Integer.parseInt(n));
+            } catch (Exception ignored) {
+            }
         });
 
         TextField noteF = styledField("Note / description");
@@ -351,7 +384,10 @@ public class ItemEditController {
 
         HBox row = new HBox(8, numF, noteF, del);
         row.setAlignment(Pos.CENTER_LEFT);
-        del.setOnAction(e -> { catering.remove(c); rows.getChildren().remove(row); });
+        del.setOnAction(e -> {
+            catering.remove(c);
+            rows.getChildren().remove(row);
+        });
         return row;
     }
 
@@ -385,7 +421,7 @@ public class ItemEditController {
         if (oilService == null) return;
         serviceFormBox.getChildren().addAll(
                 fieldRow("Oil Type", boundTextField(oilService.getType(), v -> oilService.setType(v))),
-                fieldRow("Quarts",   doubleField(oilService.getQuarts(), v -> oilService.setQuarts(v)))
+                fieldRow("Quarts", doubleField(oilService.getQuarts(), v -> oilService.setQuarts(v)))
         );
     }
 
@@ -420,7 +456,10 @@ public class ItemEditController {
     @FXML
     private void onSave() {
         String tail = tailField.getText().trim().toUpperCase();
-        if (tail.isBlank()) { showAlert("Tail number is required."); return; }
+        if (tail.isBlank()) {
+            showAlert("Tail number is required.");
+            return;
+        }
 
         item.setTail(tail);
         item.setDescription(descriptionField.getText());
@@ -454,69 +493,85 @@ public class ItemEditController {
     }
 
     @FXML
-    private void onCancel() { closeModal(); }
+    private void onCancel() {
+        closeModal();
+    }
 
     // ── Helpers ──────────────────────────────────────────────────────────────────
 
     private void copyServiceState() {
-        fuel               = item.getFuel();
-        catering           = item.getCatering() != null ? new ArrayList<>(item.getCatering()) : new ArrayList<>();
-        gpu                = item.getGpu();
-        lavatory           = item.getLavatory();
-        potableWater       = item.getPotableWater();
+        fuel = item.getFuel();
+        catering = item.getCatering() != null ? new ArrayList<>(item.getCatering()) : new ArrayList<>();
+        gpu = item.getGpu();
+        lavatory = item.getLavatory();
+        potableWater = item.getPotableWater();
         windshieldCleaning = item.getWindshieldCleaning();
-        oilService         = item.getOilService();
+        oilService = item.getOilService();
     }
 
     private boolean isActive(ServiceType t) {
         return switch (t) {
-            case FUEL                -> fuel               != null;
-            case CATERING            -> catering           != null && !catering.isEmpty();
-            case GPU                 -> gpu                != null;
-            case LAVATORY            -> lavatory           != null;
-            case POTABLE_WATER       -> potableWater       != null;
+            case FUEL -> fuel != null;
+            case CATERING -> catering != null && !catering.isEmpty();
+            case GPU -> gpu != null;
+            case LAVATORY -> lavatory != null;
+            case POTABLE_WATER -> potableWater != null;
             case WINDSHIELD_CLEANING -> windshieldCleaning != null;
-            case OIL_SERVICE         -> oilService         != null;
+            case OIL_SERVICE -> oilService != null;
         };
     }
 
     private boolean isCompleted(ServiceType t) {
         return switch (t) {
-            case FUEL                -> fuel               != null && fuel.getCompletedAt()               != null;
-            case CATERING            -> !catering.isEmpty() && catering.stream().allMatch(c -> c.getCompletedAt() != null);
-            case GPU                 -> gpu                != null && gpu.getCompletedAt()                != null;
-            case LAVATORY            -> lavatory           != null && lavatory.getCompletedAt()           != null;
-            case POTABLE_WATER       -> potableWater       != null && potableWater.getCompletedAt()       != null;
+            case FUEL -> fuel != null && fuel.getCompletedAt() != null;
+            case CATERING -> !catering.isEmpty() && catering.stream().allMatch(c -> c.getCompletedAt() != null);
+            case GPU -> gpu != null && gpu.getCompletedAt() != null;
+            case LAVATORY -> lavatory != null && lavatory.getCompletedAt() != null;
+            case POTABLE_WATER -> potableWater != null && potableWater.getCompletedAt() != null;
             case WINDSHIELD_CLEANING -> windshieldCleaning != null && windshieldCleaning.getCompletedAt() != null;
-            case OIL_SERVICE         -> oilService         != null && oilService.getCompletedAt()         != null;
+            case OIL_SERVICE -> oilService != null && oilService.getCompletedAt() != null;
         };
     }
 
     private void toggleCompletion(ServiceType t) {
         Instant now = Instant.now();
         switch (t) {
-            case FUEL -> { if (fuel != null) fuel.setCompletedAt(fuel.getCompletedAt() == null ? now : null); }
+            case FUEL -> {
+                if (fuel != null) fuel.setCompletedAt(fuel.getCompletedAt() == null ? now : null);
+            }
             case CATERING -> {
                 boolean allDone = !catering.isEmpty() && catering.stream().allMatch(c -> c.getCompletedAt() != null);
                 catering.forEach(c -> c.setCompletedAt(allDone ? null : now));
             }
-            case GPU -> { if (gpu != null) gpu.setCompletedAt(gpu.getCompletedAt() == null ? now : null); }
-            case LAVATORY -> { if (lavatory != null) lavatory.setCompletedAt(lavatory.getCompletedAt() == null ? now : null); }
-            case POTABLE_WATER -> { if (potableWater != null) potableWater.setCompletedAt(potableWater.getCompletedAt() == null ? now : null); }
-            case WINDSHIELD_CLEANING -> { if (windshieldCleaning != null) windshieldCleaning.setCompletedAt(windshieldCleaning.getCompletedAt() == null ? now : null); }
-            case OIL_SERVICE -> { if (oilService != null) oilService.setCompletedAt(oilService.getCompletedAt() == null ? now : null); }
+            case GPU -> {
+                if (gpu != null) gpu.setCompletedAt(gpu.getCompletedAt() == null ? now : null);
+            }
+            case LAVATORY -> {
+                if (lavatory != null) lavatory.setCompletedAt(lavatory.getCompletedAt() == null ? now : null);
+            }
+            case POTABLE_WATER -> {
+                if (potableWater != null)
+                    potableWater.setCompletedAt(potableWater.getCompletedAt() == null ? now : null);
+            }
+            case WINDSHIELD_CLEANING -> {
+                if (windshieldCleaning != null)
+                    windshieldCleaning.setCompletedAt(windshieldCleaning.getCompletedAt() == null ? now : null);
+            }
+            case OIL_SERVICE -> {
+                if (oilService != null) oilService.setCompletedAt(oilService.getCompletedAt() == null ? now : null);
+            }
         }
     }
 
     private void removeService(ServiceType t) {
         switch (t) {
-            case FUEL                -> fuel               = null;
-            case CATERING            -> catering           = new ArrayList<>();
-            case GPU                 -> gpu                = null;
-            case LAVATORY            -> lavatory           = null;
-            case POTABLE_WATER       -> potableWater       = null;
+            case FUEL -> fuel = null;
+            case CATERING -> catering = new ArrayList<>();
+            case GPU -> gpu = null;
+            case LAVATORY -> lavatory = null;
+            case POTABLE_WATER -> potableWater = null;
             case WINDSHIELD_CLEANING -> windshieldCleaning = null;
-            case OIL_SERVICE         -> oilService         = null;
+            case OIL_SERVICE -> oilService = null;
         }
     }
 
@@ -531,7 +586,8 @@ public class ItemEditController {
     private HBox fieldRow(String labelText, Node input) {
         Label lbl = new Label(labelText);
         lbl.setStyle("-fx-font-size:12px; -fx-text-fill:#4a5568; -fx-font-weight:600;");
-        lbl.setMinWidth(160); lbl.setPrefWidth(160);
+        lbl.setMinWidth(160);
+        lbl.setPrefWidth(160);
         HBox row = new HBox(12, lbl, input);
         row.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(input, Priority.ALWAYS);
@@ -549,7 +605,10 @@ public class ItemEditController {
         TextField tf = styledField(null);
         if (initial != null) tf.setText(String.valueOf(initial));
         tf.textProperty().addListener((obs, o, n) -> {
-            try { setter.accept(Double.parseDouble(n)); } catch (Exception ignored) {}
+            try {
+                setter.accept(Double.parseDouble(n));
+            } catch (Exception ignored) {
+            }
         });
         return tf;
     }
@@ -560,7 +619,8 @@ public class ItemEditController {
                 + "-fx-border-radius:0; -fx-background-radius:0; -fx-font-size:13px;"
                 + "-fx-text-fill:#1a202c; -fx-prompt-text-fill:#a0aec0;"
                 + "-fx-faint-focus-color:transparent; -fx-focus-color:transparent;");
-        ta.setPrefRowCount(3); ta.setMaxWidth(Double.MAX_VALUE);
+        ta.setPrefRowCount(3);
+        ta.setMaxWidth(Double.MAX_VALUE);
         ta.textProperty().addListener((obs, o, n) -> setter.accept(n));
         return ta;
     }
@@ -577,7 +637,11 @@ public class ItemEditController {
     }
 
     private Region spacer(double h) {
-        Region r = new Region(); r.setPrefHeight(h); r.setMinHeight(h); r.setMaxHeight(h); return r;
+        Region r = new Region();
+        r.setPrefHeight(h);
+        r.setMinHeight(h);
+        r.setMaxHeight(h);
+        return r;
     }
 
     private Instant toInstant(LocalDate date, String time) {
@@ -592,9 +656,13 @@ public class ItemEditController {
 
     private String label(ServiceType t) {
         return switch (t) {
-            case FUEL -> "Fuel"; case CATERING -> "Catering"; case GPU -> "GPU";
-            case LAVATORY -> "Lavatory"; case POTABLE_WATER -> "Potable Water";
-            case WINDSHIELD_CLEANING -> "Windshield Cleaning"; case OIL_SERVICE -> "Oil Service";
+            case FUEL -> "Fuel";
+            case CATERING -> "Catering";
+            case GPU -> "GPU";
+            case LAVATORY -> "Lavatory";
+            case POTABLE_WATER -> "Potable Water";
+            case WINDSHIELD_CLEANING -> "Windshield Cleaning";
+            case OIL_SERVICE -> "Oil Service";
         };
     }
 
@@ -602,15 +670,23 @@ public class ItemEditController {
         try {
             BufferedImage bi = st.getImage(size * 2);
             BufferedImage out = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_ARGB);
-            for (int y = 0; y < bi.getHeight(); y++) for (int x = 0; x < bi.getWidth(); x++) {
-                int argb = bi.getRGB(x, y); int a = (argb >> 24) & 0xff;
-                if (a > 0) out.setRGB(x, y, (a << 24) | (tint.getRed() << 16) | (tint.getGreen() << 8) | tint.getBlue());
-            }
+            for (int y = 0; y < bi.getHeight(); y++)
+                for (int x = 0; x < bi.getWidth(); x++) {
+                    int argb = bi.getRGB(x, y);
+                    int a = (argb >> 24) & 0xff;
+                    if (a > 0)
+                        out.setRGB(x, y, (a << 24) | (tint.getRed() << 16) | (tint.getGreen() << 8) | tint.getBlue());
+                }
             WritableImage wi = SwingFXUtils.toFXImage(out, null);
             ImageView iv = new ImageView(wi);
-            iv.setFitWidth(size); iv.setFitHeight(size); iv.setPreserveRatio(true); iv.setSmooth(true);
+            iv.setFitWidth(size);
+            iv.setFitHeight(size);
+            iv.setPreserveRatio(true);
+            iv.setSmooth(true);
             return iv;
-        } catch (Exception e) { return new ImageView(); }
+        } catch (Exception e) {
+            return new ImageView();
+        }
     }
 
     private void tintIcon(ImageView iv, Color color, int size) {
@@ -618,24 +694,29 @@ public class ItemEditController {
     }
 
     private String toHex(Color c) {
-        return String.format("#%02x%02x%02x", (int)(c.getRed()*255), (int)(c.getGreen()*255), (int)(c.getBlue()*255));
+        return String.format("#%02x%02x%02x", (int) (c.getRed() * 255), (int) (c.getGreen() * 255), (int) (c.getBlue() * 255));
     }
 
     private String alphaHex(Color c, double a) {
-        return String.format("rgba(%d,%d,%d,%.2f)", (int)(c.getRed()*255), (int)(c.getGreen()*255), (int)(c.getBlue()*255), a);
+        return String.format("rgba(%d,%d,%d,%.2f)", (int) (c.getRed() * 255), (int) (c.getGreen() * 255), (int) (c.getBlue() * 255), a);
     }
 
     private void showAlert(String msg) {
         Alert a = new Alert(Alert.AlertType.WARNING, msg, ButtonType.OK);
-        a.setHeaderText(null); a.initOwner(rootPane.getScene().getWindow()); a.showAndWait();
+        a.setHeaderText(null);
+        a.initOwner(rootPane.getScene().getWindow());
+        a.showAndWait();
     }
 
-    private void closeModal() { ((Stage) rootPane.getScene().getWindow()).close(); }
+    private void closeModal() {
+        ((Stage) rootPane.getScene().getWindow()).close();
+    }
 
     private void fadeIn(Node node) {
-        node.setOpacity(0); node.setTranslateY(5);
+        node.setOpacity(0);
+        node.setTranslateY(5);
         new Timeline(new KeyFrame(Duration.millis(160),
-                new KeyValue(node.opacityProperty(),    1.0, Interpolator.EASE_OUT),
+                new KeyValue(node.opacityProperty(), 1.0, Interpolator.EASE_OUT),
                 new KeyValue(node.translateYProperty(), 0.0, Interpolator.EASE_OUT)
         )).play();
     }

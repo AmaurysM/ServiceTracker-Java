@@ -3,7 +3,10 @@ package com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.models.*;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceType;
-import javafx.animation.*;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -29,7 +32,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.UUID;
 
 public class AddServiceItemController {
 
@@ -37,67 +39,91 @@ public class AddServiceItemController {
     private ServiceItemService serviceItemService;
 
     // ── FXML nodes ──────────────────────────────────────────────────────────────
-    @FXML private StackPane  rootPane;
-    @FXML private VBox       wizardCard;
+    @FXML
+    private StackPane rootPane;
+    @FXML
+    private VBox wizardCard;
 
-    @FXML private Label      headerStepLabel;
-    @FXML private Label      tailPreviewLabel;
+    @FXML
+    private Label headerStepLabel;
+    @FXML
+    private Label tailPreviewLabel;
 
-    @FXML private Button     step1TabBtn;
-    @FXML private Button     step2TabBtn;
-    @FXML private Button     step3TabBtn;
+    @FXML
+    private Button step1TabBtn;
+    @FXML
+    private Button step2TabBtn;
+    @FXML
+    private Button step3TabBtn;
 
-    @FXML private VBox       step1Pane;
-    @FXML private VBox       step2Pane;
-    @FXML private VBox       step3Pane;
+    @FXML
+    private VBox step1Pane;
+    @FXML
+    private VBox step2Pane;
+    @FXML
+    private VBox step3Pane;
 
     // Step 1
-    @FXML private TextField  tailField;
-    @FXML private DatePicker arrivalDatePicker;
-    @FXML private TextField  arrivalTimeField;
-    @FXML private DatePicker departureDatePicker;
-    @FXML private TextField  departureTimeField;
-    @FXML private TextArea   descriptionField;
+    @FXML
+    private TextField tailField;
+    @FXML
+    private DatePicker arrivalDatePicker;
+    @FXML
+    private TextField arrivalTimeField;
+    @FXML
+    private DatePicker departureDatePicker;
+    @FXML
+    private TextField departureTimeField;
+    @FXML
+    private TextArea descriptionField;
 
     // Step 2
-    @FXML private FlowPane   serviceSelectionPane;
+    @FXML
+    private FlowPane serviceSelectionPane;
 
     // Step 3
-    @FXML private HBox       serviceTabBar;
-    @FXML private StackPane  serviceConfigPane;
+    @FXML
+    private HBox serviceTabBar;
+    @FXML
+    private StackPane serviceConfigPane;
 
     // Footer
-    @FXML private Button     cancelBtn;
-    @FXML private Button     backBtn;
-    @FXML private Button     nextBtn;
-    @FXML private Button     addItemBtn;
+    @FXML
+    private Button cancelBtn;
+    @FXML
+    private Button backBtn;
+    @FXML
+    private Button nextBtn;
+    @FXML
+    private Button addItemBtn;
 
     // ── Internal state ───────────────────────────────────────────────────────────
-    private enum Step { BASIC, SELECT_SERVICES, CONFIGURE }
+    private enum Step {BASIC, SELECT_SERVICES, CONFIGURE}
+
     private Step currentStep = Step.BASIC;
 
-    private final List<ServiceType>                    selectedServices = new ArrayList<>();
-    private ServiceType                                activeServiceTab = null;
-    private final Map<ServiceType, Node>               configPanes  = new EnumMap<>(ServiceType.class);
-    private final Map<ServiceType, Map<String,Object>> serviceData  = new EnumMap<>(ServiceType.class);
+    private final List<ServiceType> selectedServices = new ArrayList<>();
+    private ServiceType activeServiceTab = null;
+    private final Map<ServiceType, Node> configPanes = new EnumMap<>(ServiceType.class);
+    private final Map<ServiceType, Map<String, Object>> serviceData = new EnumMap<>(ServiceType.class);
 
     @Setter
     private Runnable onSaveCallback;
     //public void setOnSaveCallback(Runnable cb) { this.onSaveCallback = cb; }
 
     // ── White theme palette ──────────────────────────────────────────────────────
-    private static final String WHITE        = "#ffffff";
-    private static final String BG_SUBTLE    = "#f8f9fb";
-    private static final String BG_FIELD     = "#ffffff";
-    private static final String BORDER       = "#c8d4e0";
-    private static final String BORDER_MID   = "#dde3eb";
-    private static final String TEXT_DARK    = "#1a202c";
-    private static final String TEXT_BODY    = "#374151";
-    private static final String TEXT_LABEL   = "#4a5568";
-    private static final String TEXT_MUTED   = "#8a9ab0";
-    private static final String TEXT_PROMPT  = "#a0aec0";
-    private static final String NAVY         = "#1e3a5f";
-    private static final String BLUE         = "#1d4ed8";
+    private static final String WHITE = "#ffffff";
+    private static final String BG_SUBTLE = "#f8f9fb";
+    private static final String BG_FIELD = "#ffffff";
+    private static final String BORDER = "#c8d4e0";
+    private static final String BORDER_MID = "#dde3eb";
+    private static final String TEXT_DARK = "#1a202c";
+    private static final String TEXT_BODY = "#374151";
+    private static final String TEXT_LABEL = "#4a5568";
+    private static final String TEXT_MUTED = "#8a9ab0";
+    private static final String TEXT_PROMPT = "#a0aec0";
+    private static final String NAVY = "#1e3a5f";
+    private static final String BLUE = "#1d4ed8";
 
     @FXML
     public void initialize() {
@@ -110,14 +136,21 @@ public class AddServiceItemController {
 
     // ── Navigation ───────────────────────────────────────────────────────────────
 
-    @FXML private void onNext() {
+    @FXML
+    private void onNext() {
         switch (currentStep) {
             case BASIC -> {
-                if (tailField.getText().isBlank()) { showAlert("Tail number is required."); return; }
+                if (tailField.getText().isBlank()) {
+                    showAlert("Tail number is required.");
+                    return;
+                }
                 showStep(Step.SELECT_SERVICES);
             }
             case SELECT_SERVICES -> {
-                if (selectedServices.isEmpty()) { showAlert("Please select at least one service."); return; }
+                if (selectedServices.isEmpty()) {
+                    showAlert("Please select at least one service.");
+                    return;
+                }
                 buildServiceTabBar();
                 activateServiceTab(selectedServices.get(0));
                 showStep(Step.CONFIGURE);
@@ -126,18 +159,27 @@ public class AddServiceItemController {
         }
     }
 
-    @FXML private void onBack() {
+    @FXML
+    private void onBack() {
         switch (currentStep) {
             case SELECT_SERVICES -> showStep(Step.BASIC);
-            case CONFIGURE       -> showStep(Step.SELECT_SERVICES);
-            default -> {}
+            case CONFIGURE -> showStep(Step.SELECT_SERVICES);
+            default -> {
+            }
         }
     }
 
-    @FXML private void onCancel()  { closeModal(); }
+    @FXML
+    private void onCancel() {
+        closeModal();
+    }
 
-    @FXML private void onAddItem() {
-        if (tailField.getText().isBlank()) { showAlert("Tail number is required."); return; }
+    @FXML
+    private void onAddItem() {
+        if (tailField.getText().isBlank()) {
+            showAlert("Tail number is required.");
+            return;
+        }
 
         addItemBtn.setDisable(true);
         addItemBtn.setText("Saving…");
@@ -164,11 +206,18 @@ public class AddServiceItemController {
         t.start();
     }
 
-    @FXML private void onStep1Tab() { showStep(Step.BASIC); }
-    @FXML private void onStep2Tab() {
+    @FXML
+    private void onStep1Tab() {
+        showStep(Step.BASIC);
+    }
+
+    @FXML
+    private void onStep2Tab() {
         if (!tailField.getText().isBlank()) showStep(Step.SELECT_SERVICES);
     }
-    @FXML private void onStep3Tab() {
+
+    @FXML
+    private void onStep3Tab() {
         if (tailField.getText().isBlank() || selectedServices.isEmpty()) return;
         buildServiceTabBar();
         if (activeServiceTab == null) activateServiceTab(selectedServices.get(0));
@@ -180,21 +229,24 @@ public class AddServiceItemController {
     private void showStep(Step step) {
         currentStep = step;
 
-        step1Pane.setVisible(false); step1Pane.setManaged(false);
-        step2Pane.setVisible(false); step2Pane.setManaged(false);
-        step3Pane.setVisible(false); step3Pane.setManaged(false);
+        step1Pane.setVisible(false);
+        step1Pane.setManaged(false);
+        step2Pane.setVisible(false);
+        step2Pane.setManaged(false);
+        step3Pane.setVisible(false);
+        step3Pane.setManaged(false);
 
         VBox active = switch (step) {
-            case BASIC           -> step1Pane;
+            case BASIC -> step1Pane;
             case SELECT_SERVICES -> step2Pane;
-            case CONFIGURE       -> step3Pane;
+            case CONFIGURE -> step3Pane;
         };
         active.setVisible(true);
         active.setManaged(true);
         fadeIn(active);
 
         // Blue underline for active tab, plain for inactive
-        String on  = "-fx-background-color:" + WHITE + "; -fx-text-fill:" + NAVY + ";"
+        String on = "-fx-background-color:" + WHITE + "; -fx-text-fill:" + NAVY + ";"
                 + "-fx-font-size:11px; -fx-font-weight:700; -fx-cursor:default;"
                 + "-fx-border-color:transparent transparent " + BLUE + " transparent;"
                 + "-fx-border-width:0 0 2 0;";
@@ -202,24 +254,24 @@ public class AddServiceItemController {
                 + "-fx-font-size:11px; -fx-font-weight:600; -fx-cursor:hand;"
                 + "-fx-border-width:0;";
 
-        step1TabBtn.setStyle(step == Step.BASIC           ? on : off);
+        step1TabBtn.setStyle(step == Step.BASIC ? on : off);
         step2TabBtn.setStyle(step == Step.SELECT_SERVICES ? on : off);
-        step3TabBtn.setStyle(step == Step.CONFIGURE       ? on : off);
+        step3TabBtn.setStyle(step == Step.CONFIGURE ? on : off);
 
         headerStepLabel.setText("ADD SERVICE ITEM" + switch (step) {
-            case BASIC           -> "  ·  BASIC INFORMATION";
+            case BASIC -> "  ·  BASIC INFORMATION";
             case SELECT_SERVICES -> "  ·  SELECT SERVICES";
-            case CONFIGURE       -> "  ·  CONFIGURE SERVICES";
+            case CONFIGURE -> "  ·  CONFIGURE SERVICES";
         });
 
         updateFooterButtons();
     }
 
     private void updateFooterButtons() {
-        backBtn   .setVisible(currentStep != Step.BASIC);
-        backBtn   .setManaged(currentStep != Step.BASIC);
-        nextBtn   .setVisible(currentStep != Step.CONFIGURE);
-        nextBtn   .setManaged(currentStep != Step.CONFIGURE);
+        backBtn.setVisible(currentStep != Step.BASIC);
+        backBtn.setManaged(currentStep != Step.BASIC);
+        nextBtn.setVisible(currentStep != Step.CONFIGURE);
+        nextBtn.setManaged(currentStep != Step.CONFIGURE);
         addItemBtn.setVisible(currentStep == Step.CONFIGURE);
         addItemBtn.setManaged(currentStep == Step.CONFIGURE);
     }
@@ -322,13 +374,13 @@ public class AddServiceItemController {
 
     private String getServiceLabel(ServiceType st) {
         return switch (st) {
-            case FUEL                -> "Fuel";
-            case CATERING            -> "Catering";
-            case GPU                 -> "GPU";
-            case LAVATORY            -> "Lavatory";
-            case POTABLE_WATER       -> "Potable Water";
+            case FUEL -> "Fuel";
+            case CATERING -> "Catering";
+            case GPU -> "GPU";
+            case LAVATORY -> "Lavatory";
+            case POTABLE_WATER -> "Potable Water";
             case WINDSHIELD_CLEANING -> "Windshield Cleaning";
-            case OIL_SERVICE         -> "Oil Service";
+            case OIL_SERVICE -> "Oil Service";
         };
     }
 
@@ -369,9 +421,9 @@ public class AddServiceItemController {
             if (!(tab.getUserData() instanceof ServiceType st)) continue;
 
             Color fxColor = toFxColor(st.getPrimaryColor());
-            ImageView iv  = (ImageView) tab.getChildren().get(0);
-            Label     lbl = (Label)     tab.getChildren().get(1);
-            boolean   active = st == target;
+            ImageView iv = (ImageView) tab.getChildren().get(0);
+            Label lbl = (Label) tab.getChildren().get(1);
+            boolean active = st == target;
 
             if (active) {
                 tab.setStyle("-fx-background-color:" + toHex(fxColor) + "; -fx-cursor:default;");
@@ -412,10 +464,10 @@ public class AddServiceItemController {
 
         switch (st) {
             case FUEL -> form.getChildren().addAll(
-                    fieldRow("Fuel Type",    textInput("type",    data, "")),
-                    fieldRow("Gallons",      numberInput("gallons", data)),
-                    fieldRow("Weight (lbs)", numberInput("weight",  data)),
-                    fieldRow("Note",         textArea("note",     data))
+                    fieldRow("Fuel Type", textInput("type", data, "")),
+                    fieldRow("Gallons", numberInput("gallons", data)),
+                    fieldRow("Weight (lbs)", numberInput("weight", data)),
+                    fieldRow("Note", textArea("note", data))
             );
             case CATERING -> {
                 Label hint = new Label("Add one row per catering item.");
@@ -425,17 +477,19 @@ public class AddServiceItemController {
                 Button addRow = styledBtn("+ Add Item", NAVY, WHITE);
                 addRow.setOnAction(e -> {
                     @SuppressWarnings("unchecked")
-                    List<Map<String,String>> items = (List<Map<String,String>>)
-                            data.computeIfAbsent("items", k -> new ArrayList<Map<String,String>>());
-                    Map<String,String> entry = new LinkedHashMap<>();
-                    entry.put("note", ""); entry.put("cateringNumber", "");
+                    List<Map<String, String>> items = (List<Map<String, String>>)
+                            data.computeIfAbsent("items", k -> new ArrayList<Map<String, String>>());
+                    Map<String, String> entry = new LinkedHashMap<>();
+                    entry.put("note", "");
+                    entry.put("cateringNumber", "");
                     items.add(entry);
 
-                    TextField noteF   = styledTextField("Note / description");
+                    TextField noteF = styledTextField("Note / description");
                     TextField numberF = styledTextField("#");
-                    numberF.setPrefWidth(60); numberF.setMaxWidth(60);
-                    noteF  .textProperty().addListener((obs,o,nv) -> entry.put("note",           nv));
-                    numberF.textProperty().addListener((obs,o,nv) -> entry.put("cateringNumber", nv));
+                    numberF.setPrefWidth(60);
+                    numberF.setMaxWidth(60);
+                    noteF.textProperty().addListener((obs, o, nv) -> entry.put("note", nv));
+                    numberF.textProperty().addListener((obs, o, nv) -> entry.put("cateringNumber", nv));
 
                     Button del = styledBtn("✕", "#fee2e2", "#dc2626");
                     del.setStyle(del.getStyle()
@@ -443,7 +497,10 @@ public class AddServiceItemController {
                     HBox row = new HBox(8, numberF, noteF, del);
                     row.setAlignment(Pos.CENTER_LEFT);
                     HBox.setHgrow(noteF, Priority.ALWAYS);
-                    del.setOnAction(ev -> { rows.getChildren().remove(row); items.remove(entry); });
+                    del.setOnAction(ev -> {
+                        rows.getChildren().remove(row);
+                        items.remove(entry);
+                    });
                     rows.getChildren().add(row);
                 });
                 form.getChildren().addAll(hint, rows, addRow);
@@ -451,13 +508,13 @@ public class AddServiceItemController {
             case GPU -> form.getChildren().add(fieldRow("Hours", numberInput("hours", data)));
             case LAVATORY -> form.getChildren().addAll(
                     fieldRow("Back-in Gallons", numberInput("backInGallons", data)),
-                    fieldRow("Note",            textArea("note", data))
+                    fieldRow("Note", textArea("note", data))
             );
-            case POTABLE_WATER    -> form.getChildren().add(fieldRow("Note", textArea("note", data)));
+            case POTABLE_WATER -> form.getChildren().add(fieldRow("Note", textArea("note", data)));
             case WINDSHIELD_CLEANING -> form.getChildren().add(fieldRow("Note", textArea("note", data)));
             case OIL_SERVICE -> form.getChildren().addAll(
-                    fieldRow("Oil Type", textInput("type",   data, "")),
-                    fieldRow("Quarts",   numberInput("quarts", data))
+                    fieldRow("Oil Type", textInput("type", data, "")),
+                    fieldRow("Quarts", numberInput("quarts", data))
             );
         }
 
@@ -501,8 +558,8 @@ public class AddServiceItemController {
 
     private ServiceItem buildItem() {
         String itemId = UUID.randomUUID().toString();
-        String tail   = tailField.getText().trim().toUpperCase();
-        Instant now   = Instant.now();
+        String tail = tailField.getText().trim().toUpperCase();
+        Instant now = Instant.now();
 
         ServiceItem item = new ServiceItem();
         item.setId(itemId);
@@ -522,16 +579,18 @@ public class AddServiceItemController {
                     f.setTail(tail);
                     f.setType((String) d.getOrDefault("type", ""));
                     if (d.get("gallons") instanceof Number n) f.setGallons(n.doubleValue());
-                    if (d.get("weight")  instanceof Number n) f.setWeight(n.doubleValue());
+                    if (d.get("weight") instanceof Number n) f.setWeight(n.doubleValue());
                     f.setNote((String) d.getOrDefault("note", ""));
-                    f.setCreatedAt(now); f.setUpdatedAt(now);
+                    f.setCreatedAt(now);
+                    f.setUpdatedAt(now);
                     item.setFuel(f);
                 }
                 case GPU -> {
                     GPU gpu = new GPU();
                     gpu.setId(UUID.randomUUID().toString());
                     if (d.get("hours") instanceof Number n) gpu.setHours(n.doubleValue());
-                    gpu.setCreatedAt(now); gpu.setUpdatedAt(now);
+                    gpu.setCreatedAt(now);
+                    gpu.setUpdatedAt(now);
                     item.setGpu(gpu);
                 }
                 case LAVATORY -> {
@@ -540,21 +599,24 @@ public class AddServiceItemController {
                     lav.setItemId(itemId);
                     if (d.get("backInGallons") instanceof Number n) lav.setBackInGallons(n.doubleValue());
                     lav.setNote((String) d.getOrDefault("note", ""));
-                    lav.setCreatedAt(now); lav.setUpdatedAt(now);
+                    lav.setCreatedAt(now);
+                    lav.setUpdatedAt(now);
                     item.setLavatory(lav);
                 }
                 case POTABLE_WATER -> {
                     PotableWater pw = new PotableWater();
                     pw.setId(UUID.randomUUID().toString());
                     pw.setNote((String) d.getOrDefault("note", ""));
-                    pw.setCreatedAt(now); pw.setUpdatedAt(now);
+                    pw.setCreatedAt(now);
+                    pw.setUpdatedAt(now);
                     item.setPotableWater(pw);
                 }
                 case WINDSHIELD_CLEANING -> {
                     WindshieldCleaning wc = new WindshieldCleaning();
                     wc.setId(UUID.randomUUID().toString());
                     wc.setNote((String) d.getOrDefault("note", ""));
-                    wc.setCreatedAt(now); wc.setUpdatedAt(now);
+                    wc.setCreatedAt(now);
+                    wc.setUpdatedAt(now);
                     item.setWindshieldCleaning(wc);
                 }
                 case OIL_SERVICE -> {
@@ -562,16 +624,17 @@ public class AddServiceItemController {
                     os.setId(UUID.randomUUID().toString());
                     os.setType((String) d.getOrDefault("type", ""));
                     if (d.get("quarts") instanceof Number n) os.setQuarts(n.doubleValue());
-                    os.setCreatedAt(now); os.setUpdatedAt(now);
+                    os.setCreatedAt(now);
+                    os.setUpdatedAt(now);
                     item.setOilService(os);
                 }
                 case CATERING -> {
                     @SuppressWarnings("unchecked")
-                    List<Map<String,String>> raw =
-                            (List<Map<String,String>>) d.getOrDefault("items", List.of());
+                    List<Map<String, String>> raw =
+                            (List<Map<String, String>>) d.getOrDefault("items", List.of());
                     List<Catering> list = new ArrayList<>();
                     int counter = 1;
-                    for (Map<String,String> ci : raw) {
+                    for (Map<String, String> ci : raw) {
                         Catering c = new Catering();
                         c.setId(UUID.randomUUID().toString());
                         c.setItemId(itemId);
@@ -581,7 +644,8 @@ public class AddServiceItemController {
                         } catch (NumberFormatException ignored) {
                             c.setCateringNumber(counter);
                         }
-                        c.setCreatedAt(now); c.setUpdatedAt(now);
+                        c.setCreatedAt(now);
+                        c.setUpdatedAt(now);
                         list.add(c);
                         counter++;
                     }
@@ -605,23 +669,26 @@ public class AddServiceItemController {
         return row;
     }
 
-    private TextField textInput(String key, Map<String,Object> data, String def) {
+    private TextField textInput(String key, Map<String, Object> data, String def) {
         TextField tf = styledTextField(null);
         tf.setText((String) data.getOrDefault(key, def));
         tf.textProperty().addListener((obs, o, n) -> data.put(key, n));
         return tf;
     }
 
-    private TextField numberInput(String key, Map<String,Object> data) {
+    private TextField numberInput(String key, Map<String, Object> data) {
         TextField tf = styledTextField(null);
         if (data.containsKey(key)) tf.setText(String.valueOf(data.get(key)));
         tf.textProperty().addListener((obs, o, n) -> {
-            try { data.put(key, Double.parseDouble(n)); } catch (NumberFormatException ignored) {}
+            try {
+                data.put(key, Double.parseDouble(n));
+            } catch (NumberFormatException ignored) {
+            }
         });
         return tf;
     }
 
-    private TextArea textArea(String key, Map<String,Object> data) {
+    private TextArea textArea(String key, Map<String, Object> data) {
         TextArea ta = new TextArea((String) data.getOrDefault(key, ""));
         ta.setStyle(inputStyle());
         ta.setPrefRowCount(3);
@@ -691,16 +758,16 @@ public class AddServiceItemController {
 
     private String toHex(Color c) {
         return String.format("#%02x%02x%02x",
-                (int)(c.getRed()   * 255),
-                (int)(c.getGreen() * 255),
-                (int)(c.getBlue()  * 255));
+                (int) (c.getRed() * 255),
+                (int) (c.getGreen() * 255),
+                (int) (c.getBlue() * 255));
     }
 
     private String alphaRgba(Color c, double opacity) {
         return String.format("rgba(%d,%d,%d,%.2f)",
-                (int)(c.getRed()   * 255),
-                (int)(c.getGreen() * 255),
-                (int)(c.getBlue()  * 255),
+                (int) (c.getRed() * 255),
+                (int) (c.getGreen() * 255),
+                (int) (c.getBlue() * 255),
                 opacity);
     }
 
@@ -731,7 +798,7 @@ public class AddServiceItemController {
         node.setOpacity(0);
         node.setTranslateY(5);
         new Timeline(new KeyFrame(Duration.millis(180),
-                new KeyValue(node.opacityProperty(),    1.0, Interpolator.EASE_OUT),
+                new KeyValue(node.opacityProperty(), 1.0, Interpolator.EASE_OUT),
                 new KeyValue(node.translateYProperty(), 0.0, Interpolator.EASE_OUT)
         )).play();
     }

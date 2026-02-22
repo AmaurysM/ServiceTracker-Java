@@ -2,7 +2,6 @@ package com.amaurysdelossantos.ServiceTracker.Controllers;
 
 import javafx.animation.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -11,9 +10,12 @@ import lombok.Setter;
 
 public class EmptyStateController {
 
-    @FXML private Circle  pulseRing;
-    @FXML private Text    headlineText;
-    @FXML private Text    subtitleText;
+    @FXML
+    private Circle pulseRing;
+    @FXML
+    private Text headlineText;
+    @FXML
+    private Text subtitleText;
 //    @FXML private Button  clearFiltersButton;
 //    @FXML private Button  addNewButton;
 

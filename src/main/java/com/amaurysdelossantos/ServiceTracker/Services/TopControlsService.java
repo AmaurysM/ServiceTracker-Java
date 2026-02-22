@@ -1,6 +1,9 @@
 package com.amaurysdelossantos.ServiceTracker.Services;
 
-import com.amaurysdelossantos.ServiceTracker.models.enums.*;
+import com.amaurysdelossantos.ServiceTracker.models.enums.ActivityFilter;
+import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceFilter;
+import com.amaurysdelossantos.ServiceTracker.models.enums.StandardView;
+import com.amaurysdelossantos.ServiceTracker.models.enums.TimeFilter;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,8 +19,16 @@ public class TopControlsService {
     private final ObjectProperty<ActivityFilter> activityFilter = new SimpleObjectProperty<>();
     private final ObjectProperty<StandardView> activeView = new SimpleObjectProperty<>();
 
-    public StringProperty searchTextProperty() {return searchText;}
-    public ObjectProperty<StandardView> activeViewProperty() {return activeView;}
-    public ObjectProperty<ActivityFilter> activeActivity() {return activityFilter;}
+    public StringProperty searchTextProperty() {
+        return searchText;
+    }
+
+    public ObjectProperty<StandardView> activeViewProperty() {
+        return activeView;
+    }
+
+    public ObjectProperty<ActivityFilter> activeActivity() {
+        return activityFilter;
+    }
 
 }

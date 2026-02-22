@@ -1,5 +1,6 @@
 package com.amaurysdelossantos.ServiceTracker;
 
+import com.amaurysdelossantos.ServiceTracker.ServiceApplication.StageReadyEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -9,7 +10,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import com.amaurysdelossantos.ServiceTracker.ServiceApplication.StageReadyEvent;
 
 import java.io.IOException;
 
@@ -21,9 +21,9 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     private ApplicationContext applicationContext;
 
     public StageInitializer(@Value("${spring.application.ui.title}")
-      String applicationTitle,
-      ApplicationContext applicationContext
-    ){
+                            String applicationTitle,
+                            ApplicationContext applicationContext
+    ) {
         this.applicationTitle = applicationTitle;
         this.applicationContext = applicationContext;
     }
@@ -36,7 +36,7 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
             Parent parent = fxmlLoader.load();
 
             Stage stage = event.getStage();
-            stage.setScene(new Scene(parent, 800,600));
+            stage.setScene(new Scene(parent, 800, 600));
             stage.setTitle(applicationTitle);
             stage.show();
         } catch (IOException e) {

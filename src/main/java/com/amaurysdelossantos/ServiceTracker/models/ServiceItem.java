@@ -36,4 +36,4 @@ public class ServiceItem {
     private String completedBy;               // nullable
     private Instant deletedAt;                // nullable
     private Map<String, Object> metadata;      // nullable
- }
+}

@@ -6,18 +6,19 @@ import com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemIn
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceType;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.stage.Modality;
@@ -28,11 +29,12 @@ import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static com.amaurysdelossantos.ServiceTracker.Helper.Lib.attachButtonAnimation;
 
 @Component
 @Scope("prototype")
@@ -41,14 +43,22 @@ public class CardItemController {
     @Autowired
     private ServiceItemService serviceItemService;
 
-    @FXML public HBox headerBox;
-    @FXML public Label tailLabel;
-    @FXML public HBox actionButtonsBox;
-    @FXML public HBox serviceIconsBox;
-    @FXML public Label arrivalLabel;
-    @FXML public Label departureLabel;
-    @FXML public Label descriptionLabel;
-    @FXML public HBox actionButtonsBox1;
+    @FXML
+    public HBox headerBox;
+    @FXML
+    public Label tailLabel;
+    @FXML
+    public HBox actionButtonsBox;
+    @FXML
+    public HBox serviceIconsBox;
+    @FXML
+    public Label arrivalLabel;
+    @FXML
+    public Label departureLabel;
+    @FXML
+    public Label descriptionLabel;
+    @FXML
+    public HBox tailHeaderBox;
 
     public ServiceItem item;
 
@@ -58,7 +68,8 @@ public class CardItemController {
     }
 
     @FXML
-    public void initialize() {}
+    public void initialize() {
+    }
 
     public void populateCard() {
         tailLabel.setText(item.getTail());
@@ -85,8 +96,6 @@ public class CardItemController {
         renderServices();
         renderActions();
 
-
-
     }
 
     // ─── Services ────────────────────────────────────────────────────────────────
@@ -111,7 +120,7 @@ public class CardItemController {
             String hex = String.format("#%02x%02x%02x",
                     awtColor.getRed(), awtColor.getGreen(), awtColor.getBlue());
 
-            String bgAlpha    = completed ? "20" : "26";
+            String bgAlpha = completed ? "20" : "26";
             String borderAlpha = completed ? "66" : "4d";
             String borderStyle = completed ? "dashed" : "solid";
 
@@ -148,11 +157,13 @@ public class CardItemController {
             ));
 
             cell.setOnMouseEntered(e -> cell.setScaleX(1.08));
-            cell.setOnMouseExited(e  -> cell.setScaleX(1.0));
+            cell.setOnMouseExited(e -> cell.setScaleX(1.0));
 
             cell.setOnMouseClicked(e -> {
                 handleEdit(serviceType);
             });
+
+            attachButtonAnimation(cell);
 
             serviceIconsBox.getChildren().add(cell);
         }
@@ -166,49 +177,47 @@ public class CardItemController {
         boolean allCompleted = areAllServicesCompleted();
 
         if (allCompleted && item.getCompletedAt() == null) {
-            Button doneBtn = createActionButton("DONE", "#16a34a", "#15803d");
+            Button doneBtn = createActionButton("DONE", "#16a34a", "#15803d", false);
             doneBtn.setOnAction(e -> handleToggleComplete());
             actionButtonsBox.getChildren().add(doneBtn);
         }
 
         if (item.getCompletedAt() != null) {
-            Button undoBtn = createActionButton("UNDO", "#ca8a04", "#a16207");
+            Button undoBtn = createActionButton("UNDO", "#ca8a04", "#a16207", false);
             undoBtn.setOnAction(e -> handleToggleComplete());
             actionButtonsBox.getChildren().add(undoBtn);
         }
 
-        Button editBtn = createActionButton("EDIT", "#2563eb", "#1d4ed8");
+        Button editBtn = createActionButton("EDIT", "#2563eb", "#1d4ed8", false);
         editBtn.setOnAction(e -> handleEdit());
         actionButtonsBox.getChildren().add(editBtn);
 
-        Button delBtn = createActionButton("DEL", "#dc2626", "#b91c1c");
+        Button delBtn = createActionButton("DEL", "#dc2626", "#b91c1c", true);
         delBtn.setOnAction(e -> handleDelete());
         actionButtonsBox.getChildren().add(delBtn);
 
-        actionButtonsBox1.setOnMouseClicked(e -> handleInfo());
-
-        ObservableList<Node> buttons = actionButtonsBox.getChildren();
-
-        if (!buttons.isEmpty()) {
-            Button lastBtn = (Button) buttons.get(buttons.size() - 1);
-
-            lastBtn.setStyle(lastBtn.getStyle() +
-                    "-fx-background-radius: 0 4 0 0;");
-        }
+        tailHeaderBox.setOnMouseClicked(e -> handleInfo());
     }
 
-    private Button createActionButton(String text, String bgColor, String hoverColor) {
+    private Button createActionButton(String text, String bgColor, String hoverColor, boolean endItem) {
         Button btn = new Button(text);
         btn.setMinHeight(48);
         btn.setMinWidth(60);
         String base = String.format(
-                "-fx-background-color: %s; -fx-text-fill: white; -fx-font-weight: bold; " +
-                        "-fx-font-size: 12px; -fx-background-radius: 0; -fx-cursor: hand; -fx-padding: 0 16;",
+                "-fx-background-color: %s;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-weight: bold; " +
+                        "-fx-font-size: 12px;" +
+                        "-fx-background-radius: 0;" +
+                        "-fx-cursor: hand; " +
+                        "-fx-padding: 0 16;" +
+                        (endItem ? "-fx-background-radius: 0 4 0 0;" : ""),
                 bgColor
         );
+
         btn.setStyle(base);
         btn.setOnMouseEntered(e -> btn.setStyle(base.replace(bgColor, hoverColor)));
-        btn.setOnMouseExited(e  -> btn.setStyle(base));
+        btn.setOnMouseExited(e -> btn.setStyle(base));
         return btn;
     }
 
@@ -219,6 +228,8 @@ public class CardItemController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/components/ItemInteraction/item-info-modal.fxml")
             );
+            System.out.println("loader: " + loader + getClass().getResource("/components/ItemInteraction/item-info-modal.fxml"));
+            loader.setClassLoader(getClass().getClassLoader());
             Parent root = loader.load();
             ItemInfoController controller = loader.getController();
 
@@ -232,7 +243,6 @@ public class CardItemController {
             stage.initModality(Modality.APPLICATION_MODAL);
 
             stage.show();
-
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -260,6 +270,7 @@ public class CardItemController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/components/ItemInteraction/item-edit-modal.fxml")
             );
+            loader.setClassLoader(getClass().getClassLoader());
             Parent root = loader.load();
             ItemEditController controller = loader.getController();
 
@@ -285,6 +296,7 @@ public class CardItemController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/components/ItemInteraction/item-edit-modal.fxml")
             );
+            loader.setClassLoader(getClass().getClassLoader());
             Parent root = loader.load();
             ItemEditController controller = loader.getController();
 
@@ -299,8 +311,7 @@ public class CardItemController {
             stage.initModality(Modality.APPLICATION_MODAL);
             // stage.setResizable(false);
 
-            stage.showAndWait(); // Wait until closed
-
+            stage.show();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -313,6 +324,7 @@ public class CardItemController {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/components/ItemInteraction/item-delete-modal.fxml")
             );
+            loader.setClassLoader(getClass().getClassLoader());
             Parent root = loader.load();
             ItemDeleteController controller = loader.getController();
 
@@ -327,8 +339,7 @@ public class CardItemController {
             // stage.initOwner(deleteButton.getScene().getWindow()); // Lock parent window
             stage.setResizable(false);
 
-            stage.showAndWait(); // Wait until closed
-
+            stage.show();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -358,13 +369,13 @@ public class CardItemController {
 
     private boolean isServiceCompleted(ServiceType serviceType) {
         return switch (serviceType) {
-            case FUEL             -> item.getFuel().getCompletedAt() != null;
-            case CATERING         -> item.getCatering().stream().allMatch(c -> c.getCompletedAt() != null);
-            case GPU              -> item.getGpu().getCompletedAt() != null;
-            case LAVATORY         -> item.getLavatory().getCompletedAt() != null;
-            case POTABLE_WATER    -> item.getPotableWater().getCompletedAt() != null;
+            case FUEL -> item.getFuel().getCompletedAt() != null;
+            case CATERING -> item.getCatering().stream().allMatch(c -> c.getCompletedAt() != null);
+            case GPU -> item.getGpu().getCompletedAt() != null;
+            case LAVATORY -> item.getLavatory().getCompletedAt() != null;
+            case POTABLE_WATER -> item.getPotableWater().getCompletedAt() != null;
             case WINDSHIELD_CLEANING -> item.getWindshieldCleaning().getCompletedAt() != null;
-            case OIL_SERVICE      -> item.getOilService().getCompletedAt() != null;
+            case OIL_SERVICE -> item.getOilService().getCompletedAt() != null;
         };
     }
 

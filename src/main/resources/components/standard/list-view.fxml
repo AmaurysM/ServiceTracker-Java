@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.*?>
-
-<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.ListViewController" fx:id="mainScrollPane" fitToWidth="true" hbarPolicy="NEVER" styleClass="scroll-pane" vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="110">
-    <VBox fx:id="mainVBox" managed="false" spacing="2" style="-fx-padding: 10 0 0 0;" visible="false" />
+<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.ListViewController"
+            fx:id="mainScrollPane" fitToWidth="true" hbarPolicy="NEVER" styleClass="scroll-pane" vbarPolicy="AS_NEEDED"
+            AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="110">
+    <VBox fx:id="mainVBox" managed="false" spacing="2" style="-fx-padding: 10 0 0 0;" visible="false"/>
 </ScrollPane>

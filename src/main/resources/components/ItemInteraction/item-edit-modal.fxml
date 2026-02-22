@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <!--
   item-edit-modal.fxml
   Mirrors Next.js EditItemComponent: tab bar + scrollable config area
   Controller: ItemEditController
 -->
 
-<StackPane fx:id="rootPane" style="-fx-background-color: white;" stylesheets="@../item-modal.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemEditController">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<StackPane fx:id="rootPane" style="-fx-background-color: white;" stylesheets="@../item-modal.css"
+           xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemEditController">
 
-    <VBox fx:id="modalCard" maxWidth="1.7976931348623157E308" styleClass="modal-card-window" StackPane.alignment="TOP_LEFT" VBox.vgrow="ALWAYS">
+    <VBox fx:id="modalCard" maxWidth="1.7976931348623157E308" styleClass="modal-card-window"
+          StackPane.alignment="TOP_LEFT" VBox.vgrow="ALWAYS">
 
         <!-- ─── HEADER ─────────────────────────────────────────────────── -->
         <HBox styleClass="modal-header-navy">
-            <Label styleClass="modal-header-text" text="Edit Item" HBox.hgrow="ALWAYS" />
-            <Label fx:id="tailPreviewLabel" styleClass="modal-tail-badge" text="Tail: —" />
+            <Label styleClass="modal-header-text" text="Edit Item" HBox.hgrow="ALWAYS"/>
+            <Label fx:id="tailPreviewLabel" styleClass="modal-tail-badge" text="Tail: —"/>
         </HBox>
 
         <!-- ─── SERVICE TAB BAR ────────────────────────────────────────── -->
-        <ScrollPane fitToHeight="true" hbarPolicy="AS_NEEDED" prefHeight="42" styleClass="tab-scroll" vbarPolicy="NEVER">
-            <HBox fx:id="tabBar" styleClass="edit-tab-bar" />
+        <ScrollPane fitToHeight="true" hbarPolicy="AS_NEEDED" prefHeight="42" styleClass="tab-scroll"
+                    vbarPolicy="NEVER">
+            <HBox fx:id="tabBar" styleClass="edit-tab-bar"/>
         </ScrollPane>
 
         <!-- ─── CONTENT AREA ───────────────────────────────────────────── -->
@@ -32,28 +35,36 @@
             <VBox fx:id="basicPane" styleClass="tab-content-pane">
                 <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="modal-scroll" VBox.vgrow="ALWAYS">
                     <VBox spacing="16" styleClass="modal-body">
-                        <padding><Insets bottom="24" left="24" right="24" top="24" /></padding>
-                        <Label styleClass="section-heading" text="Basic Information" />
+                        <padding>
+                            <Insets bottom="24" left="24" right="24" top="24"/>
+                        </padding>
+                        <Label styleClass="section-heading" text="Basic Information"/>
 
                         <HBox alignment="CENTER_LEFT" spacing="12" styleClass="field-row">
-                            <Label minWidth="160" styleClass="field-label" text="Tail Number *" />
-                            <TextField fx:id="tailField" maxWidth="1.7976931348623157E308" promptText="e.g. N12345" styleClass="field-input" HBox.hgrow="ALWAYS" />
+                            <Label minWidth="160" styleClass="field-label" text="Tail Number *"/>
+                            <TextField fx:id="tailField" maxWidth="1.7976931348623157E308" promptText="e.g. N12345"
+                                       styleClass="field-input" HBox.hgrow="ALWAYS"/>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="12" styleClass="field-row">
-                            <Label minWidth="160" styleClass="field-label" text="Arrival" />
-                            <DatePicker fx:id="arrivalDatePicker" maxWidth="1.7976931348623157E308" styleClass="field-datepicker" HBox.hgrow="ALWAYS" />
-                            <Label text="  " />
-                            <TextField fx:id="arrivalTimeField" prefWidth="80" promptText="HH:mm" styleClass="field-input" />
+                            <Label minWidth="160" styleClass="field-label" text="Arrival"/>
+                            <DatePicker fx:id="arrivalDatePicker" maxWidth="1.7976931348623157E308"
+                                        styleClass="field-datepicker" HBox.hgrow="ALWAYS"/>
+                            <Label text="  "/>
+                            <TextField fx:id="arrivalTimeField" prefWidth="80" promptText="HH:mm"
+                                       styleClass="field-input"/>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="12" styleClass="field-row">
-                            <Label minWidth="160" styleClass="field-label" text="Departure" />
-                            <DatePicker fx:id="departureDatePicker" maxWidth="1.7976931348623157E308" styleClass="field-datepicker" HBox.hgrow="ALWAYS" />
-                            <Label text="  " />
-                            <TextField fx:id="departureTimeField" prefWidth="80" promptText="HH:mm" styleClass="field-input" />
+                            <Label minWidth="160" styleClass="field-label" text="Departure"/>
+                            <DatePicker fx:id="departureDatePicker" maxWidth="1.7976931348623157E308"
+                                        styleClass="field-datepicker" HBox.hgrow="ALWAYS"/>
+                            <Label text="  "/>
+                            <TextField fx:id="departureTimeField" prefWidth="80" promptText="HH:mm"
+                                       styleClass="field-input"/>
                         </HBox>
                         <HBox alignment="TOP_LEFT" spacing="12" styleClass="field-row">
-                            <Label minWidth="160" styleClass="field-label" text="Description" />
-                            <TextArea fx:id="descriptionField" maxWidth="1.7976931348623157E308" prefRowCount="4" promptText="Optional notes…" styleClass="field-textarea" HBox.hgrow="ALWAYS" />
+                            <Label minWidth="160" styleClass="field-label" text="Description"/>
+                            <TextArea fx:id="descriptionField" maxWidth="1.7976931348623157E308" prefRowCount="4"
+                                      promptText="Optional notes…" styleClass="field-textarea" HBox.hgrow="ALWAYS"/>
                         </HBox>
                     </VBox>
                 </ScrollPane>
@@ -61,9 +72,12 @@
 
             <!-- Service config pane (swapped by controller) -->
             <StackPane fx:id="servicePane" managed="false" styleClass="tab-content-pane" visible="false">
-                <ScrollPane fx:id="serviceScroll" fitToWidth="true" hbarPolicy="NEVER" styleClass="modal-scroll" VBox.vgrow="ALWAYS">
+                <ScrollPane fx:id="serviceScroll" fitToWidth="true" hbarPolicy="NEVER" styleClass="modal-scroll"
+                            VBox.vgrow="ALWAYS">
                     <VBox fx:id="serviceFormBox" spacing="16" styleClass="modal-body">
-                        <padding><Insets bottom="24" left="24" right="24" top="0" /></padding>
+                        <padding>
+                            <Insets bottom="24" left="24" right="24" top="0"/>
+                        </padding>
                     </VBox>
                 </ScrollPane>
             </StackPane>
@@ -72,8 +86,10 @@
 
         <!-- ─── FOOTER ─────────────────────────────────────────────────── -->
         <HBox styleClass="modal-footer">
-            <Button maxWidth="1.7976931348623157E308" onAction="#onCancel" styleClass="footer-btn,btn-secondary" text="Cancel" HBox.hgrow="ALWAYS" />
-            <Button maxWidth="1.7976931348623157E308" onAction="#onSave" styleClass="footer-btn,btn-primary" text="Update Item" HBox.hgrow="ALWAYS" />
+            <Button maxWidth="1.7976931348623157E308" onAction="#onCancel" styleClass="footer-btn,btn-secondary"
+                    text="Cancel" HBox.hgrow="ALWAYS"/>
+            <Button maxWidth="1.7976931348623157E308" onAction="#onSave" styleClass="footer-btn,btn-primary"
+                    text="Update Item" HBox.hgrow="ALWAYS"/>
         </HBox>
 
     </VBox>

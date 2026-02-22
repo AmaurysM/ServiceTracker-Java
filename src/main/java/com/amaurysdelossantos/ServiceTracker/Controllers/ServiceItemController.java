@@ -20,7 +20,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -28,7 +31,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import lombok.Setter;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -36,40 +39,65 @@ import java.time.format.DateTimeFormatter;
 public class ServiceItemController {
 
     // Card view nodes
-    @FXML private HBox   headerBox;
-    @FXML private HBox   footerBox;
-    @FXML private Label  tailLabel;
-    @FXML private HBox   actionButtonsBox;
-    @FXML private HBox   serviceIconsBox;
-    @FXML private Label  arrivalLabel;
-    @FXML private Label  departureLabel;
-    @FXML private Label  descriptionLabel;
+    @FXML
+    private HBox headerBox;
+    @FXML
+    private HBox footerBox;
+    @FXML
+    private Label tailLabel;
+    @FXML
+    private HBox actionButtonsBox;
+    @FXML
+    private HBox serviceIconsBox;
+    @FXML
+    private Label arrivalLabel;
+    @FXML
+    private Label departureLabel;
+    @FXML
+    private Label descriptionLabel;
 
     // List view nodes
-    @FXML private Region accentBar;
-    @FXML private Button doneButton;
-    @FXML private Button undoButton;
-    @FXML private Button editButton;
-    @FXML private Button deleteButton;
-    @FXML private HBox   listRow;
+    @FXML
+    private Region accentBar;
+    @FXML
+    private Button doneButton;
+    @FXML
+    private Button undoButton;
+    @FXML
+    private Button editButton;
+    @FXML
+    private Button deleteButton;
+    @FXML
+    private HBox listRow;
 
     private ServiceItem serviceItem;
 
-    /** Injected so modals can save / refresh */
-    @Setter private ServiceItemService serviceItemService;
+    /**
+     * Injected so modals can save / refresh
+     */
+    @Setter
+    private ServiceItemService serviceItemService;
 
-    /** Called when any modal makes a change that requires the parent list to reload */
-    @Setter private Runnable refreshCallback;
+    /**
+     * Called when any modal makes a change that requires the parent list to reload
+     */
+    @Setter
+    private Runnable refreshCallback;
 
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("MM/dd HH:mm").withZone(ZoneId.systemDefault());
 
 
-    private static final Duration     TRANSITION_DURATION = Duration.millis(150);
-    private static final Interpolator EASE                = Interpolator.SPLINE(0.4, 0.0, 0.2, 1.0);
+    private static final Duration TRANSITION_DURATION = Duration.millis(150);
+    private static final Interpolator EASE = Interpolator.SPLINE(0.4, 0.0, 0.2, 1.0);
 
-    private boolean isCardView() { return headerBox != null; }
-    private boolean isListView() { return accentBar  != null; }
+    private boolean isCardView() {
+        return headerBox != null;
+    }
+
+    private boolean isListView() {
+        return accentBar != null;
+    }
 
     public void setServiceItem(ServiceItem item) {
         this.serviceItem = item;
@@ -82,8 +110,8 @@ public class ServiceItemController {
     }
 
     private void populate() {
-        if (isCardView())       populateCard();
-        else if (isListView())  populateList();
+        if (isCardView()) populateCard();
+        else if (isListView()) populateList();
 
     }
 
@@ -101,26 +129,26 @@ public class ServiceItemController {
 
         actionButtonsBox.getChildren().clear();
         if (areAllServicesCompleted() && !isDone)
-            actionButtonsBox.getChildren().add(makeActionButton("DONE",  "#16a34a", "#15803d", "0",   this::openDone));
+            actionButtonsBox.getChildren().add(makeActionButton("DONE", "#16a34a", "#15803d", "0", this::openDone));
         if (isDone)
-            actionButtonsBox.getChildren().add(makeActionButton("UNDO",  "#ca8a04", "#a16207", "0",   this::openUndo));
+            actionButtonsBox.getChildren().add(makeActionButton("UNDO", "#ca8a04", "#a16207", "0", this::openUndo));
 
         // EDIT button
-        actionButtonsBox.getChildren().add(makeActionButton("EDIT",  "#2563eb", "#1d4ed8", "0",   this::openEditModal));
+        actionButtonsBox.getChildren().add(makeActionButton("EDIT", "#2563eb", "#1d4ed8", "0", this::openEditModal));
         // DEL button
-        actionButtonsBox.getChildren().add(makeActionButton("DEL",   "#dc2626", "#b91c1c", "0 6 0 0", this::openDeleteModal));
+        actionButtonsBox.getChildren().add(makeActionButton("DEL", "#dc2626", "#b91c1c", "0 6 0 0", this::openDeleteModal));
 
         populateServiceIcons(56.0);
 
-        boolean hasArrival     = serviceItem.getArrival()     != null;
-        boolean hasDeparture   = serviceItem.getDeparture()   != null;
+        boolean hasArrival = serviceItem.getArrival() != null;
+        boolean hasDeparture = serviceItem.getDeparture() != null;
         boolean hasDescription = serviceItem.getDescription() != null && !serviceItem.getDescription().isBlank();
-        boolean hasFooter      = hasArrival || hasDeparture || hasDescription;
+        boolean hasFooter = hasArrival || hasDeparture || hasDescription;
 
         footerBox.setVisible(hasFooter);
         footerBox.setManaged(hasFooter);
 
-        arrivalLabel.setText(hasArrival    ? "↓ " + FORMATTER.format(serviceItem.getArrival())   : "");
+        arrivalLabel.setText(hasArrival ? "↓ " + FORMATTER.format(serviceItem.getArrival()) : "");
         departureLabel.setText(hasDeparture ? "↑ " + FORMATTER.format(serviceItem.getDeparture()) : "");
         descriptionLabel.setText(hasDescription ? serviceItem.getDescription() : "");
     }
@@ -136,25 +164,27 @@ public class ServiceItemController {
         tailLabel.setText(serviceItem.getTail() != null ? serviceItem.getTail() : "—");
         tailLabel.setOnMouseClicked(e -> openInfoModal());
 
-        arrivalLabel.setText(serviceItem.getArrival()   != null ? "↓ " + FORMATTER.format(serviceItem.getArrival())   : "");
+        arrivalLabel.setText(serviceItem.getArrival() != null ? "↓ " + FORMATTER.format(serviceItem.getArrival()) : "");
         departureLabel.setText(serviceItem.getDeparture() != null ? "↑ " + FORMATTER.format(serviceItem.getDeparture()) : "");
         populateServiceIcons(40.0);
 
         boolean showDone = areAllServicesCompleted() && !isDone;
         boolean showUndo = isDone;
-        doneButton.setVisible(showDone);   doneButton.setManaged(showDone);
-        undoButton.setVisible(showUndo);   undoButton.setManaged(showUndo);
+        doneButton.setVisible(showDone);
+        doneButton.setManaged(showDone);
+        undoButton.setVisible(showUndo);
+        undoButton.setManaged(showUndo);
         editButton.setVisible(true);
         deleteButton.setVisible(true);
 
-        attachButtonAnimation(doneButton,   "#16a34a", "#15803d");
-        attachButtonAnimation(undoButton,   "#ca8a04", "#a16207");
-        attachButtonAnimation(editButton,   "#2563eb", "#1d4ed8");
+        attachButtonAnimation(doneButton, "#16a34a", "#15803d");
+        attachButtonAnimation(undoButton, "#ca8a04", "#a16207");
+        attachButtonAnimation(editButton, "#2563eb", "#1d4ed8");
         attachButtonAnimation(deleteButton, "#dc2626", "#b91c1c");
 
-        doneButton.setOnAction(e   -> openDone());
-        undoButton.setOnAction(e   -> openUndo());
-        editButton.setOnAction(e   -> openEditModal());
+        doneButton.setOnAction(e -> openDone());
+        undoButton.setOnAction(e -> openUndo());
+        editButton.setOnAction(e -> openEditModal());
         deleteButton.setOnAction(e -> openDeleteModal());
     }
 
@@ -172,6 +202,7 @@ public class ServiceItemController {
                         ctrl.setOnEditCallback(ServiceItemController.this::openEditModal);
                         ctrl.setOnEditServiceCallback(ServiceItemController.this::openEditModalWithDestination);
                     }
+
                     public void populate(FXMLLoader loader) {
                         ((ItemInfoController) loader.getController()).populate();
                     }
@@ -189,6 +220,7 @@ public class ServiceItemController {
                             if (refreshCallback != null) refreshCallback.run();
                         });
                     }
+
                     public void populate(FXMLLoader loader) {
                         ((ItemEditController) loader.getController()).populate();
                     }
@@ -207,6 +239,7 @@ public class ServiceItemController {
                             if (refreshCallback != null) refreshCallback.run();
                         });
                     }
+
                     public void populate(FXMLLoader loader) {
                         ((ItemEditController) loader.getController()).populate();
                     }
@@ -224,6 +257,7 @@ public class ServiceItemController {
                             if (refreshCallback != null) refreshCallback.run();
                         });
                     }
+
                     public void populate(FXMLLoader loader) {
                         ((ItemDeleteController) loader.getController()).populate();
                     }
@@ -239,10 +273,15 @@ public class ServiceItemController {
             Thread t = new Thread(() -> {
                 try {
                     serviceItemService.saveService(serviceItem);
-                    Platform.runLater(() -> { if (refreshCallback != null) refreshCallback.run(); });
-                } catch (Exception e) { e.printStackTrace(); }
+                    Platform.runLater(() -> {
+                        if (refreshCallback != null) refreshCallback.run();
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             });
-            t.setDaemon(true); t.start();
+            t.setDaemon(true);
+            t.start();
         }
     }
 
@@ -253,10 +292,15 @@ public class ServiceItemController {
             Thread t = new Thread(() -> {
                 try {
                     serviceItemService.saveService(serviceItem);
-                    Platform.runLater(() -> { if (refreshCallback != null) refreshCallback.run(); });
-                } catch (Exception e) { e.printStackTrace(); }
+                    Platform.runLater(() -> {
+                        if (refreshCallback != null) refreshCallback.run();
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             });
-            t.setDaemon(true); t.start();
+            t.setDaemon(true);
+            t.start();
         }
     }
 
@@ -264,11 +308,18 @@ public class ServiceItemController {
     // Generic modal opener
     // ─────────────────────────────────────────────────────────
 
-    /** Two-phase configurator: configure() injects dependencies, populate() hydrates the UI */
+    /**
+     * Two-phase configurator: configure() injects dependencies, populate() hydrates the UI
+     */
     interface ControllerConfigurator {
-        /** Inject services, callbacks, and item reference — called before show() */
+        /**
+         * Inject services, callbacks, and item reference — called before show()
+         */
         void configure(FXMLLoader loader) throws Exception;
-        /** Fill all UI nodes with data — called after the window is shown and laid out */
+
+        /**
+         * Fill all UI nodes with data — called after the window is shown and laid out
+         */
         void populate(FXMLLoader loader) throws Exception;
     }
 
@@ -278,8 +329,11 @@ public class ServiceItemController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             loader.setControllerFactory(cls -> {
-                try { return cls.getDeclaredConstructor().newInstance(); }
-                catch (Exception ex) { throw new RuntimeException(ex); }
+                try {
+                    return cls.getDeclaredConstructor().newInstance();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             });
 
             Parent root = loader.load();
@@ -360,15 +414,16 @@ public class ServiceItemController {
                                        boolean completed, double tileHeight) {
         StackPane tile = new StackPane();
         HBox.setHgrow(tile, Priority.ALWAYS);
-        tile.setMinHeight(tileHeight); tile.setMaxHeight(tileHeight);
+        tile.setMinHeight(tileHeight);
+        tile.setMaxHeight(tileHeight);
 
-        String bgAlpha     = hexWithAlpha(awtColor, completed ? 0.06f : 0.10f);
+        String bgAlpha = hexWithAlpha(awtColor, completed ? 0.06f : 0.10f);
         String borderColor = hexWithAlpha(awtColor, completed ? 0.40f : 0.33f);
         tile.setStyle("-fx-background-color:" + bgAlpha + "; -fx-border-color:" + borderColor
                 + "; -fx-border-width:1.5; -fx-border-style:" + (completed ? "dashed" : "solid") + ";");
 
         double iconSize = Math.min(22, tileHeight * 0.4);
-        int renderSize  = (int) (iconSize * 2);
+        int renderSize = (int) (iconSize * 2);
 
         BufferedImage img;
         try {
@@ -383,8 +438,10 @@ public class ServiceItemController {
         }
 
         ImageView iv = new ImageView(SwingFXUtils.toFXImage(img, null));
-        iv.setFitWidth(iconSize); iv.setFitHeight(iconSize);
-        iv.setPreserveRatio(true); iv.setSmooth(true);
+        iv.setFitWidth(iconSize);
+        iv.setFitHeight(iconSize);
+        iv.setPreserveRatio(true);
+        iv.setSmooth(true);
         iv.setOpacity(completed ? 0.5 : 1.0);
         tile.getChildren().add(iv);
 
@@ -396,7 +453,7 @@ public class ServiceItemController {
             tile.getChildren().add(strike);
         }
 
-        Timeline[] hover = { null };
+        Timeline[] hover = {null};
         tile.setOnMouseEntered(e -> {
             if (hover[0] != null) hover[0].stop();
             hover[0] = new Timeline(new KeyFrame(TRANSITION_DURATION,
@@ -430,7 +487,7 @@ public class ServiceItemController {
                 + "-fx-min-height:48; -fx-min-width:42; -fx-padding:0 12;";
         btn.setStyle("-fx-background-color:" + bg + "; " + base);
 
-        Timeline[] hover = { null };
+        Timeline[] hover = {null};
         btn.setOnMouseEntered(e -> {
             if (hover[0] != null) hover[0].stop();
             btn.setStyle("-fx-background-color:" + hoverBg + "; " + base);
@@ -453,7 +510,7 @@ public class ServiceItemController {
 
     private void attachButtonAnimation(Button btn, String bg, String hoverBg) {
         String base = btn.getStyle();
-        Timeline[] hover = { null };
+        Timeline[] hover = {null};
         btn.setOnMouseEntered(e -> {
             if (hover[0] != null) hover[0].stop();
             btn.setStyle(base + "-fx-background-color:" + hoverBg + ";");
@@ -478,13 +535,13 @@ public class ServiceItemController {
 
     private boolean isServiceActive(ServiceType t) {
         return switch (t) {
-            case FUEL                -> serviceItem.getFuel()               != null;
-            case CATERING            -> serviceItem.getCatering()           != null && !serviceItem.getCatering().isEmpty();
-            case GPU                 -> serviceItem.getGpu()                != null;
-            case LAVATORY            -> serviceItem.getLavatory()           != null;
-            case POTABLE_WATER       -> serviceItem.getPotableWater()       != null;
+            case FUEL -> serviceItem.getFuel() != null;
+            case CATERING -> serviceItem.getCatering() != null && !serviceItem.getCatering().isEmpty();
+            case GPU -> serviceItem.getGpu() != null;
+            case LAVATORY -> serviceItem.getLavatory() != null;
+            case POTABLE_WATER -> serviceItem.getPotableWater() != null;
             case WINDSHIELD_CLEANING -> serviceItem.getWindshieldCleaning() != null;
-            case OIL_SERVICE         -> serviceItem.getOilService()         != null;
+            case OIL_SERVICE -> serviceItem.getOilService() != null;
         };
     }
 
@@ -495,16 +552,22 @@ public class ServiceItemController {
                     && serviceItem.getCatering().stream().allMatch(c -> c.getCompletedAt() != null);
             case GPU -> serviceItem.getGpu() != null && serviceItem.getGpu().getCompletedAt() != null;
             case LAVATORY -> serviceItem.getLavatory() != null && serviceItem.getLavatory().getCompletedAt() != null;
-            case POTABLE_WATER -> serviceItem.getPotableWater() != null && serviceItem.getPotableWater().getCompletedAt() != null;
-            case WINDSHIELD_CLEANING -> serviceItem.getWindshieldCleaning() != null && serviceItem.getWindshieldCleaning().getCompletedAt() != null;
-            case OIL_SERVICE -> serviceItem.getOilService() != null && serviceItem.getOilService().getCompletedAt() != null;
+            case POTABLE_WATER ->
+                    serviceItem.getPotableWater() != null && serviceItem.getPotableWater().getCompletedAt() != null;
+            case WINDSHIELD_CLEANING ->
+                    serviceItem.getWindshieldCleaning() != null && serviceItem.getWindshieldCleaning().getCompletedAt() != null;
+            case OIL_SERVICE ->
+                    serviceItem.getOilService() != null && serviceItem.getOilService().getCompletedAt() != null;
         };
     }
 
     private boolean areAllServicesCompleted() {
         boolean anyActive = false;
         for (ServiceType t : ServiceType.values()) {
-            if (isServiceActive(t)) { anyActive = true; if (!isServiceCompleted(t)) return false; }
+            if (isServiceActive(t)) {
+                anyActive = true;
+                if (!isServiceCompleted(t)) return false;
+            }
         }
         return anyActive;
     }
@@ -520,10 +583,13 @@ public class ServiceItemController {
     private BufferedImage tintImage(BufferedImage src, java.awt.Color tint) {
         int w = src.getWidth(), h = src.getHeight();
         BufferedImage out = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        for (int y = 0; y < h; y++) for (int x = 0; x < w; x++) {
-            int argb = src.getRGB(x, y); int a = (argb >> 24) & 0xff;
-            if (a > 0) out.setRGB(x, y, (a << 24) | (tint.getRed() << 16) | (tint.getGreen() << 8) | tint.getBlue());
-        }
+        for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++) {
+                int argb = src.getRGB(x, y);
+                int a = (argb >> 24) & 0xff;
+                if (a > 0)
+                    out.setRGB(x, y, (a << 24) | (tint.getRed() << 16) | (tint.getGreen() << 8) | tint.getBlue());
+            }
         return out;
     }
 }
