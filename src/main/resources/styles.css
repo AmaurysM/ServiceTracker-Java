@@ -1,0 +1,466 @@
+.root {
+    -fx-background-color: #f8fafc;
+    -fx-font-family: "Roboto";
+
+}
+
+.banner {
+    -fx-pref-height: 30px;
+    -fx-background-color: #0F172B;
+    -fx-padding: 0;
+}
+
+.user-initials {
+    -fx-background-color: #314158;
+    -fx-pref-width: 48px;
+}
+
+.primary-btn {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-padding: 0 16px;
+}
+
+.primary-btn:hover {
+    -fx-background-color: #2563eb;
+}
+
+/* Top section container */
+.top-container {
+    -fx-background-color: white;
+}
+
+/* Inputs */
+.input {
+    -fx-background-color: #f1f5f9;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-padding: 8 12;
+    -fx-border-width: 1;
+    -fx-border-color: #D3D6DD;
+}
+
+.input:focused {
+    -fx-border-color: #3b82f6;
+    -fx-border-width: 1;
+}
+
+.combo-filter {
+    -fx-background-color: white;
+    -fx-background-radius: 4;
+    -fx-border-color: #D3D6DD;
+    -fx-border-radius: 4;
+    -fx-border-width: 1;
+    -fx-padding: 4 8 4 8;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+}
+
+.combo-filter:focused,
+.combo-filter:showing {
+    -fx-border-color: #3b82f6;
+    -fx-background-color: #ffffff;
+}
+
+.combo-filter:hover {
+    -fx-background-color: #f1f5f9;
+    -fx-border-color: #94a3b8;
+}
+
+.combo-filter .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1e293b;
+    -fx-padding: 0;
+}
+
+.combo-filter .combo-box-popup .list-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #D3D6DD;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+}
+
+.combo-filter .combo-box-popup .list-cell {
+    -fx-padding: 8 12 8 12;
+    -fx-text-fill: #334155;
+    -fx-font-size: 13px;
+    -fx-background-color: transparent;
+}
+
+.combo-filter .combo-box-popup .list-cell:hover {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #1e293b;
+}
+
+.combo-filter .combo-box-popup .list-cell:selected {
+    -fx-background-color: #0f172a;
+    -fx-text-fill: white;
+}
+
+.combo-filter .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 4 0 0;
+}
+
+.combo-filter .arrow {
+    -fx-background-color: #94a3b8;
+}
+
+.combo-filter:focused .arrow,
+.combo-filter:showing .arrow {
+    -fx-background-color: #3b82f6;
+}
+
+/* Toggle buttons */
+.toggle-active{
+    -fx-background-color: white;
+    -fx-background-radius: 4 0 0 4;
+    -fx-border-radius: 4 0 0 4;
+    -fx-border-width: 1 0 1 1;
+    -fx-border-color: #D3D6DD;
+    -fx-background-radius: 4 0 0 4;
+    -fx-padding: 6 14;
+}
+
+.toggle-done{
+    -fx-background-color: white;
+    -fx-background-radius: 4 0 0 4;
+    -fx-border-radius: 0 4 4 0;
+    -fx-border-width: 1 1 1 0;
+    -fx-border-color: #D3D6DD;
+    -fx-background-radius: 0 4 4 0;
+    -fx-padding: 6 14;
+}
+
+.toggle-active:selected {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+}
+
+.toggle-done:selected {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+}
+
+.toggle-card{
+    -fx-background-color: white;
+    -fx-background-radius: 4 0 0 4;
+    -fx-border-radius: 4 0 0 4;
+    -fx-border-width: 1 0 1 1;
+    -fx-border-color: #D3D6DD;
+    -fx-background-radius: 4 0 0 4;
+    -fx-padding: 6 14;
+}
+
+.toggle-card:selected {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+}
+
+.toggle-map{
+    -fx-background-color: white;
+    -fx-background-radius: 4 0 0 4;
+    -fx-border-radius: 0 4 4 0;
+    -fx-border-width: 1 1 1 0;
+    -fx-border-color: #D3D6DD;
+    -fx-background-radius: 0 4 4 0;
+    -fx-padding: 6 14;
+}
+
+.toggle-map:selected {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+}
+
+.toggle-list{
+    -fx-background-color: white;
+    -fx-background-radius: 0 4 4 0;
+    -fx-border-radius: 0 4 4 0;
+    -fx-border-width: 1 1 1 0;
+    -fx-border-color: #D3D6DD;
+    -fx-padding: 6 14;
+}
+
+.toggle-list:selected {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+}
+
+
+
+
+
+/* Content area */
+.content-area {
+    -fx-padding: 0;
+}
+
+/* ── Custom Scrollbar (matches React CustomScrollbar component) ── */
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .scroll-bar:vertical {
+    -fx-pref-width: 8px;
+    -fx-min-width: 8px;
+    -fx-max-width: 8px;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Hide the increment/decrement arrow buttons entirely */
+.scroll-pane > .scroll-bar:vertical > .increment-button,
+.scroll-pane > .scroll-bar:vertical > .decrement-button {
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane > .scroll-bar:vertical > .increment-arrow,
+.scroll-pane > .scroll-bar:vertical > .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+/* The track — dashed line down the center, matching the React dotted track */
+
+
+.scroll-pane > .scroll-bar:vertical > .track-background {
+    -fx-background-color: transparent;
+}
+
+/* The thumb — flat rectangle, blue (#3b82f6), no border-radius */
+.scroll-pane > .scroll-bar:vertical > .thumb {
+    -fx-background-color: #3b82f6;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-pref-width: 8px;
+    -fx-min-width: 8px;
+    -fx-cursor: hand;
+}
+
+/* Dragging/pressed state — dark navy (#0f172b), matching draggingColor */
+.scroll-pane > .scroll-bar:vertical > .thumb:pressed {
+    -fx-background-color: #0f172b;
+}
+
+/* Hover state — slightly lighter to hint interactivity */
+.scroll-pane > .scroll-bar:vertical > .thumb:hover {
+    -fx-background-color: #2563eb;
+}
+
+/* ── List View ─────────────────────────────────────────────── */
+
+.list-row {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #e5e7eb transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cursor: hand;
+}
+
+.list-row:hover {
+    -fx-background-color: #f9fafb;
+}
+
+.list-accent-bar {
+    -fx-background-color: #0f172b;
+}
+
+.list-tail {
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-text-fill: #0f172b;
+    -fx-padding: 0 0 0 8;
+}
+
+.list-time {
+    -fx-font-size: 11px;
+    -fx-text-fill: #374151;
+}
+
+.list-description {
+    -fx-font-size: 11px;
+    -fx-text-fill: #6b7280;
+    -fx-padding: 0 4 0 4;
+}
+
+.list-btn-done {
+    -fx-background-color: #16a34a;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+
+.list-btn-done:hover { -fx-background-color: #15803d; }
+
+.list-btn-undo {
+    -fx-background-color: #ca8a04;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+
+.list-btn-undo:hover { -fx-background-color: #a16207; }
+
+.list-btn-edit {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+.list-btn-edit:hover { -fx-background-color: #1d4ed8; }
+
+.list-btn-delete {
+    -fx-background-color: #dc2626;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+    -fx-background-radius: 0 4 4 0;
+}
+.list-btn-delete:hover { -fx-background-color: #b91c1c; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMPTY STATE  –  append these rules to your existing styles.css
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Root container ───────────────────────────────────────────────────────── */
+.empty-state-root {
+    -fx-alignment: center;
+    -fx-padding: 60 40 60 40;
+    -fx-background-color: transparent;
+}
+
+/* ── Icon area ────────────────────────────────────────────────────────────── */
+.empty-icon-container {
+    -fx-pref-width: 120;
+    -fx-pref-height: 120;
+}
+
+/* Outer animated pulse ring */
+.empty-pulse-ring {
+    -fx-fill: transparent;
+    -fx-stroke: #4A90D9;
+    -fx-stroke-width: 2;
+    -fx-opacity: 0.4;
+}
+
+/* Solid circle backdrop behind the icon */
+.empty-icon-bg {
+    -fx-fill: #1e2a3a;
+    -fx-effect: dropshadow(gaussian, rgba(74,144,217,0.25), 20, 0.4, 0, 4);
+}
+
+/* Clipboard body shape */
+.empty-svg-shape {
+    -fx-fill: transparent;
+    -fx-stroke: #4A90D9;
+    -fx-stroke-width: 1.8;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+
+/* Horizontal lines on the clipboard */
+.empty-svg-line {
+    -fx-stroke: #4A90D9;
+    -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round;
+    -fx-opacity: 0.6;
+}
+
+/* Magnifying glass background fill */
+.empty-svg-search-bg {
+    -fx-fill: #1e2a3a;
+    -fx-stroke: transparent;
+}
+
+/* Magnifying glass circle outline */
+.empty-svg-search-ring {
+    -fx-fill: transparent;
+    -fx-stroke: #F5A623;
+    -fx-stroke-width: 2;
+}
+
+/* Magnifying glass handle */
+.empty-svg-handle {
+    -fx-stroke: #F5A623;
+    -fx-stroke-width: 2.5;
+    -fx-stroke-line-cap: round;
+}
+
+/* × mark inside the magnifying glass */
+.empty-svg-x {
+    -fx-stroke: #F5A623;
+    -fx-stroke-width: 1.6;
+    -fx-stroke-line-cap: round;
+}
+
+/* ── Typography ───────────────────────────────────────────────────────────── */
+.empty-headline {
+    -fx-fill: #1E2A3A;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.empty-subtitle {
+    -fx-fill: #7a8a9a;
+    -fx-font-size: 13px;
+    -fx-text-alignment: center;
+    -fx-wrap-text: true;
+}
+
+/* ── Action buttons ───────────────────────────────────────────────────────── */
+.empty-action-btn {
+    -fx-background-color: #1e2a3a;
+    -fx-text-fill: #b0bec8;
+    -fx-border-color: #2e3f54;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.empty-action-btn:hover {
+    -fx-background-color: #253447;
+    -fx-border-color: #4A90D9;
+    -fx-text-fill: #dce8f2;
+}
+
+.empty-action-btn-primary {
+    -fx-background-color: #4A90D9;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(74,144,217,0.4), 10, 0.3, 0, 3);
+}
+
+.empty-action-btn-primary:hover {
+    -fx-background-color: #5ba3eb;
+    -fx-effect: dropshadow(gaussian, rgba(74,144,217,0.6), 14, 0.4, 0, 4);
+}

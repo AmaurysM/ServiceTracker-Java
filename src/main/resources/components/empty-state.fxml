@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.*?>
+
+<!--
+    Empty-state component shown when no service items match the current filters.
+    Drop this file at:  src/main/resources/components/empty-state.fxml
+    Pair with:          EmptyStateController.java
+    Add CSS classes to: styles.css  (see empty-state-styles.css for additions needed)
+-->
+<?import javafx.scene.Group?>
+<VBox alignment="CENTER" spacing="0" styleClass="empty-state-root"
+      maxWidth="1.7976931348623157E308" fillWidth="true"
+      HBox.hgrow="ALWAYS"
+      xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.EmptyStateController">
+
+    <padding>
+        <Insets top="60" bottom="60" left="40" right="40"/>
+    </padding>
+
+    <!-- Icon container with pulsing ring -->
+    <StackPane alignment="CENTER" styleClass="empty-icon-container">
+        <Circle fx:id="pulseRing" radius="56" styleClass="empty-pulse-ring" />
+        <Circle radius="44" styleClass="empty-icon-bg" />
+
+        <!-- Clipboard / no-results SVG path drawn with JavaFX shapes -->
+        <Group>
+            <!-- Clipboard body -->
+            <Rectangle x="-14" y="-18" width="28" height="34" arcWidth="4" arcHeight="4"
+                       styleClass="empty-svg-shape" />
+            <!-- Clip board top nub -->
+            <Rectangle x="-6" y="-22" width="12" height="8" arcWidth="3" arcHeight="3"
+                       styleClass="empty-svg-shape" />
+            <!-- Lines on clipboard -->
+            <Line startX="-8" startY="-6"  endX="8"  endY="-6"  styleClass="empty-svg-line" />
+            <Line startX="-8" startY="0"   endX="8"  endY="0"   styleClass="empty-svg-line" />
+            <Line startX="-8" startY="6"   endX="2"  endY="6"   styleClass="empty-svg-line" />
+            <!-- Magnifying glass circle -->
+            <Circle centerX="10" centerY="12" radius="7" styleClass="empty-svg-search-bg" />
+            <Circle centerX="10" centerY="12" radius="5" styleClass="empty-svg-search-ring" />
+            <!-- Magnifying glass handle -->
+            <Line startX="14" startY="16" endX="18" endY="20" styleClass="empty-svg-handle" />
+            <!-- X mark inside magnifying glass -->
+            <Line startX="8"  startY="10" endX="12" endY="14"  styleClass="empty-svg-x" />
+            <Line startX="12" startY="10" endX="8"  endY="14"  styleClass="empty-svg-x" />
+        </Group>
+    </StackPane>
+
+    <VBox.margin><Insets bottom="24"/></VBox.margin>
+
+    <!-- Headline -->
+    <Text fx:id="headlineText" styleClass="empty-headline" text="No services found">
+        <font><Font name="System Bold" size="20"/></font>
+    </Text>
+
+    <VBox.margin><Insets top="0" bottom="8"/></VBox.margin>
+
+    <!-- Sub-text -->
+    <Text fx:id="subtitleText" styleClass="empty-subtitle" textAlignment="CENTER"
+          wrappingWidth="320"
+          text="Try adjusting your search or filters to find what you're looking for.">
+        <font><Font size="13"/></font>
+    </Text>
+
+    <VBox.margin><Insets top="0" bottom="28"/></VBox.margin>
+
+<!--    &lt;!&ndash; Action buttons &ndash;&gt;-->
+<!--    <HBox spacing="10" alignment="CENTER">-->
+<!--        <Button fx:id="clearFiltersButton" styleClass="empty-action-btn" text="Clear Filters"-->
+<!--                onAction="#onClearFiltersClicked" />-->
+<!--        <Button fx:id="addNewButton" styleClass="empty-action-btn-primary" text="+ Add Service"-->
+<!--                onAction="#onAddServiceClicked" />-->
+<!--    </HBox>-->
+
+</VBox>

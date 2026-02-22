@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxWidth="Infinity" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.StandardViewController">
+   <top>
+      <AnchorPane fx:id="topControlsMainAnchor" maxWidth="1.7976931348623157E308" styleClass="controls-pane" BorderPane.alignment="CENTER">
+
+          <!-- Search Row -->
+          <TextField fx:id="searchtextField" maxWidth="1.7976931348623157E308" promptText="Search..." styleClass="input" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="10" />
+
+          <!-- Filters Row -->
+          <HBox maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="50">
+
+              <ComboBox fx:id="filterServiceChoiceBox" maxHeight="1.7976931348623157E308" prefWidth="160" styleClass="combo-filter" />
+              <ComboBox fx:id="filterTimeChoiceBox" maxHeight="1.7976931348623157E308" prefWidth="160" styleClass="combo-filter" />
+
+              <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                  <ToggleButton fx:id="activeServiceToggleButton" maxWidth="1.7976931348623157E308" styleClass="toggle-active" text="Active" HBox.hgrow="ALWAYS">
+                      <toggleGroup>
+                     <ToggleGroup fx:id="statusGroup" />
+                  </toggleGroup>
+                  </ToggleButton>
+                  <ToggleButton fx:id="activeCompletedToggleButton" maxWidth="1.7976931348623157E308" styleClass="toggle-done" text="Done" textAlignment="CENTER" toggleGroup="$statusGroup" HBox.hgrow="ALWAYS" />
+              </HBox>
+
+              <HBox HBox.hgrow="ALWAYS">
+                  <ToggleButton fx:id="CardViewToggleButton" maxWidth="1.7976931348623157E308" styleClass="toggle-card" text="Cards" HBox.hgrow="ALWAYS">
+                      <toggleGroup>
+                     <ToggleGroup fx:id="viewGroup" />
+                  </toggleGroup>
+                  </ToggleButton>
+                  <ToggleButton fx:id="ListViewToggleButton" maxWidth="1.7976931348623157E308" styleClass="toggle-list" text="List" toggleGroup="$viewGroup" HBox.hgrow="ALWAYS" />
+              </HBox>
+
+          </HBox>
+
+          <HBox maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="81.0">
+              <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+              </padding>
+              <Text fx:id="ammountOfItemsInViewText" strokeType="OUTSIDE" strokeWidth="0.0">
+                  <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+              </Text>
+          </HBox>
+
+      </AnchorPane>
+   </top>
+   <center>
+       <AnchorPane fx:id="centerPane" styleClass="content-area" />
+   </center>
+</BorderPane>

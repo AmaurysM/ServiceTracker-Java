@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--
+  item-info-modal.fxml
+  Mirrors Next.js ItemInfoModal: header, flight info, services list, timestamps
+  Controller: ItemInfoController
+-->
+<StackPane fx:id="rootPane"
+           style="-fx-background-color: white;"
+           stylesheets="@../item-modal.css"
+           xmlns="http://javafx.com/javafx/17.0.12"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemInfoController">
+
+    <VBox fx:id="modalCard" styleClass="modal-card-window" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" StackPane.alignment="TOP_LEFT">
+
+        <!-- ─── HEADER ─────────────────────────────────────────────────── -->
+        <HBox styleClass="modal-header-navy">
+            <Label fx:id="tailLabel" styleClass="modal-tail-label" text="—" HBox.hgrow="ALWAYS" />
+        </HBox>
+
+        <!-- ─── BODY (scrollable) ──────────────────────────────────────── -->
+        <ScrollPane fx:id="bodyScroll" fitToWidth="true" hbarPolicy="NEVER"
+                    styleClass="modal-scroll" VBox.vgrow="ALWAYS">
+            <VBox spacing="24" styleClass="modal-body">
+                <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+                <!-- Flight Information -->
+                <VBox spacing="10">
+                    <Label styleClass="section-heading" text="Flight Information" />
+                    <VBox fx:id="flightInfoBox" styleClass="info-box" spacing="0" />
+                </VBox>
+
+                <!-- Required Services -->
+                <VBox spacing="10">
+                    <Label styleClass="section-heading" text="Required Services" />
+                    <VBox fx:id="servicesBox" spacing="6" />
+                </VBox>
+
+                <!-- Timestamps -->
+                <VBox spacing="10">
+                    <Label styleClass="section-heading" text="Timestamps" />
+                    <VBox fx:id="timestampsBox" styleClass="info-box" spacing="0" />
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+
+        <!-- ─── FOOTER ─────────────────────────────────────────────────── -->
+        <HBox styleClass="modal-footer">
+            <Button fx:id="editBtn" text="Edit" styleClass="footer-btn,btn-secondary"
+                    maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+            <Button fx:id="closeBtn" text="Close" styleClass="footer-btn,btn-primary"
+                    maxWidth="1.7976931348623157E308"  HBox.hgrow="ALWAYS" />
+        </HBox>
+
+    </VBox>
+</StackPane>

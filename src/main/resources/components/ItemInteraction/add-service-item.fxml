@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--
+  add-service-item.fxml
+  3-step wizard: Basic Info → Select Services → Configure Services
+  Controller: AddServiceItemController
+-->
+
+<StackPane fx:id="rootPane" prefHeight="580.0" prefWidth="760.0" styleClass="modal-overlay" stylesheets="@../add-service-item.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.AddServiceItemController">
+
+    <VBox fx:id="wizardCard" maxHeight="580" maxWidth="760" styleClass="wizard-card">
+
+        <!-- ─── HEADER ──────────────────────────────────────────────────── -->
+        <HBox alignment="CENTER_LEFT" styleClass="wizard-header">
+            <Label fx:id="headerStepLabel" styleClass="header-step-label" text="Add New Item – Basic Information" HBox.hgrow="ALWAYS" />
+         <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+            <Label fx:id="tailPreviewLabel" styleClass="tail-preview" text="Tail: —" />
+        </HBox>
+
+        <!-- ─── STEP TABS ────────────────────────────────────────────────── -->
+        <HBox styleClass="step-tabs">
+            <Button fx:id="step1TabBtn" maxWidth="1.7976931348623157E308" onAction="#onStep1Tab" styleClass="step-tab,step-tab-active" text="1. Basic Info" HBox.hgrow="ALWAYS" />
+            <Button fx:id="step2TabBtn" maxWidth="1.7976931348623157E308" onAction="#onStep2Tab" styleClass="step-tab" text="2. Select Services" HBox.hgrow="ALWAYS" />
+            <Button fx:id="step3TabBtn" maxWidth="1.7976931348623157E308" onAction="#onStep3Tab" styleClass="step-tab" text="3. Configure" HBox.hgrow="ALWAYS" />
+        </HBox>
+
+        <!-- ─── CONTENT AREA ─────────────────────────────────────────────── -->
+        <StackPane styleClass="content-area" VBox.vgrow="ALWAYS">
+
+            <!-- STEP 1 – Basic Info -->
+            <VBox fx:id="step1Pane" spacing="14" styleClass="step-pane">
+                <padding><Insets bottom="20" left="24" right="24" top="20" /></padding>
+
+                <Label styleClass="section-title" text="Basic Information" />
+
+                <!-- Tail -->
+                <HBox alignment="CENTER_LEFT" styleClass="field-row">
+                    <Label minWidth="140" styleClass="field-label" text="Tail Number *" />
+                    <TextField fx:id="tailField" maxWidth="1.7976931348623157E308" promptText="e.g. N12345" styleClass="field-input" HBox.hgrow="ALWAYS" />
+                </HBox>
+
+                <!-- Arrival -->
+                <HBox alignment="CENTER_LEFT" styleClass="field-row">
+                    <Label minWidth="140" styleClass="field-label" text="Arrival" />
+                    <DatePicker fx:id="arrivalDatePicker" maxWidth="1.7976931348623157E308" styleClass="field-datepicker" HBox.hgrow="ALWAYS" />
+                    <Label text="  " />
+                    <TextField fx:id="arrivalTimeField" prefWidth="80.0" promptText="HH:mm" styleClass="field-input" />
+                </HBox>
+
+                <!-- Departure -->
+                <HBox alignment="CENTER_LEFT" styleClass="field-row">
+                    <Label minWidth="140" styleClass="field-label" text="Departure" />
+                    <DatePicker fx:id="departureDatePicker" maxWidth="1.7976931348623157E308" styleClass="field-datepicker" HBox.hgrow="ALWAYS" />
+                    <Label text="  " />
+                    <TextField fx:id="departureTimeField" prefWidth="80.0" promptText="HH:mm" styleClass="field-input" />
+                </HBox>
+
+                <!-- Description -->
+                <HBox alignment="TOP_LEFT" styleClass="field-row">
+                    <Label minWidth="140" styleClass="field-label" text="Description" />
+                    <TextArea fx:id="descriptionField" maxWidth="1.7976931348623157E308" prefRowCount="4" promptText="Optional notes…" styleClass="field-textarea" HBox.hgrow="ALWAYS" />
+                </HBox>
+
+            </VBox>
+
+            <!-- STEP 2 – Select Services -->
+            <VBox fx:id="step2Pane" managed="false" spacing="14" styleClass="step-pane" visible="false">
+                <padding><Insets bottom="20" left="24" right="24" top="20" /></padding>
+
+                <Label styleClass="section-title" text="Select Services Needed" />
+
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="services-scroll" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
+                    <FlowPane fx:id="serviceSelectionPane" hgap="10" styleClass="service-flow" vgap="10" />
+                </ScrollPane>
+            </VBox>
+
+            <!-- STEP 3 – Configure Services -->
+            <VBox fx:id="step3Pane" managed="false" spacing="0" styleClass="step-pane" visible="false">
+
+                <!-- Service type tab bar -->
+                <HBox fx:id="serviceTabBar" fillHeight="true" styleClass="service-tab-bar" />
+
+                <!-- Config pane (swapped by controller) -->
+                <StackPane fx:id="serviceConfigPane" styleClass="service-config-pane" VBox.vgrow="ALWAYS" />
+
+            </VBox>
+
+        </StackPane>
+
+        <!-- ─── FOOTER ───────────────────────────────────────────────────── -->
+        <HBox styleClass="wizard-footer">
+            <Button fx:id="cancelBtn" maxWidth="1.7976931348623157E308" onAction="#onCancel" styleClass="footer-btn,btn-cancel" text="Cancel" HBox.hgrow="ALWAYS" />
+            <Button fx:id="backBtn" managed="false" maxWidth="1.7976931348623157E308" onAction="#onBack" styleClass="footer-btn,btn-back" text="‹ Back" visible="false" HBox.hgrow="ALWAYS" />
+            <Button fx:id="nextBtn" maxWidth="1.7976931348623157E308" onAction="#onNext" styleClass="footer-btn,btn-next" text="Next ›" HBox.hgrow="ALWAYS" />
+            <Button fx:id="addItemBtn" managed="false" maxWidth="1.7976931348623157E308" onAction="#onAddItem" styleClass="footer-btn,btn-add" text="Add Item" visible="false" HBox.hgrow="ALWAYS" />
+        </HBox>
+
+    </VBox>
+
+</StackPane>

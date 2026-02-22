@@ -1,0 +1,464 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   add-service-item.css  –  Professional white, aviation-ops aesthetic
+   Clean, sharp, corporate. No glows. Crisp borders. Clear hierarchy.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Overlay ──────────────────────────────────────────────────────────────── */
+.modal-overlay {
+    -fx-background-color: rgba(10, 20, 40, 0.45);
+    -fx-alignment: center;
+}
+
+/* ── Wizard card ──────────────────────────────────────────────────────────── */
+.wizard-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 32, 0, 0, 8);
+    -fx-min-width: 500;
+    -fx-max-width: 760;
+    -fx-min-height: 520;
+    -fx-max-height: 580;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+.wizard-header {
+    -fx-background-color: #1e3a5f;
+    -fx-padding: 0;
+    -fx-spacing: 0;
+    -fx-min-height: 52;
+    -fx-max-height: 52;
+}
+
+.header-step-label {
+    -fx-text-fill: rgba(255, 255, 255, 0.65);
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 14 16 14 20;
+}
+
+.tail-preview {
+    -fx-background-color: #1d4ed8;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-padding: 0 22;
+    -fx-pref-height: 52;
+    -fx-background-radius: 0;
+}
+
+/* ── Step tabs ────────────────────────────────────────────────────────────── */
+.step-tabs {
+    -fx-background-color: #f8f9fb;
+    -fx-spacing: 0;
+    -fx-min-height: 40;
+    -fx-max-height: 40;
+    -fx-border-color: transparent transparent #dde3eb transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.step-tab {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8a9ab0;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-cursor: hand;
+    -fx-pref-height: 40;
+}
+
+.step-tab:hover {
+    -fx-background-color: #eef1f5;
+    -fx-text-fill: #4a6080;
+}
+
+.step-tab-active, .step-tab:selected {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #1e3a5f;
+    -fx-font-weight: 700;
+    -fx-border-color: transparent transparent #1d4ed8 transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+/* ── Content area ─────────────────────────────────────────────────────────── */
+.content-area {
+    -fx-background-color: #ffffff;
+}
+
+/* ── Step pane (shared) ───────────────────────────────────────────────────── */
+.step-pane {
+    -fx-background-color: #ffffff;
+}
+
+/* ── Section title ────────────────────────────────────────────────────────── */
+.section-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1e3a5f;
+    -fx-padding: 0 0 10 0;
+    -fx-border-color: transparent transparent #e8ecf0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* ── Field rows ───────────────────────────────────────────────────────────── */
+.field-row {
+    -fx-spacing: 12;
+}
+
+.field-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #4a5568;
+    -fx-min-width: 140;
+    -fx-max-width: 140;
+    -fx-wrap-text: true;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TEXT FIELD — must target inner .text-input to override JavaFX defaults
+   ═══════════════════════════════════════════════════════════════════════════ */
+.field-input {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a202c;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-padding: 8 12;
+    -fx-highlight-fill: #bfdbfe;
+    -fx-highlight-text-fill: #1e3a5f;
+}
+
+/* Removes the inner default blue focus glow ring JavaFX paints */
+.field-input:focused {
+    -fx-border-color: #1d4ed8;
+    -fx-background-color: #f8fbff;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+/* Inner text rendering node */
+.field-input .text {
+    -fx-fill: #1a202c;
+}
+
+.field-time {
+    -fx-max-width: 80;
+    -fx-min-width: 80;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DATE PICKER — full sub-structure override
+   ═══════════════════════════════════════════════════════════════════════════ */
+.field-datepicker {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-font-size: 13px;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+/* Inner text field of the DatePicker */
+.field-datepicker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-padding: 8 10;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a202c;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-highlight-fill: #bfdbfe;
+    -fx-highlight-text-fill: #1e3a5f;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.field-datepicker .text-field:focused {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.field-datepicker:focused,
+.field-datepicker:showing {
+    -fx-border-color: #1d4ed8;
+    -fx-background-color: #f8fbff;
+}
+
+/* Arrow / calendar button */
+.field-datepicker .arrow-button {
+    -fx-background-color: #f1f5f9;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent transparent transparent #c8d4e0;
+    -fx-border-width: 0 0 0 1;
+    -fx-padding: 0 11;
+    -fx-cursor: hand;
+}
+
+.field-datepicker .arrow-button:hover {
+    -fx-background-color: #e2e8f0;
+}
+
+.field-datepicker .arrow-button .arrow {
+    -fx-background-color: #4a6080;
+}
+
+/* ── DatePicker popup calendar ────────────────────────────────────────────── */
+.date-picker-popup {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 16, 0, 0, 4);
+}
+
+.date-picker-popup > * > .spinner {
+    -fx-background-color: #1e3a5f;
+    -fx-padding: 4 6;
+}
+
+.date-picker-popup > * > .spinner > .button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+}
+
+.date-picker-popup > * > .spinner > .button .left-arrow,
+.date-picker-popup > * > .spinner > .button .right-arrow {
+    -fx-background-color: rgba(255,255,255,0.7);
+}
+
+.date-picker-popup > * > .spinner > .button:hover .left-arrow,
+.date-picker-popup > * > .spinner > .button:hover .right-arrow {
+    -fx-background-color: white;
+}
+
+.date-picker-popup > * > .spinner > .label {
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-font-size: 12px;
+}
+
+.date-picker-popup > * > .day-name-cell {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-background-color: #f8f9fb;
+}
+
+.date-picker-popup .day-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #374151;
+    -fx-font-size: 12px;
+    -fx-background-radius: 0;
+}
+
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #eff6ff;
+    -fx-text-fill: #1d4ed8;
+}
+
+.date-picker-popup .selected .day-cell,
+.date-picker-popup .day-cell:selected {
+    -fx-background-color: #1d4ed8;
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+}
+
+.date-picker-popup .today .day-cell {
+    -fx-border-color: #1d4ed8;
+    -fx-border-width: 1;
+    -fx-text-fill: #1d4ed8;
+    -fx-font-weight: 700;
+}
+
+.date-picker-popup .previous-month .day-cell,
+.date-picker-popup .next-month .day-cell {
+    -fx-text-fill: #c0cdd9;
+}
+
+/* ── TextArea ─────────────────────────────────────────────────────────────── */
+.field-textarea {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a202c;
+    -fx-padding: 0;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+/* TextArea's inner content region (where text actually renders) */
+.field-textarea .content {
+    -fx-background-color: transparent;
+    -fx-padding: 8 12;
+}
+
+.field-textarea:focused {
+    -fx-border-color: #1d4ed8;
+    -fx-background-color: #f8fbff;
+}
+
+/* ── Step 2 – Service selection ───────────────────────────────────────────── */
+.services-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+.services-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.service-flow {
+    -fx-padding: 2;
+    -fx-background-color: transparent;
+}
+
+/* ── Step 3 – Service tab bar ─────────────────────────────────────────────── */
+.service-tab-bar {
+    -fx-background-color: #f8f9fb;
+    -fx-border-color: transparent transparent #dde3eb transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-min-height: 48;
+    -fx-max-height: 48;
+    -fx-spacing: 0;
+}
+
+.service-config-pane {
+    -fx-background-color: #ffffff;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+.wizard-footer {
+    -fx-border-color: #dde3eb transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-background-color: #f8f9fb;
+    -fx-spacing: 0;
+    -fx-min-height: 50;
+    -fx-max-height: 50;
+}
+
+.footer-btn {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-pref-height: 50;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+
+.btn-cancel {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6b7280;
+    -fx-border-color: transparent #dde3eb transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.btn-cancel:hover {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #dc2626;
+}
+
+.btn-back {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6b7280;
+    -fx-border-color: transparent #dde3eb transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.btn-back:hover {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #374151;
+}
+
+.btn-next {
+    -fx-background-color: #1d4ed8;
+    -fx-text-fill: white;
+    -fx-background-radius: 0;
+}
+
+.btn-next:hover {
+    -fx-background-color: #1e40af;
+}
+
+.btn-next:pressed {
+    -fx-background-color: #1a3baa;
+}
+
+.btn-add {
+    -fx-background-color: #1d4ed8;
+    -fx-text-fill: white;
+    -fx-background-radius: 0;
+}
+
+.btn-add:hover {
+    -fx-background-color: #15803d;
+}
+
+.btn-add:pressed {
+    -fx-background-color: #14532d;
+}
+
+.btn-add:disabled {
+    -fx-background-color: #e5e7eb;
+    -fx-text-fill: #9ca3af;
+}
+
+/* ── Scroll bars ──────────────────────────────────────────────────────────── */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical {
+    -fx-pref-width: 5;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #c8d4e0;
+    -fx-background-radius: 3;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #94a3b8;
+}
+
+.scroll-pane .scroll-bar:vertical .increment-button,
+.scroll-pane .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-pref-height: 0;
+    -fx-pref-width: 0;
+}
+
+.scroll-pane .corner {
+    -fx-background-color: transparent;
+}

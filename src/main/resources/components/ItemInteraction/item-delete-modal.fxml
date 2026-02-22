@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!--
+  item-delete-modal.fxml
+  Mirrors Next.js DeleteConfirmModal: red header, status box, services grid
+  Controller: ItemDeleteController
+-->
+<StackPane fx:id="rootPane"
+           style="-fx-background-color: white;"
+           stylesheets="@../item-modal.css"
+           xmlns="http://javafx.com/javafx/17.0.12"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemDeleteController">
+
+    <VBox fx:id="modalCard" styleClass="modal-card-window" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" StackPane.alignment="TOP_LEFT">
+
+        <!-- ─── HEADER (red) ────────────────────────────────────────────── -->
+        <HBox styleClass="modal-header-red">
+            <Label styleClass="modal-header-text" text="Confirm Deletion" HBox.hgrow="ALWAYS" />
+            <Label fx:id="tailLabel" styleClass="modal-tail-badge-red" text="Tail: —" />
+        </HBox>
+
+        <!-- ─── BODY (scrollable) ──────────────────────────────────────── -->
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+                    styleClass="modal-scroll" VBox.vgrow="ALWAYS">
+            <VBox spacing="20" styleClass="modal-body">
+                <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+                <!-- Warning text -->
+                <Label styleClass="delete-warning-text"
+                       text="Are you sure you want to delete this service item? This action cannot be undone."
+                       wrapText="true" />
+
+                <!-- Completion status box -->
+                <VBox styleClass="warning-box" spacing="10">
+                    <Label styleClass="warning-box-title" text="Completion Status" />
+                    <HBox styleClass="info-row">
+                        <Label text="Services Completed" styleClass="info-row-label" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="completionCountLabel" styleClass="info-row-value-green" text="0 / 0" />
+                    </HBox>
+                    <HBox styleClass="info-row">
+                        <Label text="Item Status" styleClass="info-row-label" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="itemStatusLabel" styleClass="info-row-value-red" text="Not Completed" />
+                    </HBox>
+                </VBox>
+
+                <!-- Services grid -->
+                <VBox spacing="8">
+                    <Label styleClass="field-label" text="Services" />
+                    <GridPane fx:id="servicesGrid" hgap="8" vgap="8" />
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+
+        <!-- ─── FOOTER ─────────────────────────────────────────────────── -->
+        <HBox styleClass="modal-footer">
+            <Button text="Cancel" styleClass="footer-btn,btn-secondary"
+                    maxWidth="1.7976931348623157E308" onAction="#onCancel" HBox.hgrow="ALWAYS" />
+            <Button text="Delete Item" styleClass="footer-btn,btn-danger"
+                    maxWidth="1.7976931348623157E308" onAction="#onDelete" HBox.hgrow="ALWAYS" />
+        </HBox>
+
+    </VBox>
+</StackPane>

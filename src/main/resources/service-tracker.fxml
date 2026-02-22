@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="500.0" prefWidth="900.0" styleClass="root" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ServiceTrackerController">
+
+    <!-- TOP BAR -->
+    <top>
+        <AnchorPane prefHeight="70" styleClass="banner">
+
+            <!-- Initials -->
+            <StackPane alignment="CENTER" prefWidth="48.0" styleClass="user-initials" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0">
+                <Text fx:id="userInitials" fill="WHITE">
+                    <font><Font size="15.0" /></font>
+                </Text>
+            </StackPane>
+
+            <!-- Title -->
+            <StackPane alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+                <Text fill="WHITE" styleClass="title-text" text="LINE TRACKER">
+                    <font><Font name="System Bold" size="20.0" /></font>
+                </Text>
+            </StackPane>
+
+            <!-- Button -->
+            <Button fx:id="addButton" styleClass="primary-btn" text="ADD" AnchorPane.bottomAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" />
+
+        </AnchorPane>
+    </top>
+
+    <!-- CENTER -->
+    <center>
+        <AnchorPane fx:id="centerPane" maxWidth="1.7976931348623157E308" styleClass="content-area"/>
+    </center>
+
+</BorderPane>

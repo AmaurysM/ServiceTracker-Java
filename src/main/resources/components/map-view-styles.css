@@ -1,0 +1,97 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   map-view-styles.css  –  styles for the Map View panel
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Root / Container ────────────────────────────────────────────────────── */
+.map-root {
+    -fx-background-color: #1E2A3A;
+}
+
+.map-container {
+    -fx-background-color: #1E2A3A;
+}
+
+/* ── Floating control box ─────────────────────────────────────────────────── */
+.map-controls-box {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8;
+    -fx-border-color: #D0D7E0;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 8, 0, 0, 2);
+}
+
+.map-ctrl-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #1E2A3A;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 36px;
+    -fx-pref-height: 36px;
+    -fx-min-width: 36px;
+    -fx-min-height: 36px;
+    -fx-cursor: hand;
+    -fx-background-radius: 8;
+    -fx-padding: 0;
+}
+
+.map-ctrl-btn:hover {
+    -fx-background-color: #F0F4F8;
+}
+
+.map-ctrl-btn:pressed {
+    -fx-background-color: #DDE4ED;
+}
+
+/* Thin divider between + and − */
+.ctrl-sep {
+    -fx-background-color: #D0D7E0;
+    -fx-pref-height: 1;
+    -fx-max-height: 1;
+    -fx-min-height: 1;
+    -fx-padding: 0;
+}
+
+/* ── Bottom info bar ─────────────────────────────────────────────────────── */
+.map-info-bar {
+    -fx-background-color: rgba(255, 255, 255, 0.92);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 6, 0, 0, -2);
+}
+
+.coord-text {
+    -fx-fill: #3A4A5C;
+    -fx-font-size: 11px;
+    -fx-font-family: "Monospace";
+}
+
+/* ── Aircraft Pin ────────────────────────────────────────────────────────── */
+.map-pin {
+    -fx-background-color: rgba(30, 42, 58, 0.85);
+    -fx-background-radius: 8;
+    -fx-padding: 5 9 5 9;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.40), 8, 0, 0, 3);
+    -fx-border-color: rgba(255,255,255,0.20);
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+.map-pin:hover {
+    -fx-background-color: rgba(46, 134, 222, 0.92);
+    -fx-effect: dropshadow(gaussian, rgba(46,134,222,0.45), 12, 0, 0, 4);
+}
+
+/* The ✈ emoji / icon */
+.pin-icon {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 18px;
+    /* JavaFX Label rotation is set programmatically from metadata.rotation */
+}
+
+/* Tail number below the icon */
+.pin-label {
+    -fx-text-fill: rgba(255,255,255,0.90);
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}

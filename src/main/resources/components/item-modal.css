@@ -1,0 +1,485 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   item-modal.css  –  Shared styles for Info / Edit / Delete modals
+   Professional white. Matches existing add-service-item aesthetic.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Overlay ──────────────────────────────────────────────────────────────── */
+.modal-overlay {
+    -fx-background-color: rgba(10, 20, 40, 0.45);
+    -fx-alignment: center;
+}
+
+/* ── Modal card (floating, used inside transparent overlay) ───────────────── */
+.modal-card {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 32, 0, 0, 8);
+    -fx-min-width: 480;
+}
+
+/* ── Modal card (window-filling, used inside StageStyle.DECORATED) ────────── */
+.modal-card-window {
+    -fx-background-color: #ffffff;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+}
+
+/* ── Headers ──────────────────────────────────────────────────────────────── */
+.modal-header-navy {
+    -fx-background-color: #1e3a5f;
+    -fx-min-height: 52;
+    -fx-max-height: 52;
+    -fx-padding: 0;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.modal-header-red {
+    -fx-background-color: #7f1d1d;
+    -fx-min-height: 52;
+    -fx-max-height: 52;
+    -fx-padding: 0;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.modal-header-text {
+    -fx-text-fill: rgba(255,255,255,0.70);
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 14 16 14 20;
+}
+
+/* Monospace tail badge (navy header) */
+.modal-tail-label {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+    -fx-font-family: "Courier New";
+    -fx-padding: 14 20;
+}
+
+/* Tail badge pill (edit / delete header) */
+.modal-tail-badge {
+    -fx-background-color: #1d4ed8;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-padding: 0 22;
+    -fx-pref-height: 52;
+    -fx-background-radius: 0;
+}
+
+.modal-tail-badge-red {
+    -fx-background-color: #b91c1c;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-padding: 0 22;
+    -fx-pref-height: 52;
+    -fx-background-radius: 0;
+}
+
+/* ── Scroll pane ──────────────────────────────────────────────────────────── */
+.modal-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+.modal-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.modal-scroll .scroll-bar:vertical {
+    -fx-pref-width: 5;
+    -fx-background-color: transparent;
+}
+
+.modal-scroll .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.modal-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #c8d4e0;
+    -fx-background-radius: 3;
+}
+
+.modal-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #94a3b8;
+}
+
+.modal-scroll .scroll-bar:vertical .increment-button,
+.modal-scroll .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-pref-height: 0;
+    -fx-pref-width: 0;
+}
+
+.modal-scroll .corner { -fx-background-color: transparent; }
+
+/* ── Body ─────────────────────────────────────────────────────────────────── */
+.modal-body {
+    -fx-background-color: #ffffff;
+}
+
+/* ── Section headings ─────────────────────────────────────────────────────── */
+.section-heading {
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1e3a5f;
+    -fx-padding: 0 0 4 0;
+    -fx-border-color: transparent transparent #e8ecf0 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* ── Info box (flight info, timestamps) ───────────────────────────────────── */
+.info-box {
+    -fx-background-color: #f8f9fb;
+    -fx-border-color: #dde3eb;
+    -fx-border-width: 1;
+    -fx-padding: 0;
+}
+
+.info-row {
+    -fx-padding: 9 14;
+    -fx-border-color: transparent transparent #e8ecf0 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 12;
+}
+
+.info-row:last-child,
+.info-row-last {
+    -fx-border-width: 0;
+}
+
+.info-row-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #374151;
+}
+
+.info-row-value {
+    -fx-font-size: 12px;
+    -fx-text-fill: #4a5568;
+}
+
+/* ── Service rows in info modal ───────────────────────────────────────────── */
+.service-row {
+    -fx-background-color: #ffffff;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 10 14;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 12;
+    -fx-min-height: 44;
+}
+
+.service-row:hover {
+    -fx-background-color: #f8fafc;
+}
+
+.service-row-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1a202c;
+}
+
+.service-badge-completed {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #15803d;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 3 8;
+    -fx-background-radius: 0;
+}
+
+.service-badge-pending {
+    -fx-background-color: #fff7ed;
+    -fx-text-fill: #c2410c;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 3 8;
+    -fx-background-radius: 0;
+}
+
+/* ── Edit modal tab bar ───────────────────────────────────────────────────── */
+.tab-scroll {
+    -fx-background-color: #f8f9fb;
+    -fx-background: #f8f9fb;
+    -fx-border-color: transparent transparent #dde3eb transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-min-height: 42;
+    -fx-max-height: 42;
+}
+
+.tab-scroll > .viewport {
+    -fx-background-color: #f8f9fb;
+}
+
+.edit-tab-bar {
+    -fx-background-color: #f8f9fb;
+    -fx-spacing: 0;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+}
+
+.tab-content-pane {
+    -fx-background-color: #ffffff;
+}
+
+.edit-content-pane {
+    -fx-background-color: #ffffff;
+}
+
+/* ── Fields (reuse add-service-item style) ────────────────────────────────── */
+.field-row    { -fx-spacing: 12; }
+
+.field-label  {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #4a5568;
+    -fx-min-width: 140;
+    -fx-max-width: 140;
+    -fx-wrap-text: true;
+}
+
+.field-input  {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a202c;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-padding: 8 12;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.field-input:focused {
+    -fx-border-color: #1d4ed8;
+    -fx-background-color: #f8fbff;
+}
+
+.field-time   { -fx-max-width: 80; -fx-min-width: 80; }
+
+.field-datepicker {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.field-datepicker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 8 10;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a202c;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.field-datepicker:focused,
+.field-datepicker:showing {
+    -fx-border-color: #1d4ed8;
+}
+
+.field-datepicker .arrow-button {
+    -fx-background-color: #f1f5f9;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent transparent transparent #c8d4e0;
+    -fx-border-width: 0 0 0 1;
+    -fx-padding: 0 11;
+    -fx-cursor: hand;
+}
+
+.field-datepicker .arrow-button:hover { -fx-background-color: #e2e8f0; }
+.field-datepicker .arrow-button .arrow { -fx-background-color: #4a6080; }
+
+.field-textarea {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a202c;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.field-textarea .content { -fx-background-color: transparent; -fx-padding: 8 12; }
+.field-textarea:focused   { -fx-border-color: #1d4ed8; }
+
+/* ── Delete modal: warning box ────────────────────────────────────────────── */
+.warning-box {
+    -fx-background-color: #fefce8;
+    -fx-border-color: #fde68a;
+    -fx-border-width: 1;
+    -fx-padding: 14 16;
+}
+
+.warning-box-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #92400e;
+}
+
+.info-row-value-green {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #15803d;
+}
+
+.info-row-value-red {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #dc2626;
+}
+
+.delete-warning-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #374151;
+}
+
+/* Service chip in delete modal */
+.service-chip {
+    -fx-background-color: #f8f9fb;
+    -fx-border-color: #dde3eb;
+    -fx-border-width: 1;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-padding: 7 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 8;
+}
+
+.service-chip-done {
+    -fx-background-color: #f0fdf4;
+    -fx-border-color: #bbf7d0;
+    -fx-border-width: 1;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-padding: 7 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 8;
+}
+
+.chip-dot {
+    -fx-min-width: 10;
+    -fx-max-width: 10;
+    -fx-min-height: 10;
+    -fx-max-height: 10;
+    -fx-background-radius: 5;
+}
+
+.chip-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #374151;
+}
+
+.chip-status-done   { -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #15803d; }
+.chip-status-pending{ -fx-font-size: 11px; -fx-font-weight: 700; -fx-text-fill: #dc2626; }
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+.modal-footer {
+    -fx-border-color: #dde3eb transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-background-color: #f8f9fb;
+    -fx-spacing: 0;
+    -fx-min-height: 50;
+    -fx-max-height: 50;
+}
+
+.footer-btn {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-pref-height: 50;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+}
+
+.btn-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6b7280;
+    -fx-border-color: transparent #dde3eb transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.btn-secondary:hover { -fx-background-color: #f1f5f9; -fx-text-fill: #374151; }
+
+.btn-primary {
+    -fx-background-color: #1d4ed8;
+    -fx-text-fill: white;
+}
+
+.btn-primary:hover { -fx-background-color: #1e40af; }
+
+.btn-danger {
+    -fx-background-color: #7f1d1d;
+    -fx-text-fill: white;
+}
+
+.btn-danger:hover { -fx-background-color: #991b1b; }
+
+/* ── Mark Complete / Mark Incomplete buttons in edit modal ────────────────── */
+.btn-mark-complete {
+    -fx-background-color: #15803d;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 6 14;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-cursor: hand;
+}
+
+.btn-mark-complete:hover { -fx-background-color: #166534; }
+
+.btn-mark-incomplete {
+    -fx-background-color: #d97706;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 6 14;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-cursor: hand;
+}
+
+.btn-mark-incomplete:hover { -fx-background-color: #b45309; }
+
+.btn-remove-service {
+    -fx-background-color: transparent;
+    -fx-text-fill: #dc2626;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 6 10;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-cursor: hand;
+}
+
+.btn-remove-service:hover { -fx-background-color: #fee2e2; }
+
+/* ── Config section header band in edit modal ─────────────────────────────── */
+.service-config-header {
+    -fx-padding: 13 20;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 10;
+}

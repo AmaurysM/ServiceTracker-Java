@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxWidth="1.7976931348623157E308" spacing="0" style="-fx-background-color: white; -fx-background-radius: 6; -fx-border-color: #e2e8f0; -fx-border-radius: 6; -fx-border-width: 1; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 4, 0, 0, 1);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ServiceItemController">
+
+    <HBox fx:id="headerBox" alignment="CENTER_LEFT" minHeight="48" style="-fx-background-color: #0f172a; -fx-background-radius: 6 6 0 0;">
+
+        <!-- Tail number -->
+        <Label fx:id="tailLabel" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 16;" HBox.hgrow="ALWAYS" />
+      <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+
+        <!-- Action buttons injected by controller -->
+        <HBox fx:id="actionButtonsBox" style="-fx-background-color: #0f172a; -fx-background-radius: 6 6 0 0;" alignment="CENTER_RIGHT" spacing="0" />
+    </HBox>
+
+    <HBox fx:id="serviceIconsBox" alignment="CENTER" minHeight="56" HBox.hgrow="ALWAYS" style="-fx-background-color: white;" />
+
+
+    <HBox fx:id="footerBox" alignment="CENTER_LEFT" managed="false" spacing="12" style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0 transparent transparent transparent; -fx-border-width: 1; -fx-padding: 6 12; -fx-background-radius: 0 0 6 6;" visible="false">
+
+        <!-- Arrival -->
+        <Label fx:id="arrivalLabel" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+
+        <!-- Departure -->
+        <Label fx:id="departureLabel" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+
+        <!-- Spacer -->
+        <Region HBox.hgrow="ALWAYS" />
+
+        <!-- Description (truncated) -->
+        <Label fx:id="descriptionLabel" ellipsisString="…" maxWidth="120" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
+    </HBox>
+
+</VBox>
