@@ -1,5 +1,7 @@
 package com.amaurysdelossantos.ServiceTracker.Helper;
 
+import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
+import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceType;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -18,9 +20,16 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Lib {
 
+    static public final DateTimeFormatter FMT =
+            DateTimeFormatter.ofPattern("MMM dd, HH:mm")
+                    .withZone(ZoneId.systemDefault());
 
     static public boolean FXMLExistsInNode(String target, Pane location) {
         String targetId = getAnchorPaneIdFromFXML(target);
@@ -144,4 +153,42 @@ public class Lib {
             if (newToggle == null) group.selectToggle(oldToggle);
         });
     }
+
+    static public Map<ServiceType, Boolean> getActiveServices(ServiceItem item) {
+        Map<ServiceType, Boolean> map = new LinkedHashMap<>();
+        if (item.getFuel() != null)
+            map.put(ServiceType.FUEL, isServiceCompleted(ServiceType.FUEL,item));
+        if (item.getCatering() != null && !item.getCatering().isEmpty())
+            map.put(ServiceType.CATERING, isServiceCompleted(ServiceType.CATERING,item));
+        if (item.getGpu() != null)
+            map.put(ServiceType.GPU, isServiceCompleted(ServiceType.GPU,item));
+        if (item.getLavatory() != null)
+            map.put(ServiceType.LAVATORY, isServiceCompleted(ServiceType.LAVATORY,item));
+        if (item.getPotableWater() != null)
+            map.put(ServiceType.POTABLE_WATER, isServiceCompleted(ServiceType.POTABLE_WATER,item));
+        if (item.getWindshieldCleaning() != null)
+            map.put(ServiceType.WINDSHIELD_CLEANING, isServiceCompleted(ServiceType.WINDSHIELD_CLEANING,item));
+        if (item.getOilService() != null)
+            map.put(ServiceType.OIL_SERVICE, isServiceCompleted(ServiceType.OIL_SERVICE,item));
+        return map;
+    }
+
+    static public boolean isServiceCompleted(ServiceType serviceType, ServiceItem item) {
+        return switch (serviceType) {
+            case FUEL -> item.getFuel().getCompletedAt() != null;
+            case CATERING -> item.getCatering().stream().allMatch(c -> c.getCompletedAt() != null);
+            case GPU -> item.getGpu().getCompletedAt() != null;
+            case LAVATORY -> item.getLavatory().getCompletedAt() != null;
+            case POTABLE_WATER -> item.getPotableWater().getCompletedAt() != null;
+            case WINDSHIELD_CLEANING -> item.getWindshieldCleaning().getCompletedAt() != null;
+            case OIL_SERVICE -> item.getOilService().getCompletedAt() != null;
+        };
+    }
+
+    static public boolean areAllServicesCompleted(ServiceItem item) {
+        Map<ServiceType, Boolean> active = getActiveServices(item);
+        return !active.isEmpty() && active.values().stream().allMatch(Boolean::booleanValue);
+    }
+
+
 }

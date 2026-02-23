@@ -1,12 +1,13 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Standard;
 
-import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
-import com.amaurysdelossantos.ServiceTracker.Services.TopControlsService;
+//import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
+import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ActivityFilter;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceFilter;
 import com.amaurysdelossantos.ServiceTracker.models.enums.StandardView;
 import com.amaurysdelossantos.ServiceTracker.models.enums.TimeFilter;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -65,10 +66,10 @@ public class StandardViewController {
     private ToggleGroup viewGroup;
 
     @Autowired
-    private TopControlsService topStateService;
+    private StandardControlsService topStateService;
 
-    @Autowired
-    private ServiceItemService serviceItemService;
+//    @Autowired
+//    private ServiceItemService serviceItemService;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -79,22 +80,25 @@ public class StandardViewController {
     @FXML
     public void initialize() {
 
+
+
         CardViewToggleButton.setOnAction(e -> {
-            topStateService.activeViewProperty().set(StandardView.CARD);
             onViewToggleChanged(StandardView.CARD);
+//            topStateService.activeViewProperty().set(StandardView.CARD);
         });
         ListViewToggleButton.setOnAction(e -> {
-            topStateService.activeViewProperty().set(StandardView.LIST);
             onViewToggleChanged(StandardView.LIST);
+//            topStateService.activeViewProperty().set(StandardView.LIST);
         });
 
         viewGroup.selectToggle(CardViewToggleButton);
 
-        activeCompletedToggleButton.setOnAction(e -> topStateService.activeActivity().set(ActivityFilter.DONE));
+        activeCompletedToggleButton.setOnAction(e -> topStateService.getActivityFilter().set(ActivityFilter.DONE));
 
-        activeServiceToggleButton.setOnAction(e -> topStateService.activeActivity().set(ActivityFilter.ACTIVE));
+        activeServiceToggleButton.setOnAction(e -> topStateService.getActivityFilter().set(ActivityFilter.ACTIVE));
 
         statusGroup.selectToggle(activeServiceToggleButton);
+
 
         filterServiceChoiceBox.getItems().setAll(ServiceFilter.values());
         filterServiceChoiceBox.setValue(ServiceFilter.ALL);
@@ -102,7 +106,7 @@ public class StandardViewController {
         filterTimeChoiceBox.getItems().setAll(TimeFilter.values());
         filterTimeChoiceBox.setValue(TimeFilter.TODAY);
 
-        allItems = serviceItemService.getItems();
+        allItems = topStateService.getItems();
 
         ammountOfItemsInViewText.textProperty().bind(
                 Bindings.size(allItems)
@@ -120,48 +124,10 @@ public class StandardViewController {
         preventDeselection(viewGroup);
 
         onViewToggleChanged(StandardView.CARD);
+        topStateService.getActivityFilter().setValue(ActivityFilter.ACTIVE);
+        topStateService.loadInitialData();
 
     }
-
-//    private void renderItems() {
-//
-//    }
-
-//    private void fetchItems() {
-//
-//        boolean showActive = statusGroup.getSelectedToggle() == activeServiceToggleButton;
-//
-//        Thread loadThread = new Thread(() -> {
-//            try {
-//
-//                List<ServiceItem> items = showActive
-//                        ? serviceItemService.getActiveItems()
-//                        : serviceItemService.getCompletedItems();
-//
-//                Platform.runLater(() -> {
-//                    allItems = items;
-//                    ammountOfItemsInViewText.setText(
-//                            "SHOWING " + " OF " + allItems.size()
-//                    );
-//                });
-//
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//
-//                Platform.runLater(() -> {
-//                    Label errorLabel = new Label("Failed to load services: " + ex.getMessage());
-//                    errorLabel.setStyle("-fx-text-fill: red;");
-//                });
-//            }
-//        });
-//
-//
-//
-//        loadThread.setDaemon(true);
-//        loadThread.start();
-//
-//
-//    }
 
     private void isSelectedChoice(StandardView newVal) {
         if (newVal == StandardView.CARD) {
@@ -179,14 +145,20 @@ public class StandardViewController {
     private void onViewToggleChanged(StandardView newView) {
         if (centerPane == null) return;
 
+        if (topStateService.getActiveView().get() == newView) return;
+
         centerPane.getChildren().clear();
 
         if (newView == StandardView.CARD) {
             try {
+                topStateService.getActiveView().set(StandardView.CARD);
 
                 FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/components/standard/grid-view.fxml"));
                 loader2.setControllerFactory(applicationContext::getBean);
                 Node child2 = loader2.load();
+
+                GridViewController controller = loader2.getController();
+                controller.populate();
 
                 AnchorPane.setTopAnchor(child2, 0.0);
                 AnchorPane.setBottomAnchor(child2, 0.0);
@@ -201,9 +173,20 @@ public class StandardViewController {
 
         } else if (newView == StandardView.LIST) {
             try {
+                topStateService.getActiveView().set(StandardView.LIST);
+
                 FXMLLoader loader2 = new FXMLLoader(getClass().getResource("/components/standard/list-view.fxml"));
-                loader2.setControllerFactory(applicationContext::getBean); // inject Spring context
+                loader2.setControllerFactory(applicationContext::getBean);
                 Node child2 = loader2.load();
+
+                ListViewController controller = loader2.getController();
+                controller.populate();
+
+                AnchorPane.setTopAnchor(child2, 0.0);
+                AnchorPane.setBottomAnchor(child2, 0.0);
+                AnchorPane.setLeftAnchor(child2, 0.0);
+                AnchorPane.setRightAnchor(child2, 0.0);
+
                 centerPane.getChildren().add(child2);
 
             } catch (IOException e) {
@@ -212,6 +195,4 @@ public class StandardViewController {
 
         }
     }
-
-
 }

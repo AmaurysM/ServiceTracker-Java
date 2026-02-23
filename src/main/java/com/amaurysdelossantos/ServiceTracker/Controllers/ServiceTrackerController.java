@@ -1,8 +1,8 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers;
 
-import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
+//import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceTrackerService;
-import com.amaurysdelossantos.ServiceTracker.Services.TopControlsService;
+import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.View;
 import javafx.fxml.FXML;
@@ -21,15 +21,15 @@ import java.util.List;
 
 @Component
 public class ServiceTrackerController {
-
-    @Autowired
-    private ServiceItemService serviceItemService;
+//
+//    @Autowired
+//    private ServiceItemService serviceItemService;
 
     @Autowired
     private ApplicationContext applicationContext;
 
     @Autowired
-    private TopControlsService topStateService;
+    private StandardControlsService topStateService;
 
 
     @FXML
@@ -64,7 +64,7 @@ public class ServiceTrackerController {
     public void initialize() {
         userInitials.setText("AD");
 
-        serviceItemService.loadInitialData();
+        // serviceItemService.loadInitialData();
 
         serviceTrackerService.activeViewProperty().addListener((e, oldItem, newItem) -> {
             onMainViewChange(newItem);

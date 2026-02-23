@@ -34,7 +34,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static com.amaurysdelossantos.ServiceTracker.Helper.Lib.attachButtonAnimation;
+import static com.amaurysdelossantos.ServiceTracker.Helper.Lib.*;
+import static com.amaurysdelossantos.ServiceTracker.Helper.WindowHandler.*;
 
 @Component
 @Scope("prototype")
@@ -68,8 +69,7 @@ public class CardItemController {
     }
 
     @FXML
-    public void initialize() {
-    }
+    public void initialize() {}
 
     public void populateCard() {
         tailLabel.setText(item.getTail());
@@ -103,7 +103,7 @@ public class CardItemController {
     private void renderServices() {
         serviceIconsBox.getChildren().clear();
 
-        Map<ServiceType, Boolean> activeServices = getActiveServices();
+        Map<ServiceType, Boolean> activeServices = getActiveServices(item);
 
         if (activeServices.isEmpty()) {
             Label noServices = new Label("No services");
@@ -160,7 +160,7 @@ public class CardItemController {
             cell.setOnMouseExited(e -> cell.setScaleX(1.0));
 
             cell.setOnMouseClicked(e -> {
-                handleEdit(serviceType);
+                handleEdit(serviceType,item);
             });
 
             attachButtonAnimation(cell);
@@ -174,7 +174,7 @@ public class CardItemController {
     private void renderActions() {
         actionButtonsBox.getChildren().clear();
 
-        boolean allCompleted = areAllServicesCompleted();
+        boolean allCompleted = areAllServicesCompleted(item);
 
         if (allCompleted && item.getCompletedAt() == null) {
             Button doneBtn = createActionButton("DONE", "#16a34a", "#15803d", false);
@@ -189,14 +189,14 @@ public class CardItemController {
         }
 
         Button editBtn = createActionButton("EDIT", "#2563eb", "#1d4ed8", false);
-        editBtn.setOnAction(e -> handleEdit());
+        editBtn.setOnAction(e -> handleEdit(item));
         actionButtonsBox.getChildren().add(editBtn);
 
         Button delBtn = createActionButton("DEL", "#dc2626", "#b91c1c", true);
-        delBtn.setOnAction(e -> handleDelete());
+        delBtn.setOnAction(e -> handleDelete(item));
         actionButtonsBox.getChildren().add(delBtn);
 
-        tailHeaderBox.setOnMouseClicked(e -> handleInfo());
+        tailHeaderBox.setOnMouseClicked(e -> handleInfo(item));
     }
 
     private Button createActionButton(String text, String bgColor, String hoverColor, boolean endItem) {
@@ -223,168 +223,152 @@ public class CardItemController {
 
     // ─── Handlers ────────────────────────────────────────────────────────────────
 
-    private void handleInfo() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/components/ItemInteraction/item-info-modal.fxml")
-            );
-            System.out.println("loader: " + loader + getClass().getResource("/components/ItemInteraction/item-info-modal.fxml"));
-            loader.setClassLoader(getClass().getClassLoader());
-            Parent root = loader.load();
-            ItemInfoController controller = loader.getController();
-
-            controller.setItem(item);
-            controller.populate();
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-
-            stage.setTitle("Info: " + item.getTail());
-            stage.initModality(Modality.APPLICATION_MODAL);
-
-            stage.show();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void handleToggleComplete() {
-        System.out.println("999999999999999999999");
-//        if (item.getCompletedAt() == null) {
-//            item.setCompletedAt(Instant.now());
-//        } else {
-//            item.setCompletedAt(null);
-//            item.setCompletedBy(null);
-//        }
-//        item.setUpdatedAt(Instant.now());
+//    private void handleInfo() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(
+//                    getClass().getResource("/components/ItemInteraction/item-info-modal.fxml")
+//            );
+//            System.out.println("loader: " + loader + getClass().getResource("/components/ItemInteraction/item-info-modal.fxml"));
+//            loader.setClassLoader(getClass().getClassLoader());
+//            Parent root = loader.load();
+//            ItemInfoController controller = loader.getController();
 //
-//        new Thread(() -> {
-//            serviceItemService.saveService(item);
-//            Platform.runLater(this::populateCard);
-//        }).start();
-    }
-
-    private void handleEdit() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/components/ItemInteraction/item-edit-modal.fxml")
-            );
-            loader.setClassLoader(getClass().getClassLoader());
-            Parent root = loader.load();
-            ItemEditController controller = loader.getController();
-
-            controller.setItem(item);
-            controller.populate();
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-
-            stage.setTitle("Edit: " + item.getTail());
-            stage.initModality(Modality.APPLICATION_MODAL);
-
-            stage.show();
+//            controller.setItem(item);
+//            controller.populate();
+//
+//            Stage stage = new Stage();
+//            stage.setScene(new Scene(root));
+//
+//            stage.setTitle("Info: " + item.getTail());
+//            stage.initModality(Modality.APPLICATION_MODAL);
+//
+//            stage.show();
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    private void handleEdit() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(
+//                    getClass().getResource("/components/ItemInteraction/item-edit-modal.fxml")
+//            );
+//            loader.setClassLoader(getClass().getClassLoader());
+//            Parent root = loader.load();
+//            ItemEditController controller = loader.getController();
+//
+//            controller.setItem(item);
+//            controller.populate();
+//
+//            Stage stage = new Stage();
+//            stage.setScene(new Scene(root));
+//
+//            stage.setTitle("Edit: " + item.getTail());
+//            stage.initModality(Modality.APPLICATION_MODAL);
+//
+//            stage.show();
+//
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
-    private void handleEdit(ServiceType serviceType) {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/components/ItemInteraction/item-edit-modal.fxml")
-            );
-            loader.setClassLoader(getClass().getClassLoader());
-            Parent root = loader.load();
-            ItemEditController controller = loader.getController();
+//    private void handleEdit(ServiceType serviceType) {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(
+//                    getClass().getResource("/components/ItemInteraction/item-edit-modal.fxml")
+//            );
+//            loader.setClassLoader(getClass().getClassLoader());
+//            Parent root = loader.load();
+//            ItemEditController controller = loader.getController();
+//
+//            controller.setItem(item);
+//            controller.setInitialService(serviceType);
+//            controller.populate();
+//
+//            Stage stage = new Stage();
+//            stage.setScene(new Scene(root));
+//
+//            stage.setTitle("Edit: " + item.getTail());
+//            stage.initModality(Modality.APPLICATION_MODAL);
+//
+//            stage.show();
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
-            controller.setItem(item);
-            controller.setInitialService(serviceType);
-            controller.populate();
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-
-            stage.setTitle("Edit: " + item.getTail());
-            stage.initModality(Modality.APPLICATION_MODAL);
-            // stage.setResizable(false);
-
-            stage.show();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    private void handleDelete() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/components/ItemInteraction/item-delete-modal.fxml")
-            );
-            loader.setClassLoader(getClass().getClassLoader());
-            Parent root = loader.load();
-            ItemDeleteController controller = loader.getController();
-
-            controller.setItem(item);
-            controller.populate();
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-
-            stage.setTitle("Confirm Deletion");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            // stage.initOwner(deleteButton.getScene().getWindow()); // Lock parent window
-            stage.setResizable(false);
-
-            stage.show();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//
+//    private void handleDelete() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(
+//                    getClass().getResource("/components/ItemInteraction/item-delete-modal.fxml")
+//            );
+//            loader.setClassLoader(getClass().getClassLoader());
+//            Parent root = loader.load();
+//            ItemDeleteController controller = loader.getController();
+//
+//            controller.setItem(item);
+//            controller.populate();
+//
+//            Stage stage = new Stage();
+//            stage.setScene(new Scene(root));
+//
+//            stage.setTitle("Confirm Deletion");
+//            stage.initModality(Modality.APPLICATION_MODAL);
+//            // stage.initOwner(deleteButton.getScene().getWindow()); // Lock parent window
+//            stage.setResizable(false);
+//
+//            stage.show();
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     // ─── Helpers ─────────────────────────────────────────────────────────────────
+//
+//    private Map<ServiceType, Boolean> getActiveServices(ServiceItem item) {
+//        Map<ServiceType, Boolean> map = new LinkedHashMap<>();
+//        if (item.getFuel() != null)
+//            map.put(ServiceType.FUEL, isServiceCompleted(ServiceType.FUEL));
+//        if (item.getCatering() != null && !item.getCatering().isEmpty())
+//            map.put(ServiceType.CATERING, isServiceCompleted(ServiceType.CATERING));
+//        if (item.getGpu() != null)
+//            map.put(ServiceType.GPU, isServiceCompleted(ServiceType.GPU));
+//        if (item.getLavatory() != null)
+//            map.put(ServiceType.LAVATORY, isServiceCompleted(ServiceType.LAVATORY));
+//        if (item.getPotableWater() != null)
+//            map.put(ServiceType.POTABLE_WATER, isServiceCompleted(ServiceType.POTABLE_WATER));
+//        if (item.getWindshieldCleaning() != null)
+//            map.put(ServiceType.WINDSHIELD_CLEANING, isServiceCompleted(ServiceType.WINDSHIELD_CLEANING));
+//        if (item.getOilService() != null)
+//            map.put(ServiceType.OIL_SERVICE, isServiceCompleted(ServiceType.OIL_SERVICE));
+//        return map;
+//    }
+//
+//    private boolean isServiceCompleted(ServiceType serviceType) {
+//        return switch (serviceType) {
+//            case FUEL -> item.getFuel().getCompletedAt() != null;
+//            case CATERING -> item.getCatering().stream().allMatch(c -> c.getCompletedAt() != null);
+//            case GPU -> item.getGpu().getCompletedAt() != null;
+//            case LAVATORY -> item.getLavatory().getCompletedAt() != null;
+//            case POTABLE_WATER -> item.getPotableWater().getCompletedAt() != null;
+//            case WINDSHIELD_CLEANING -> item.getWindshieldCleaning().getCompletedAt() != null;
+//            case OIL_SERVICE -> item.getOilService().getCompletedAt() != null;
+//        };
+//    }
+//
+//    private boolean areAllServicesCompleted(ServiceItem item) {
+//        Map<ServiceType, Boolean> active = getActiveServices(item);
+//        return !active.isEmpty() && active.values().stream().allMatch(Boolean::booleanValue);
+//    }
 
-    private Map<ServiceType, Boolean> getActiveServices() {
-        Map<ServiceType, Boolean> map = new LinkedHashMap<>();
-        if (item.getFuel() != null)
-            map.put(ServiceType.FUEL, isServiceCompleted(ServiceType.FUEL));
-        if (item.getCatering() != null && !item.getCatering().isEmpty())
-            map.put(ServiceType.CATERING, isServiceCompleted(ServiceType.CATERING));
-        if (item.getGpu() != null)
-            map.put(ServiceType.GPU, isServiceCompleted(ServiceType.GPU));
-        if (item.getLavatory() != null)
-            map.put(ServiceType.LAVATORY, isServiceCompleted(ServiceType.LAVATORY));
-        if (item.getPotableWater() != null)
-            map.put(ServiceType.POTABLE_WATER, isServiceCompleted(ServiceType.POTABLE_WATER));
-        if (item.getWindshieldCleaning() != null)
-            map.put(ServiceType.WINDSHIELD_CLEANING, isServiceCompleted(ServiceType.WINDSHIELD_CLEANING));
-        if (item.getOilService() != null)
-            map.put(ServiceType.OIL_SERVICE, isServiceCompleted(ServiceType.OIL_SERVICE));
-        return map;
-    }
-
-    private boolean isServiceCompleted(ServiceType serviceType) {
-        return switch (serviceType) {
-            case FUEL -> item.getFuel().getCompletedAt() != null;
-            case CATERING -> item.getCatering().stream().allMatch(c -> c.getCompletedAt() != null);
-            case GPU -> item.getGpu().getCompletedAt() != null;
-            case LAVATORY -> item.getLavatory().getCompletedAt() != null;
-            case POTABLE_WATER -> item.getPotableWater().getCompletedAt() != null;
-            case WINDSHIELD_CLEANING -> item.getWindshieldCleaning().getCompletedAt() != null;
-            case OIL_SERVICE -> item.getOilService().getCompletedAt() != null;
-        };
-    }
-
-    private boolean areAllServicesCompleted() {
-        Map<ServiceType, Boolean> active = getActiveServices();
-        return !active.isEmpty() && active.values().stream().allMatch(Boolean::booleanValue);
-    }
-
-    private static final DateTimeFormatter FMT =
-            DateTimeFormatter.ofPattern("MMM dd, HH:mm")
-                    .withZone(ZoneId.systemDefault());
+//    private static final DateTimeFormatter FMT =
+//            DateTimeFormatter.ofPattern("MMM dd, HH:mm")
+//                    .withZone(ZoneId.systemDefault());
 }

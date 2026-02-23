@@ -18,28 +18,28 @@ public class ServiceItemService {
     @Autowired
     private ServiceItemRepo serviceItemRepo;
 
-    public StringProperty query = new SimpleStringProperty("");
-
-    public StringProperty searchTextProperty() {
-        return query;
-    }
-
-    @Getter
-    private final ObservableList<ServiceItem> items =
-            FXCollections.observableArrayList();
-
-
-    public void loadInitialData() {
-        items.setAll(serviceItemRepo.findByDeletedAtIsNullAndCompletedAtIsNull());
-    }
-
-    public List<ServiceItem> getActiveItems() {
-        return serviceItemRepo.findByDeletedAtIsNullAndCompletedAtIsNull();
-    }
-
-    public List<ServiceItem> getCompletedItems() {
-        return serviceItemRepo.findByDeletedAtIsNullAndCompletedAtIsNotNull();
-    }
+//    public StringProperty query = new SimpleStringProperty("");
+//
+//    public StringProperty searchTextProperty() {
+//        return query;
+//    }
+//
+//    @Getter
+//    private final ObservableList<ServiceItem> items =
+//            FXCollections.observableArrayList();
+//
+//
+//    public void loadInitialData() {
+//        items.setAll(serviceItemRepo.findByDeletedAtIsNull());
+//    }
+//
+//    public List<ServiceItem> getActiveItems() {
+//        return serviceItemRepo.findByDeletedAtIsNullAndCompletedAtIsNull();
+//    }
+//
+//    public List<ServiceItem> getCompletedItems() {
+//        return serviceItemRepo.findByDeletedAtIsNullAndCompletedAtIsNotNull();
+//    }
 
     public ServiceItem saveService(ServiceItem item) {
         return serviceItemRepo.save(item);

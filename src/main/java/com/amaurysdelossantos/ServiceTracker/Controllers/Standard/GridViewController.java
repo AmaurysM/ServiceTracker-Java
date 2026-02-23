@@ -1,8 +1,9 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Standard;
 
 import com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Item.CardItemController;
-import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
+import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
+import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,8 +22,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.context.annotation.Scope;
 
 @Component
+@Scope("prototype")
 public class GridViewController {
 
     @FXML
@@ -31,19 +34,23 @@ public class GridViewController {
     public ScrollPane mainScrollPane;
 
     @Autowired
-    private ServiceItemService serviceItemService;
-    @Autowired
     private ApplicationContext applicationContext;
+    @Autowired
+    private StandardControlsService standardControlsService;
 
-    private ObservableList<ServiceItem> items;
+    public ObservableList<ServiceItem> items;
     private final Map<ServiceItem, Node> nodeCache = new LinkedHashMap<>();
     private int currentColumns = 0;
 
     @FXML
-    public void initialize() {
-        items = serviceItemService.getItems();
+    public void initialize() {}
 
-        items.addListener((ListChangeListener<ServiceItem>) change -> syncItems());
+    public void populate(){
+        items = standardControlsService.getItems();
+
+        items.addListener((ListChangeListener<ServiceItem>) change -> {
+            syncItems();
+        });
 
         mainScrollPane.widthProperty().addListener((obs, oldVal, newVal) -> {
             int newColumns = calculateColumns(newVal.doubleValue());
@@ -56,8 +63,9 @@ public class GridViewController {
         syncItems();
     }
 
+
+
     private void syncItems() {
-        // Add missing nodes to cache and grid
         items.forEach(item -> {
             nodeCache.computeIfAbsent(item, e -> {
                 try {

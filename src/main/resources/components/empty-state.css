@@ -1,0 +1,126 @@
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   EMPTY STATE  –  append these rules to your existing styles.css
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Root container ───────────────────────────────────────────────────────── */
+.empty-state-root {
+    -fx-alignment: center;
+    -fx-padding: 60 40 60 40;
+    -fx-background-color: transparent;
+}
+
+/* ── Icon area ────────────────────────────────────────────────────────────── */
+.empty-icon-container {
+    -fx-pref-width: 120;
+    -fx-pref-height: 120;
+}
+
+/* Outer animated pulse ring */
+.empty-pulse-ring {
+    -fx-fill: transparent;
+    -fx-stroke: #4A90D9;
+    -fx-stroke-width: 2;
+    -fx-opacity: 0.4;
+}
+
+/* Solid circle backdrop behind the icon */
+.empty-icon-bg {
+    -fx-fill: #1e2a3a;
+    -fx-effect: dropshadow(gaussian, rgba(74,144,217,0.25), 20, 0.4, 0, 4);
+}
+
+/* Clipboard body shape */
+.empty-svg-shape {
+    -fx-fill: transparent;
+    -fx-stroke: #4A90D9;
+    -fx-stroke-width: 1.8;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+
+/* Horizontal lines on the clipboard */
+.empty-svg-line {
+    -fx-stroke: #4A90D9;
+    -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round;
+    -fx-opacity: 0.6;
+}
+
+/* Magnifying glass background fill */
+.empty-svg-search-bg {
+    -fx-fill: #1e2a3a;
+    -fx-stroke: transparent;
+}
+
+/* Magnifying glass circle outline */
+.empty-svg-search-ring {
+    -fx-fill: transparent;
+    -fx-stroke: #F5A623;
+    -fx-stroke-width: 2;
+}
+
+/* Magnifying glass handle */
+.empty-svg-handle {
+    -fx-stroke: #F5A623;
+    -fx-stroke-width: 2.5;
+    -fx-stroke-line-cap: round;
+}
+
+/* × mark inside the magnifying glass */
+.empty-svg-x {
+    -fx-stroke: #F5A623;
+    -fx-stroke-width: 1.6;
+    -fx-stroke-line-cap: round;
+}
+
+/* ── Typography ───────────────────────────────────────────────────────────── */
+.empty-headline {
+    -fx-fill: #1E2A3A;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.empty-subtitle {
+    -fx-fill: #7a8a9a;
+    -fx-font-size: 13px;
+    -fx-text-alignment: center;
+    -fx-wrap-text: true;
+}
+
+/* ── Action buttons ───────────────────────────────────────────────────────── */
+.empty-action-btn {
+    -fx-background-color: #1e2a3a;
+    -fx-text-fill: #b0bec8;
+    -fx-border-color: #2e3f54;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+}
+
+.empty-action-btn:hover {
+    -fx-background-color: #253447;
+    -fx-border-color: #4A90D9;
+    -fx-text-fill: #dce8f2;
+}
+
+.empty-action-btn-primary {
+    -fx-background-color: #4A90D9;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(74,144,217,0.4), 10, 0.3, 0, 3);
+}
+
+.empty-action-btn-primary:hover {
+    -fx-background-color: #5ba3eb;
+    -fx-effect: dropshadow(gaussian, rgba(74,144,217,0.6), 14, 0.4, 0, 4);
+}
