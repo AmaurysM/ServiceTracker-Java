@@ -24,6 +24,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
 import java.time.Instant;
@@ -35,8 +37,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Component
 public class ItemEditController {
 
+    private static final String NAVY = "#1e3a5f";
+    private static final String BLUE = "#1d4ed8";
+    private static final String GREY = "#f8f9fb";
+    private static final String BORD = "#dde3eb";
+    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm");
     // ── FXML ────────────────────────────────────────────────────────────────────
     @FXML
     private StackPane rootPane;
@@ -51,6 +60,7 @@ public class ItemEditController {
     @FXML
     private VBox serviceFormBox;
 
+    // ── Dependencies ───────────────────────────────────────────────────────────
     // Basic info fields
     @FXML
     private TextField tailField;
@@ -64,24 +74,13 @@ public class ItemEditController {
     private TextField departureTimeField;
     @FXML
     private TextArea descriptionField;
-
-    // ── Dependencies ───────────────────────────────────────────────────────────
-    @Setter
+    @Autowired
     private ServiceItemService serviceItemService;
-    @Setter
-    private Runnable onSavedCallback;
-
     private ServiceItem item;
-
     @Setter
     private ServiceType initialService = null;
-
-    // ── State ──────────────────────────────────────────────────────────────────
-    private enum ActiveTab {BASIC, SERVICE}
-
     private ActiveTab currentTab = ActiveTab.BASIC;
     private ServiceType activeService = null;
-
     // Local copies of service data (edited in place, committed on save)
     private Fuel fuel;
     private List<Catering> catering;
@@ -91,20 +90,12 @@ public class ItemEditController {
     private WindshieldCleaning windshieldCleaning;
     private OilService oilService;
 
-    private static final String NAVY = "#1e3a5f";
-    private static final String BLUE = "#1d4ed8";
-    private static final String GREY = "#f8f9fb";
-    private static final String BORD = "#dde3eb";
-
-    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm");
-
-    // ── Public API ──────────────────────────────────────────────────────────────
-
     public void setItem(ServiceItem item) {
         this.item = item;
         copyServiceState();
     }
+
+    // ── Public API ──────────────────────────────────────────────────────────────
 
     @FXML
     public void initialize() {
@@ -144,8 +135,6 @@ public class ItemEditController {
         }
     }
 
-    // ── Tab bar ─────────────────────────────────────────────────────────────────
-
     private void buildTabBar() {
         tabBar.getChildren().clear();
 
@@ -158,6 +147,8 @@ public class ItemEditController {
             tabBar.getChildren().add(buildServiceTab(st));
         }
     }
+
+    // ── Tab bar ─────────────────────────────────────────────────────────────────
 
     private HBox buildBasicTab() {
         Label lbl = new Label("ℹ  Basic Info");
@@ -247,8 +238,6 @@ public class ItemEditController {
         }
     }
 
-    // ── Tab switching ────────────────────────────────────────────────────────────
-
     private void showBasicTab() {
         currentTab = ActiveTab.BASIC;
         activeService = null;
@@ -259,6 +248,8 @@ public class ItemEditController {
         refreshTabStyles();
         fadeIn(basicPane);
     }
+
+    // ── Tab switching ────────────────────────────────────────────────────────────
 
     private void showServiceTab(ServiceType st) {
         currentTab = ActiveTab.SERVICE;
@@ -272,8 +263,6 @@ public class ItemEditController {
         refreshTabStyles();
         fadeIn(servicePane);
     }
-
-    // ── Service form builder ─────────────────────────────────────────────────────
 
     private void buildServiceForm(ServiceType st) {
         serviceFormBox.getChildren().clear();
@@ -320,6 +309,8 @@ public class ItemEditController {
             case OIL_SERVICE -> buildOilForm();
         }
     }
+
+    // ── Service form builder ─────────────────────────────────────────────────────
 
     private void buildFuelForm() {
         if (fuel == null) return;
@@ -425,8 +416,6 @@ public class ItemEditController {
         );
     }
 
-    // ── Service header band ──────────────────────────────────────────────────────
-
     private HBox buildServiceHeader(ServiceType st) {
         java.awt.Color awtColor = st.getPrimaryColor();
         Color fxColor = Color.rgb(awtColor.getRed(), awtColor.getGreen(), awtColor.getBlue());
@@ -451,7 +440,7 @@ public class ItemEditController {
         return header;
     }
 
-    // ── Save / Cancel ────────────────────────────────────────────────────────────
+    // ── Service header band ──────────────────────────────────────────────────────
 
     @FXML
     private void onSave() {
@@ -479,10 +468,8 @@ public class ItemEditController {
         Thread t = new Thread(() -> {
             try {
                 serviceItemService.saveService(item);
-                Platform.runLater(() -> {
-                    if (onSavedCallback != null) onSavedCallback.run();
-                    closeModal();
-                });
+                //if (onSavedCallback != null) onSavedCallback.run();
+                Platform.runLater(this::closeModal);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 Platform.runLater(() -> showAlert("Failed to save: " + ex.getMessage()));
@@ -492,12 +479,12 @@ public class ItemEditController {
         t.start();
     }
 
+    // ── Save / Cancel ────────────────────────────────────────────────────────────
+
     @FXML
     private void onCancel() {
         closeModal();
     }
-
-    // ── Helpers ──────────────────────────────────────────────────────────────────
 
     private void copyServiceState() {
         fuel = item.getFuel();
@@ -508,6 +495,8 @@ public class ItemEditController {
         windshieldCleaning = item.getWindshieldCleaning();
         oilService = item.getOilService();
     }
+
+    // ── Helpers ──────────────────────────────────────────────────────────────────
 
     private boolean isActive(ServiceType t) {
         return switch (t) {
@@ -720,4 +709,7 @@ public class ItemEditController {
                 new KeyValue(node.translateYProperty(), 0.0, Interpolator.EASE_OUT)
         )).play();
     }
+
+    // ── State ──────────────────────────────────────────────────────────────────
+    private enum ActiveTab {BASIC, SERVICE}
 }

@@ -1,6 +1,7 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers;
 
 //import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
+
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceTrackerService;
 import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
@@ -25,33 +26,24 @@ public class ServiceTrackerController {
 //    @Autowired
 //    private ServiceItemService serviceItemService;
 
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @Autowired
-    private StandardControlsService topStateService;
-
-
-    @FXML
-    private Text userInitials;
-    @FXML
-    private Button addButton;
-    @FXML
-    public AnchorPane centerPane;
-
-    private Node mapViewNode;
-    private MapViewController mapViewController;
-
-    private List<ServiceItem> allItems;
-
-    private final List<Node> currentCardNodes = new ArrayList<>();
-
     private static final double MIN_CARD_WIDTH = 280.0;
     private static final double HGAP = 10.0;
     private static final double VGAP = 10.0;
     private static final double PADDING = 10.0;
-
-
+    private final List<Node> currentCardNodes = new ArrayList<>();
+    @FXML
+    public AnchorPane centerPane;
+    @Autowired
+    private ApplicationContext applicationContext;
+    @Autowired
+    private StandardControlsService topStateService;
+    @FXML
+    private Text userInitials;
+    @FXML
+    private Button addButton;
+    private Node mapViewNode;
+    private MapViewController mapViewController;
+    private List<ServiceItem> allItems;
     // Track last column count so we only re-grid when it actually changes
     private int lastColCount = -1;
 

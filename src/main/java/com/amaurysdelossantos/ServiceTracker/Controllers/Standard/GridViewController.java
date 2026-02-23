@@ -3,7 +3,6 @@ package com.amaurysdelossantos.ServiceTracker.Controllers.Standard;
 import com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Item.CardItemController;
 import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
-import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -22,30 +22,28 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.context.annotation.Scope;
 
 @Component
 @Scope("prototype")
 public class GridViewController {
 
+    private final Map<ServiceItem, Node> nodeCache = new LinkedHashMap<>();
     @FXML
     public GridPane mainGridPane;
     @FXML
     public ScrollPane mainScrollPane;
-
+    public ObservableList<ServiceItem> items;
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
     private StandardControlsService standardControlsService;
-
-    public ObservableList<ServiceItem> items;
-    private final Map<ServiceItem, Node> nodeCache = new LinkedHashMap<>();
     private int currentColumns = 0;
 
     @FXML
-    public void initialize() {}
+    public void initialize() {
+    }
 
-    public void populate(){
+    public void populate() {
         items = standardControlsService.getItems();
 
         items.addListener((ListChangeListener<ServiceItem>) change -> {
@@ -62,7 +60,6 @@ public class GridViewController {
 
         syncItems();
     }
-
 
 
     private void syncItems() {

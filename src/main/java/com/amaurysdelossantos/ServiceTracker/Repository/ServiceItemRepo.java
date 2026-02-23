@@ -1,9 +1,6 @@
 package com.amaurysdelossantos.ServiceTracker.Repository;
 
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
-import com.amaurysdelossantos.ServiceTracker.models.enums.ActivityFilter;
-import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceFilter;
-import com.amaurysdelossantos.ServiceTracker.models.enums.TimeFilter;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

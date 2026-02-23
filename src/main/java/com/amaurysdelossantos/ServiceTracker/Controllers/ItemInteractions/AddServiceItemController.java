@@ -24,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
 import java.time.Instant;
@@ -33,83 +34,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+@Component
 public class AddServiceItemController {
-
-    @Setter
-    private ServiceItemService serviceItemService;
-
-    // ── FXML nodes ──────────────────────────────────────────────────────────────
-    @FXML
-    private StackPane rootPane;
-    @FXML
-    private VBox wizardCard;
-
-    @FXML
-    private Label headerStepLabel;
-    @FXML
-    private Label tailPreviewLabel;
-
-    @FXML
-    private Button step1TabBtn;
-    @FXML
-    private Button step2TabBtn;
-    @FXML
-    private Button step3TabBtn;
-
-    @FXML
-    private VBox step1Pane;
-    @FXML
-    private VBox step2Pane;
-    @FXML
-    private VBox step3Pane;
-
-    // Step 1
-    @FXML
-    private TextField tailField;
-    @FXML
-    private DatePicker arrivalDatePicker;
-    @FXML
-    private TextField arrivalTimeField;
-    @FXML
-    private DatePicker departureDatePicker;
-    @FXML
-    private TextField departureTimeField;
-    @FXML
-    private TextArea descriptionField;
-
-    // Step 2
-    @FXML
-    private FlowPane serviceSelectionPane;
-
-    // Step 3
-    @FXML
-    private HBox serviceTabBar;
-    @FXML
-    private StackPane serviceConfigPane;
-
-    // Footer
-    @FXML
-    private Button cancelBtn;
-    @FXML
-    private Button backBtn;
-    @FXML
-    private Button nextBtn;
-    @FXML
-    private Button addItemBtn;
-
-    // ── Internal state ───────────────────────────────────────────────────────────
-    private enum Step {BASIC, SELECT_SERVICES, CONFIGURE}
-
-    private Step currentStep = Step.BASIC;
-
-    private final List<ServiceType> selectedServices = new ArrayList<>();
-    private ServiceType activeServiceTab = null;
-    private final Map<ServiceType, Node> configPanes = new EnumMap<>(ServiceType.class);
-    private final Map<ServiceType, Map<String, Object>> serviceData = new EnumMap<>(ServiceType.class);
-
-    @Setter
-    private Runnable onSaveCallback;
-    //public void setOnSaveCallback(Runnable cb) { this.onSaveCallback = cb; }
 
     // ── White theme palette ──────────────────────────────────────────────────────
     private static final String WHITE = "#ffffff";
@@ -124,6 +50,67 @@ public class AddServiceItemController {
     private static final String TEXT_PROMPT = "#a0aec0";
     private static final String NAVY = "#1e3a5f";
     private static final String BLUE = "#1d4ed8";
+    private final List<ServiceType> selectedServices = new ArrayList<>();
+    private final Map<ServiceType, Node> configPanes = new EnumMap<>(ServiceType.class);
+    private final Map<ServiceType, Map<String, Object>> serviceData = new EnumMap<>(ServiceType.class);
+    @Setter
+    private ServiceItemService serviceItemService;
+    // ── FXML nodes ──────────────────────────────────────────────────────────────
+    @FXML
+    private StackPane rootPane;
+    @FXML
+    private VBox wizardCard;
+    @FXML
+    private Label headerStepLabel;
+    @FXML
+    private Label tailPreviewLabel;
+    @FXML
+    private Button step1TabBtn;
+    @FXML
+    private Button step2TabBtn;
+    @FXML
+    private Button step3TabBtn;
+    @FXML
+    private VBox step1Pane;
+    @FXML
+    private VBox step2Pane;
+    @FXML
+    private VBox step3Pane;
+    // Step 1
+    @FXML
+    private TextField tailField;
+    @FXML
+    private DatePicker arrivalDatePicker;
+    @FXML
+    private TextField arrivalTimeField;
+    @FXML
+    private DatePicker departureDatePicker;
+    @FXML
+    private TextField departureTimeField;
+    //public void setOnSaveCallback(Runnable cb) { this.onSaveCallback = cb; }
+    @FXML
+    private TextArea descriptionField;
+    // Step 2
+    @FXML
+    private FlowPane serviceSelectionPane;
+    // Step 3
+    @FXML
+    private HBox serviceTabBar;
+    @FXML
+    private StackPane serviceConfigPane;
+    // Footer
+    @FXML
+    private Button cancelBtn;
+    @FXML
+    private Button backBtn;
+    @FXML
+    private Button nextBtn;
+    @FXML
+    private Button addItemBtn;
+    private Step currentStep = Step.BASIC;
+    private ServiceType activeServiceTab = null;
+    @Setter
+    private Runnable onSaveCallback;
 
     @FXML
     public void initialize() {
@@ -133,8 +120,6 @@ public class AddServiceItemController {
         tailField.textProperty().addListener((obs, o, n) ->
                 tailPreviewLabel.setText(n.isBlank() ? "Tail: —" : "✈  " + n.trim().toUpperCase()));
     }
-
-    // ── Navigation ───────────────────────────────────────────────────────────────
 
     @FXML
     private void onNext() {
@@ -158,6 +143,8 @@ public class AddServiceItemController {
             case CONFIGURE -> onAddItem();
         }
     }
+
+    // ── Navigation ───────────────────────────────────────────────────────────────
 
     @FXML
     private void onBack() {
@@ -224,8 +211,6 @@ public class AddServiceItemController {
         showStep(Step.CONFIGURE);
     }
 
-    // ── Step rendering ───────────────────────────────────────────────────────────
-
     private void showStep(Step step) {
         currentStep = step;
 
@@ -267,6 +252,8 @@ public class AddServiceItemController {
         updateFooterButtons();
     }
 
+    // ── Step rendering ───────────────────────────────────────────────────────────
+
     private void updateFooterButtons() {
         backBtn.setVisible(currentStep != Step.BASIC);
         backBtn.setManaged(currentStep != Step.BASIC);
@@ -276,14 +263,14 @@ public class AddServiceItemController {
         addItemBtn.setManaged(currentStep == Step.CONFIGURE);
     }
 
-    // ── Step 2 – Service selection cards ─────────────────────────────────────────
-
     private void buildServiceSelectionCards() {
         serviceSelectionPane.getChildren().clear();
         for (ServiceType st : ServiceType.values()) {
             serviceSelectionPane.getChildren().add(buildServiceCard(st));
         }
     }
+
+    // ── Step 2 – Service selection cards ─────────────────────────────────────────
 
     private HBox buildServiceCard(ServiceType st) {
         Color fxColor = toFxColor(st.getPrimaryColor());
@@ -384,8 +371,6 @@ public class AddServiceItemController {
         };
     }
 
-    // ── Step 3 – Service tab bar ──────────────────────────────────────────────────
-
     private void buildServiceTabBar() {
         serviceTabBar.getChildren().clear();
         for (ServiceType st : selectedServices) {
@@ -412,6 +397,8 @@ public class AddServiceItemController {
             serviceTabBar.getChildren().add(tab);
         }
     }
+
+    // ── Step 3 – Service tab bar ──────────────────────────────────────────────────
 
     private void activateServiceTab(ServiceType target) {
         activeServiceTab = target;
@@ -443,8 +430,6 @@ public class AddServiceItemController {
         serviceConfigPane.getChildren().setAll(pane);
         fadeIn(pane);
     }
-
-    // ── Step 3 – Config pane builder ─────────────────────────────────────────────
 
     private Node buildConfigPane(ServiceType st) {
         ScrollPane scroll = new ScrollPane();
@@ -522,6 +507,8 @@ public class AddServiceItemController {
         return scroll;
     }
 
+    // ── Step 3 – Config pane builder ─────────────────────────────────────────────
+
     private HBox buildConfigHeader(ServiceType st) {
         Color fxColor = toFxColor(st.getPrimaryColor());
 
@@ -553,8 +540,6 @@ public class AddServiceItemController {
         r.setMaxHeight(height);
         return r;
     }
-
-    // ── Build ServiceItem from form state ────────────────────────────────────────
 
     private ServiceItem buildItem() {
         String itemId = UUID.randomUUID().toString();
@@ -656,7 +641,7 @@ public class AddServiceItemController {
         return item;
     }
 
-    // ── Form helpers ─────────────────────────────────────────────────────────────
+    // ── Build ServiceItem from form state ────────────────────────────────────────
 
     private HBox fieldRow(String labelText, Node input) {
         Label lbl = new Label(labelText);
@@ -668,6 +653,8 @@ public class AddServiceItemController {
         HBox.setHgrow(input, Priority.ALWAYS);
         return row;
     }
+
+    // ── Form helpers ─────────────────────────────────────────────────────────────
 
     private TextField textInput(String key, Map<String, Object> data, String def) {
         TextField tf = styledTextField(null);
@@ -721,8 +708,6 @@ public class AddServiceItemController {
                 + "-fx-faint-focus-color:transparent; -fx-focus-color:transparent;";
     }
 
-    // ── SVG icon rendering ───────────────────────────────────────────────────────
-
     private ImageView makeIconView(ServiceType st, int size) {
         try {
             BufferedImage bi = st.getImage(size);
@@ -742,6 +727,8 @@ public class AddServiceItemController {
         }
     }
 
+    // ── SVG icon rendering ───────────────────────────────────────────────────────
+
     private void tintIcon(ImageView iv, Color color, int size) {
         iv.setEffect(new Blend(
                 BlendMode.SRC_ATOP,
@@ -750,11 +737,11 @@ public class AddServiceItemController {
         ));
     }
 
-    // ── Color utilities ───────────────────────────────────────────────────────────
-
     private Color toFxColor(java.awt.Color awt) {
         return Color.rgb(awt.getRed(), awt.getGreen(), awt.getBlue());
     }
+
+    // ── Color utilities ───────────────────────────────────────────────────────────
 
     private String toHex(Color c) {
         return String.format("#%02x%02x%02x",
@@ -771,8 +758,6 @@ public class AddServiceItemController {
                 opacity);
     }
 
-    // ── Misc ─────────────────────────────────────────────────────────────────────
-
     private Instant combineToInstant(LocalDate date, String time) {
         if (date == null) return null;
         try {
@@ -782,6 +767,8 @@ public class AddServiceItemController {
             return date.atStartOfDay(ZoneId.systemDefault()).toInstant();
         }
     }
+
+    // ── Misc ─────────────────────────────────────────────────────────────────────
 
     private void closeModal() {
         ((Stage) rootPane.getScene().getWindow()).close();
@@ -802,4 +789,7 @@ public class AddServiceItemController {
                 new KeyValue(node.translateYProperty(), 0.0, Interpolator.EASE_OUT)
         )).play();
     }
+
+    // ── Internal state ───────────────────────────────────────────────────────────
+    private enum Step {BASIC, SELECT_SERVICES, CONFIGURE}
 }

@@ -1,13 +1,13 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Standard;
 
 //import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
+
 import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ActivityFilter;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceFilter;
 import com.amaurysdelossantos.ServiceTracker.models.enums.StandardView;
 import com.amaurysdelossantos.ServiceTracker.models.enums.TimeFilter;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -79,7 +79,6 @@ public class StandardViewController {
 
     @FXML
     public void initialize() {
-
 
 
         CardViewToggleButton.setOnAction(e -> {

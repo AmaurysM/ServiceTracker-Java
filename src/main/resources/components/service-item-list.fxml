@@ -2,8 +2,8 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
-<HBox fx:id="listRow" alignment="CENTER_LEFT" maxHeight="40" maxWidth="1.7976931348623157E308" minHeight="40"
-      styleClass="list-row" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="listRow" alignment="CENTER_LEFT" maxHeight="40" maxWidth="1.7976931348623157E308"
+      minHeight="40" styleClass="list-row" xmlns="http://javafx.com/javafx/17.0.12"
       fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ServiceItemController">
 
     <!-- Left accent bar (colored by status) -->

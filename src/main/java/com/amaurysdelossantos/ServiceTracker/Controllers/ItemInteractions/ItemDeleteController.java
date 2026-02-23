@@ -11,9 +11,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 
+@Component
 public class ItemDeleteController {
 
     @FXML
@@ -123,10 +125,8 @@ public class ItemDeleteController {
                 item.setDeletedAt(Instant.now());
                 item.setUpdatedAt(Instant.now());
                 serviceItemService.saveService(item);
-                Platform.runLater(() -> {
-                    if (onDeletedCallback != null) onDeletedCallback.run();
-                    closeModal();
-                });
+                //if (onDeletedCallback != null) onDeletedCallback.run();
+                Platform.runLater(this::closeModal);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

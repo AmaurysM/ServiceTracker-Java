@@ -9,9 +9,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<StackPane fx:id="rootPane" prefHeight="580.0" prefWidth="760.0" styleClass="modal-overlay"
-           stylesheets="@../add-service-item.css" xmlns="http://javafx.com/javafx/17.0.12"
-           xmlns:fx="http://javafx.com/fxml/1"
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:id="rootPane" prefHeight="580.0" prefWidth="760.0"
+           styleClass="modal-overlay" stylesheets="@../add-service-item.css"
+           xmlns="http://javafx.com/javafx/17.0.12"
            fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.AddServiceItemController">
 
     <VBox fx:id="wizardCard" maxHeight="580" maxWidth="760" styleClass="wizard-card">

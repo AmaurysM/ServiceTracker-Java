@@ -26,6 +26,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -33,8 +34,11 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 
+@Component
 public class ItemInfoController {
 
+    private static final DateTimeFormatter FMT =
+            DateTimeFormatter.ofPattern("MM/dd/yyyy  HH:mm").withZone(ZoneId.systemDefault());
     @FXML
     public Button editBtn;
     @FXML
@@ -49,7 +53,6 @@ public class ItemInfoController {
     private VBox servicesBox;
     @FXML
     private VBox timestampsBox;
-
     @Setter
     private ServiceItem item;
     @Setter
@@ -58,14 +61,9 @@ public class ItemInfoController {
     private Runnable onEditCallback;
     @Setter
     private Consumer<ServiceType> onEditServiceCallback;
-
     private Consumer<ServiceItem> onDeleteCallback;
-
     @Setter
     private Runnable refreshCallback;
-
-    private static final DateTimeFormatter FMT =
-            DateTimeFormatter.ofPattern("MM/dd/yyyy  HH:mm").withZone(ZoneId.systemDefault());
 
     @FXML
     public void initialize() {

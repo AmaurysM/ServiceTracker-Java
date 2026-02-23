@@ -3,23 +3,41 @@ package com.amaurysdelossantos.ServiceTracker.Helper;
 import com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemDeleteController;
 import com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemEditController;
 import com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemInfoController;
+import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceType;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Instant;
 
+@Component
 public class WindowHandler {
+
+    private static ApplicationContext applicationContext;
+
+    private static ServiceItemService serviceItemService;
+
+    @Autowired
+    public WindowHandler(ApplicationContext applicationContext, ServiceItemService serviceItemService) {
+        WindowHandler.applicationContext = applicationContext;
+        WindowHandler.serviceItemService = serviceItemService;
+    }
+
     static public void handleEdit(ServiceType serviceType, ServiceItem item) {
         try {
             FXMLLoader loader = new FXMLLoader(
                     WindowHandler.class.getResource("/components/ItemInteraction/item-edit-modal.fxml")
             );
-            loader.setClassLoader(WindowHandler.class.getClassLoader());
+            loader.setControllerFactory(applicationContext::getBean);  // ← key line
             Parent root = loader.load();
             ItemEditController controller = loader.getController();
 
@@ -45,7 +63,7 @@ public class WindowHandler {
             FXMLLoader loader = new FXMLLoader(
                     WindowHandler.class.getResource("/components/ItemInteraction/item-edit-modal.fxml")
             );
-            loader.setClassLoader(WindowHandler.class.getClassLoader());
+            loader.setControllerFactory(applicationContext::getBean);  // ← key line
             Parent root = loader.load();
             ItemEditController controller = loader.getController();
 
@@ -66,8 +84,46 @@ public class WindowHandler {
         }
     }
 
-    static public void handleToggleComplete() {
-        //TODO: Complete Item
+    static public void handleToggleComplete(ServiceItem item) {
+
+        if (item.getCompletedAt() == null) {
+            item.setCompletedAt(Instant.now());
+        } else {
+            item.setCompletedAt(null);
+        }
+
+        Thread t = new Thread(() -> {
+            try {
+                serviceItemService.saveService(item);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+    }
+
+    static public void handleToggleComplete(ServiceItem item, Runnable onComplete) {
+
+        if (item.getCompletedAt() == null) {
+            item.setCompletedAt(Instant.now());
+        } else {
+            item.setCompletedAt(null);
+        }
+
+        Thread t = new Thread(() -> {
+            try {
+                serviceItemService.saveService(item);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                if (onComplete != null) {
+                    Platform.runLater(onComplete);
+                }
+            }
+        });
+        t.setDaemon(true);
+        t.start();
     }
 
     static public void handleDelete(ServiceItem item) {
@@ -75,7 +131,7 @@ public class WindowHandler {
             FXMLLoader loader = new FXMLLoader(
                     WindowHandler.class.getResource("/components/ItemInteraction/item-delete-modal.fxml")
             );
-            loader.setClassLoader(WindowHandler.class.getClassLoader());
+            loader.setControllerFactory(applicationContext::getBean);  // ← key line
             Parent root = loader.load();
             ItemDeleteController controller = loader.getController();
 
@@ -102,8 +158,8 @@ public class WindowHandler {
             FXMLLoader loader = new FXMLLoader(
                     WindowHandler.class.getResource("/components/ItemInteraction/item-info-modal.fxml")
             );
-            System.out.println("loader: " + loader + WindowHandler.class.getResource("/components/ItemInteraction/item-info-modal.fxml"));
-            loader.setClassLoader(WindowHandler.class.getClassLoader());
+//            System.out.println("loader: " + loader + WindowHandler.class.getResource("/components/ItemInteraction/item-info-modal.fxml"));
+            loader.setControllerFactory(applicationContext::getBean);  // ← key line
             Parent root = loader.load();
             ItemInfoController controller = loader.getController();
 

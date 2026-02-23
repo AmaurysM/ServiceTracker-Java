@@ -1,17 +1,11 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Item;
 
-import com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemDeleteController;
-import com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemEditController;
-import com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemInfoController;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceType;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -21,17 +15,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static com.amaurysdelossantos.ServiceTracker.Helper.Lib.*;
@@ -40,9 +28,6 @@ import static com.amaurysdelossantos.ServiceTracker.Helper.WindowHandler.*;
 @Component
 @Scope("prototype")
 public class CardItemController {
-
-    @Autowired
-    private ServiceItemService serviceItemService;
 
     @FXML
     public HBox headerBox;
@@ -60,8 +45,9 @@ public class CardItemController {
     public Label descriptionLabel;
     @FXML
     public HBox tailHeaderBox;
-
     public ServiceItem item;
+    @Autowired
+    private ServiceItemService serviceItemService;
 
     public void setItem(ServiceItem item) {
         this.item = item;
@@ -69,7 +55,8 @@ public class CardItemController {
     }
 
     @FXML
-    public void initialize() {}
+    public void initialize() {
+    }
 
     public void populateCard() {
         tailLabel.setText(item.getTail());
@@ -160,7 +147,7 @@ public class CardItemController {
             cell.setOnMouseExited(e -> cell.setScaleX(1.0));
 
             cell.setOnMouseClicked(e -> {
-                handleEdit(serviceType,item);
+                handleEdit(serviceType, item);
             });
 
             attachButtonAnimation(cell);
@@ -178,13 +165,23 @@ public class CardItemController {
 
         if (allCompleted && item.getCompletedAt() == null) {
             Button doneBtn = createActionButton("DONE", "#16a34a", "#15803d", false);
-            doneBtn.setOnAction(e -> handleToggleComplete());
+            doneBtn.setOnAction(e -> {
+                setLoadingState(doneBtn, "...");
+                handleToggleComplete(item, () -> {
+                    doneBtn.setDisable(false);
+                });
+            });
             actionButtonsBox.getChildren().add(doneBtn);
         }
 
         if (item.getCompletedAt() != null) {
             Button undoBtn = createActionButton("UNDO", "#ca8a04", "#a16207", false);
-            undoBtn.setOnAction(e -> handleToggleComplete());
+            undoBtn.setOnAction(e -> {
+                setLoadingState(undoBtn, "...");
+                handleToggleComplete(item, () -> {
+                    undoBtn.setDisable(false);
+                });
+            });
             actionButtonsBox.getChildren().add(undoBtn);
         }
 
@@ -197,6 +194,12 @@ public class CardItemController {
         actionButtonsBox.getChildren().add(delBtn);
 
         tailHeaderBox.setOnMouseClicked(e -> handleInfo(item));
+    }
+
+    private void setLoadingState(Button btn, String loadingText) {
+        btn.setText(loadingText);
+        btn.setDisable(true);
+        btn.setOpacity(0.6);
     }
 
     private Button createActionButton(String text, String bgColor, String hoverColor, boolean endItem) {

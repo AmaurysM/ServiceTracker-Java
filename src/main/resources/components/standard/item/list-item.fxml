@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="listRow" alignment="CENTER_LEFT" maxHeight="40" maxWidth="1.7976931348623157E308"
+      minHeight="40" styleClass="list-row" xmlns="http://javafx.com/javafx/17.0.12"
+      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Item.ListItemController">
+    <HBox fx:id="tailHeaderBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+        <children>
 
-<HBox fx:id="listRow" alignment="CENTER_LEFT" maxHeight="40" maxWidth="1.7976931348623157E308" minHeight="40" styleClass="list-row" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Item.ListItemController">
-   <HBox fx:id="tailHeaderBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-      <children>
-      
-          <!-- Left accent bar (colored by status) -->
-          <Region fx:id="accentBar" maxHeight="1.7976931348623157E308" maxWidth="4" minWidth="4" styleClass="list-accent-bar" />
-      
-          <!-- Tail Number -->
-          <Label fx:id="tailLabel" maxWidth="80" minWidth="80" styleClass="list-tail" />
-      
-          <!-- Arrival -->
-          <Label fx:id="arrivalLabel" maxWidth="100" minWidth="100" styleClass="list-time" />
-      
-          <!-- Departure -->
-          <Label fx:id="departureLabel" maxWidth="100" minWidth="100" styleClass="list-time" />
-      </children>
-   </HBox>
+            <!-- Left accent bar (colored by status) -->
+            <Region fx:id="accentBar" maxHeight="1.7976931348623157E308" maxWidth="4" minWidth="4"
+                    styleClass="list-accent-bar"/>
+
+            <!-- Tail Number -->
+            <Label fx:id="tailLabel" maxWidth="80" minWidth="80" styleClass="list-tail"/>
+
+            <!-- Arrival -->
+            <Label fx:id="arrivalLabel" maxWidth="100" minWidth="100" styleClass="list-time"/>
+
+            <!-- Departure -->
+            <Label fx:id="departureLabel" maxWidth="100" minWidth="100" styleClass="list-time"/>
+        </children>
+    </HBox>
 
 
     <!-- Service Icons Row -->
-    <HBox fx:id="serviceIconsBox" alignment="CENTER_LEFT" minWidth="250" prefWidth="336" HBox.hgrow="ALWAYS" />
+    <HBox fx:id="serviceIconsBox" alignment="CENTER_LEFT" minWidth="250" prefWidth="336" HBox.hgrow="ALWAYS"/>
 
     <!-- Action Buttons -->
     <HBox fx:id="actionButtonsBox" alignment="CENTER_RIGHT" maxHeight="40" minHeight="40">

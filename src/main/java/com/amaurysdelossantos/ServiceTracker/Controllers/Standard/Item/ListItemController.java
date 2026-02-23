@@ -1,5 +1,6 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Item;
 
+import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceType;
 import javafx.embed.swing.SwingFXUtils;
@@ -15,6 +16,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -28,14 +30,25 @@ import static com.amaurysdelossantos.ServiceTracker.Helper.WindowHandler.*;
 @Scope("prototype")
 public class ListItemController {
 
-    @FXML public HBox listRow;
-    @FXML public Region accentBar;
-    @FXML public Label tailLabel;
-    @FXML public Label arrivalLabel;
-    @FXML public Label departureLabel;
-    @FXML public HBox serviceIconsBox;
-    @FXML public HBox actionButtonsBox;
-    @FXML public HBox tailHeaderBox;
+    @FXML
+    public HBox listRow;
+    @FXML
+    public Region accentBar;
+    @FXML
+    public Label tailLabel;
+    @FXML
+    public Label arrivalLabel;
+    @FXML
+    public Label departureLabel;
+    @FXML
+    public HBox serviceIconsBox;
+    @FXML
+    public HBox actionButtonsBox;
+    @FXML
+    public HBox tailHeaderBox;
+
+    @Autowired
+    public ServiceItemService serviceItemService;
 
     public ServiceItem item;
 
@@ -141,31 +154,48 @@ public class ListItemController {
         boolean allCompleted = areAllServicesCompleted(item);
 
         if (allCompleted && item.getCompletedAt() == null) {
-            Button doneBtn = createActionButton("DONE", "#16a34a", "#15803d", false);
-            doneBtn.setOnAction(e -> handleToggleComplete());
+            Button doneBtn = createActionButton("DONE", "#16a34a", "#15803d");
+            doneBtn.setOnAction(e -> {
+                setLoadingState(doneBtn, "...");
+                handleToggleComplete(item, () -> {
+                    doneBtn.setDisable(false);
+                    // change stream will call populateCard() automatically
+                });
+            });
             actionButtonsBox.getChildren().add(doneBtn);
         }
 
         if (item.getCompletedAt() != null) {
-            Button undoBtn = createActionButton("UNDO", "#ca8a04", "#a16207", false);
-            undoBtn.setOnAction(e -> handleToggleComplete());
+            Button undoBtn = createActionButton("UNDO", "#ca8a04", "#a16207");
+            undoBtn.setOnAction(e -> {
+                setLoadingState(undoBtn, "...");
+                handleToggleComplete(item, () -> {
+                    undoBtn.setDisable(false);
+                });
+            });
             actionButtonsBox.getChildren().add(undoBtn);
         }
 
-        Button editBtn = createActionButton("EDIT", "#2563eb", "#1d4ed8", false);
+        Button editBtn = createActionButton("EDIT", "#2563eb", "#1d4ed8");
         editBtn.setOnAction(e -> handleEdit(item));
         actionButtonsBox.getChildren().add(editBtn);
 
-        Button delBtn = createActionButton("DEL", "#dc2626", "#b91c1c", true);
+        Button delBtn = createActionButton("DEL", "#dc2626", "#b91c1c");
         delBtn.setOnAction(e -> handleDelete(item));
         actionButtonsBox.getChildren().add(delBtn);
 
         tailHeaderBox.setOnMouseClicked(e -> handleInfo(item));
     }
 
-    private Button createActionButton(String text, String bgColor, String hoverColor, boolean endItem) {
+    private void setLoadingState(Button btn, String loadingText) {
+        btn.setText(loadingText);
+        btn.setDisable(true);
+        btn.setOpacity(0.6);
+    }
+
+    private Button createActionButton(String text, String bgColor, String hoverColor) {
         Button btn = new Button(text);
-        btn.setMinHeight(48);
+        btn.setMinHeight(39);
         btn.setMinWidth(60);
         String base = String.format(
                 "-fx-background-color: %s;" +
@@ -174,8 +204,7 @@ public class ListItemController {
                         "-fx-font-size: 12px;" +
                         "-fx-background-radius: 0;" +
                         "-fx-cursor: hand; " +
-                        "-fx-padding: 0 16;" +
-                        (endItem ? "-fx-background-radius: 0 4 0 0;" : ""),
+                        "-fx-padding: 0 16;",
                 bgColor
         );
 

@@ -1,13 +1,10 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Standard;
 
-import com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Item.CardItemController;
 import com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Item.ListItemController;
 import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
-import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -26,20 +23,18 @@ import java.util.Map;
 @Scope("prototype")
 public class ListViewController {
 
+    private final Map<ServiceItem, Node> nodeCache = new LinkedHashMap<>();
     @FXML
     public VBox mainVBox;
     @FXML
     public ScrollPane mainScrollPane;
-
+    public ObservableList<ServiceItem> items;
     @Autowired
     private ApplicationContext applicationContext;
     @Autowired
     private StandardControlsService standardControlsService;
 
-    public ObservableList<ServiceItem> items;
-    private final Map<ServiceItem, Node> nodeCache = new LinkedHashMap<>();
-
-    public void populate(){
+    public void populate() {
         items = standardControlsService.getItems();
 
         items.addListener((ListChangeListener<ServiceItem>) change -> {

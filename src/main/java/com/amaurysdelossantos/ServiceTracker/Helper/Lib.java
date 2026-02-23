@@ -30,6 +30,8 @@ public class Lib {
     static public final DateTimeFormatter FMT =
             DateTimeFormatter.ofPattern("MMM dd, HH:mm")
                     .withZone(ZoneId.systemDefault());
+    private static final Duration TRANSITION_DURATION = Duration.millis(150);
+    private static final Interpolator EASE = Interpolator.SPLINE(0.4, 0.0, 0.2, 1.0);
 
     static public boolean FXMLExistsInNode(String target, Pane location) {
         String targetId = getAnchorPaneIdFromFXML(target);
@@ -73,9 +75,6 @@ public class Lib {
             return null;
         }
     }
-
-    private static final Duration TRANSITION_DURATION = Duration.millis(150);
-    private static final Interpolator EASE = Interpolator.SPLINE(0.4, 0.0, 0.2, 1.0);
 
     static public void attachButtonAnimation(Region node) {
         Timeline[] hover = {null};
@@ -157,19 +156,19 @@ public class Lib {
     static public Map<ServiceType, Boolean> getActiveServices(ServiceItem item) {
         Map<ServiceType, Boolean> map = new LinkedHashMap<>();
         if (item.getFuel() != null)
-            map.put(ServiceType.FUEL, isServiceCompleted(ServiceType.FUEL,item));
+            map.put(ServiceType.FUEL, isServiceCompleted(ServiceType.FUEL, item));
         if (item.getCatering() != null && !item.getCatering().isEmpty())
-            map.put(ServiceType.CATERING, isServiceCompleted(ServiceType.CATERING,item));
+            map.put(ServiceType.CATERING, isServiceCompleted(ServiceType.CATERING, item));
         if (item.getGpu() != null)
-            map.put(ServiceType.GPU, isServiceCompleted(ServiceType.GPU,item));
+            map.put(ServiceType.GPU, isServiceCompleted(ServiceType.GPU, item));
         if (item.getLavatory() != null)
-            map.put(ServiceType.LAVATORY, isServiceCompleted(ServiceType.LAVATORY,item));
+            map.put(ServiceType.LAVATORY, isServiceCompleted(ServiceType.LAVATORY, item));
         if (item.getPotableWater() != null)
-            map.put(ServiceType.POTABLE_WATER, isServiceCompleted(ServiceType.POTABLE_WATER,item));
+            map.put(ServiceType.POTABLE_WATER, isServiceCompleted(ServiceType.POTABLE_WATER, item));
         if (item.getWindshieldCleaning() != null)
-            map.put(ServiceType.WINDSHIELD_CLEANING, isServiceCompleted(ServiceType.WINDSHIELD_CLEANING,item));
+            map.put(ServiceType.WINDSHIELD_CLEANING, isServiceCompleted(ServiceType.WINDSHIELD_CLEANING, item));
         if (item.getOilService() != null)
-            map.put(ServiceType.OIL_SERVICE, isServiceCompleted(ServiceType.OIL_SERVICE,item));
+            map.put(ServiceType.OIL_SERVICE, isServiceCompleted(ServiceType.OIL_SERVICE, item));
         return map;
     }
 
@@ -189,6 +188,4 @@ public class Lib {
         Map<ServiceType, Boolean> active = getActiveServices(item);
         return !active.isEmpty() && active.values().stream().allMatch(Boolean::booleanValue);
     }
-
-
 }

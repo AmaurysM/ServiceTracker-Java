@@ -29,24 +29,20 @@ import java.util.Map;
  */
 public class MapViewController {
 
+    private static final double DEFAULT_LAT = 25.7959;
+    private static final double DEFAULT_LON = -80.2870;
+    private static final int DEFAULT_ZOOM = 14;
+    private static final Interpolator EASE = Interpolator.SPLINE(0.4, 0.0, 0.2, 1.0);
     @FXML
     private StackPane mapContainer;
-
     @FXML
     private Text coordText;     // optional — null if info bar is hidden in FXML
     @FXML
     private Text itemCountText; // optional — null if info bar is hidden in FXML
-
     private WebView webView;
     private WebEngine engine;
     private boolean mapReady = false;
     private List<ServiceItem> pendingItems = null;
-
-    private static final double DEFAULT_LAT = 25.7959;
-    private static final double DEFAULT_LON = -80.2870;
-    private static final int DEFAULT_ZOOM = 14;
-
-    private static final Interpolator EASE = Interpolator.SPLINE(0.4, 0.0, 0.2, 1.0);
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
 
@@ -211,31 +207,14 @@ public class MapViewController {
 
     // ── Java ↔ JS Bridge ─────────────────────────────────────────────────────
 
-    /**
-     * Public inner class — methods callable from JS as window.java.xxx()
-     */
-    public class JavaBridge {
-        public void updateCoords(String text) {
-            Platform.runLater(() -> {
-                if (coordText != null) coordText.setText(text);
-            });
-        }
-
-        public void updateCount(String text) {
-            Platform.runLater(() -> {
-                if (itemCountText != null) itemCountText.setText(text);
-            });
-        }
-    }
-
-    // ── Button animations ─────────────────────────────────────────────────────
-
     private void attachBtnAnim(Button btn) {
         btn.setOnMouseEntered(e -> scale(btn, 1.12));
         btn.setOnMouseExited(e -> scale(btn, 1.00));
         btn.setOnMousePressed(e -> scale(btn, 0.93));
         btn.setOnMouseReleased(e -> scale(btn, 1.12));
     }
+
+    // ── Button animations ─────────────────────────────────────────────────────
 
     private void scale(Node n, double s) {
         new Timeline(new KeyFrame(Duration.millis(120),
@@ -367,5 +346,22 @@ public class MapViewController {
                 + "window.pinMarkers = [];"
                 + "</script>"
                 + "</body></html>";
+    }
+
+    /**
+     * Public inner class — methods callable from JS as window.java.xxx()
+     */
+    public class JavaBridge {
+        public void updateCoords(String text) {
+            Platform.runLater(() -> {
+                if (coordText != null) coordText.setText(text);
+            });
+        }
+
+        public void updateCount(String text) {
+            Platform.runLater(() -> {
+                if (itemCountText != null) itemCountText.setText(text);
+            });
+        }
     }
 }

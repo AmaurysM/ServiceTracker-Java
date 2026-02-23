@@ -8,11 +8,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<StackPane fx:id="rootPane"
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           fx:id="rootPane"
            style="-fx-background-color: white;"
            stylesheets="@../item-modal.css"
            xmlns="http://javafx.com/javafx/17.0.12"
-           xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemDeleteController">
 
     <VBox fx:id="modalCard" styleClass="modal-card-window" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS"
