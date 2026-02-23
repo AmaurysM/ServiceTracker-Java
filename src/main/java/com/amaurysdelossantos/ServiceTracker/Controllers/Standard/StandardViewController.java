@@ -57,7 +57,7 @@ public class StandardViewController {
     private ComboBox<TimeFilter> filterTimeChoiceBox;
 
     @FXML
-    private TextField searchtextField;
+    private TextField searchtextField; 
 
     @FXML
     private ToggleGroup statusGroup;
@@ -68,55 +68,54 @@ public class StandardViewController {
     @Autowired
     private StandardControlsService topStateService;
 
-//    @Autowired
-//    private ServiceItemService serviceItemService;
-
     @Autowired
     private ApplicationContext applicationContext;
 
     private ObservableList<ServiceItem> allItems;
     private List<ServiceItem> filterItems;
 
+
     @FXML
     public void initialize() {
 
-
-        CardViewToggleButton.setOnAction(e -> {
-            onViewToggleChanged(StandardView.CARD);
-//            topStateService.activeViewProperty().set(StandardView.CARD);
-        });
-        ListViewToggleButton.setOnAction(e -> {
-            onViewToggleChanged(StandardView.LIST);
-//            topStateService.activeViewProperty().set(StandardView.LIST);
-        });
-
+        // View toggles
+        CardViewToggleButton.setOnAction(e -> onViewToggleChanged(StandardView.CARD));
+        ListViewToggleButton.setOnAction(e -> onViewToggleChanged(StandardView.LIST));
         viewGroup.selectToggle(CardViewToggleButton);
 
+        // Activity toggles
         activeCompletedToggleButton.setOnAction(e -> topStateService.getActivityFilter().set(ActivityFilter.DONE));
-
         activeServiceToggleButton.setOnAction(e -> topStateService.getActivityFilter().set(ActivityFilter.ACTIVE));
-
         statusGroup.selectToggle(activeServiceToggleButton);
 
-
+        // ✅ Wire up service filter combobox
         filterServiceChoiceBox.getItems().setAll(ServiceFilter.values());
         filterServiceChoiceBox.setValue(ServiceFilter.ALL);
+        filterServiceChoiceBox.valueProperty().addListener((obs, oldVal, newVal) ->
+                topStateService.getServiceFilter().set(newVal)
+        );
 
+        // ✅ Wire up time filter combobox
         filterTimeChoiceBox.getItems().setAll(TimeFilter.values());
         filterTimeChoiceBox.setValue(TimeFilter.TODAY);
+        filterTimeChoiceBox.valueProperty().addListener((obs, oldVal, newVal) ->
+                topStateService.getTimeFilter().set(newVal)
+        );
+
+        // ✅ Wire up search field
+        searchtextField.textProperty().addListener((obs, oldVal, newVal) ->
+                topStateService.getSearchText().set(newVal)
+        );
 
         allItems = topStateService.getItems();
-
         ammountOfItemsInViewText.textProperty().bind(
-                Bindings.size(allItems)
-                        .asString("SHOWING %d ITEMS")
+                Bindings.size(allItems).asString("SHOWING %d ITEMS")
         );
 
         attachToggleAnimation(ListViewToggleButton);
         attachToggleAnimation(activeCompletedToggleButton);
         attachToggleAnimation(activeServiceToggleButton);
         attachToggleAnimation(CardViewToggleButton);
-
         attachSearchFieldAnimation(searchtextField);
 
         preventDeselection(statusGroup);
@@ -124,8 +123,8 @@ public class StandardViewController {
 
         onViewToggleChanged(StandardView.CARD);
         topStateService.getActivityFilter().setValue(ActivityFilter.ACTIVE);
+        topStateService.getTimeFilter().setValue(TimeFilter.TODAY); // ✅ also set initial value on service
         topStateService.loadInitialData();
-
     }
 
     private void isSelectedChoice(StandardView newVal) {

@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -29,7 +30,7 @@ public class ItemDeleteController {
     @FXML
     private GridPane servicesGrid;
 
-    @Setter
+    @Autowired
     private ServiceItemService serviceItemService;
     @Setter
     private Runnable onDeletedCallback;
