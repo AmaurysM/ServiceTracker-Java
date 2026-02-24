@@ -14,7 +14,6 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -32,7 +31,7 @@ public class ServiceItemRepoCustomImpl implements ServiceItemRepoCustom {
         if (activity != null) {
             switch (activity) {
                 case ACTIVE -> all.add(Criteria.where("completedAt").isNull());
-                case DONE   -> all.add(Criteria.where("completedAt").ne(null));
+                case DONE -> all.add(Criteria.where("completedAt").ne(null));
             }
         }
 
@@ -40,7 +39,7 @@ public class ServiceItemRepoCustomImpl implements ServiceItemRepoCustom {
             ZonedDateTime now = ZonedDateTime.now();
             Instant start = switch (time) {
                 case TODAY -> now.toLocalDate().atStartOfDay(now.getZone()).toInstant();
-                case WEEK  -> now.toLocalDate().with(DayOfWeek.MONDAY).atStartOfDay(now.getZone()).toInstant();
+                case WEEK -> now.toLocalDate().with(DayOfWeek.MONDAY).atStartOfDay(now.getZone()).toInstant();
                 case MONTH -> now.toLocalDate().withDayOfMonth(1).atStartOfDay(now.getZone()).toInstant();
             };
             Criteria timeCriteria = Criteria.where("createdAt").gte(start);
@@ -53,13 +52,13 @@ public class ServiceItemRepoCustomImpl implements ServiceItemRepoCustom {
 
         if (service != null && service != ServiceFilter.ALL) {
             String fieldName = switch (service) {
-                case FUEL               -> "fuel";
-                case GPU                -> "gpu";
-                case LAVATORY           -> "lavatory";
-                case POTABLE_WATER      -> "potableWater";
-                case CATERING           -> "catering";
+                case FUEL -> "fuel";
+                case GPU -> "gpu";
+                case LAVATORY -> "lavatory";
+                case POTABLE_WATER -> "potableWater";
+                case CATERING -> "catering";
                 case WINDSHIELD_CLEANING -> "windshieldCleaning";
-                case OIL_SERVICE        -> "oilService";
+                case OIL_SERVICE -> "oilService";
                 default -> null;
             };
             if (fieldName != null) {

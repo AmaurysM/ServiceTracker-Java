@@ -69,10 +69,8 @@ public class ListViewController {
             });
         }
 
-        // 2. Remove stale cache entries (items no longer in the list)
         nodeCache.keySet().retainAll(items);
 
-        // 3. Rebuild VBox children in the exact order of `items`
         List<Node> newChildren = items.stream()
                 .map(nodeCache::get)
                 .toList();

@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface ServiceItemRepo extends MongoRepository<ServiceItem, String>, ServiceItemRepoCustom {
     List<ServiceItem> findByDeletedAtIsNullAndCompletedAtIsNull();
+
     List<ServiceItem> findByDeletedAtIsNullAndCompletedAtIsNotNull();
+
     List<ServiceItem> findByDeletedAtIsNull();
 }

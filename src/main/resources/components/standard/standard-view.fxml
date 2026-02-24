@@ -9,11 +9,20 @@
     <top>
         <AnchorPane fx:id="topControlsMainAnchor" maxWidth="1.7976931348623157E308" styleClass="controls-pane"
                     BorderPane.alignment="CENTER">
+            <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0" AnchorPane.leftAnchor="0.0"
+                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <children>
 
-            <!-- Search Row -->
-            <TextField fx:id="searchtextField" maxWidth="1.7976931348623157E308" promptText="Search..."
-                       styleClass="input" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10"
-                       AnchorPane.topAnchor="10"/>
+                    <!-- Search Row -->
+                    <TextField fx:id="searchtextField" maxWidth="1.7976931348623157E308" promptText="Search..."
+                               styleClass="input" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="clearButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                            styleClass="clear-btn" text="Clear"/>
+                </children>
+                <padding>
+                    <Insets bottom="5.0" left="10.0" right="10.0" top="10.0"/>
+                </padding>
+            </HBox>
 
             <!-- Filters Row -->
             <HBox maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.leftAnchor="10"

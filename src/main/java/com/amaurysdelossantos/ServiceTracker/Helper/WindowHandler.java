@@ -37,7 +37,7 @@ public class WindowHandler {
             FXMLLoader loader = new FXMLLoader(
                     WindowHandler.class.getResource("/components/ItemInteraction/item-edit-modal.fxml")
             );
-            loader.setControllerFactory(applicationContext::getBean);  // ← key line
+            loader.setControllerFactory(applicationContext::getBean);
             Parent root = loader.load();
             ItemEditController controller = loader.getController();
 
@@ -63,7 +63,7 @@ public class WindowHandler {
             FXMLLoader loader = new FXMLLoader(
                     WindowHandler.class.getResource("/components/ItemInteraction/item-edit-modal.fxml")
             );
-            loader.setControllerFactory(applicationContext::getBean);  // ← key line
+            loader.setControllerFactory(applicationContext::getBean);
             Parent root = loader.load();
             ItemEditController controller = loader.getController();
 
@@ -131,7 +131,7 @@ public class WindowHandler {
             FXMLLoader loader = new FXMLLoader(
                     WindowHandler.class.getResource("/components/ItemInteraction/item-delete-modal.fxml")
             );
-            loader.setControllerFactory(applicationContext::getBean);  // ← key line
+            loader.setControllerFactory(applicationContext::getBean);
             Parent root = loader.load();
             ItemDeleteController controller = loader.getController();
 
@@ -143,7 +143,6 @@ public class WindowHandler {
 
             stage.setTitle("Confirm Deletion");
             stage.initModality(Modality.APPLICATION_MODAL);
-            // stage.initOwner(deleteButton.getScene().getWindow()); // Lock parent window
             stage.setResizable(false);
 
             stage.show();
@@ -158,8 +157,8 @@ public class WindowHandler {
             FXMLLoader loader = new FXMLLoader(
                     WindowHandler.class.getResource("/components/ItemInteraction/item-info-modal.fxml")
             );
-//            System.out.println("loader: " + loader + WindowHandler.class.getResource("/components/ItemInteraction/item-info-modal.fxml"));
-            loader.setControllerFactory(applicationContext::getBean);  // ← key line
+
+            loader.setControllerFactory(applicationContext::getBean);
             Parent root = loader.load();
             ItemInfoController controller = loader.getController();
 
@@ -170,6 +169,28 @@ public class WindowHandler {
             stage.setScene(new Scene(root));
 
             stage.setTitle("Info: " + item.getTail());
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            stage.show();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static public void handleAdd() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    WindowHandler.class.getResource("/components/ItemInteraction/add-service-item.fxml")
+            );
+
+            loader.setControllerFactory(applicationContext::getBean);
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+
+            stage.setTitle("ADD SERVICE ITEM");
             stage.initModality(Modality.APPLICATION_MODAL);
 
             stage.show();

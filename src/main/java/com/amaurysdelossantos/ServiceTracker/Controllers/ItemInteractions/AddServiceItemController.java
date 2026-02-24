@@ -24,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
@@ -53,7 +54,7 @@ public class AddServiceItemController {
     private final List<ServiceType> selectedServices = new ArrayList<>();
     private final Map<ServiceType, Node> configPanes = new EnumMap<>(ServiceType.class);
     private final Map<ServiceType, Map<String, Object>> serviceData = new EnumMap<>(ServiceType.class);
-    @Setter
+    @Autowired
     private ServiceItemService serviceItemService;
     // ── FXML nodes ──────────────────────────────────────────────────────────────
     @FXML

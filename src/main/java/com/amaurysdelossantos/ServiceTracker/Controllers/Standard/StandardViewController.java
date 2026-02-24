@@ -13,10 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +27,6 @@ import static com.amaurysdelossantos.ServiceTracker.Helper.Lib.*;
 
 @Component
 public class StandardViewController {
-
 
     @FXML
     public AnchorPane centerPane;
@@ -57,13 +53,16 @@ public class StandardViewController {
     private ComboBox<TimeFilter> filterTimeChoiceBox;
 
     @FXML
-    private TextField searchtextField; 
+    private TextField searchtextField;
 
     @FXML
     private ToggleGroup statusGroup;
 
     @FXML
     private ToggleGroup viewGroup;
+
+    @FXML
+    private Button clearButton;
 
     @Autowired
     private StandardControlsService topStateService;
@@ -107,11 +106,14 @@ public class StandardViewController {
                 topStateService.getSearchText().set(newVal)
         );
 
+        clearButton.setOnAction(e -> clearFilters());
+
         allItems = topStateService.getItems();
         ammountOfItemsInViewText.textProperty().bind(
                 Bindings.size(allItems).asString("SHOWING %d ITEMS")
         );
 
+        attachButtonAnimation(clearButton);
         attachToggleAnimation(ListViewToggleButton);
         attachToggleAnimation(activeCompletedToggleButton);
         attachToggleAnimation(activeServiceToggleButton);
@@ -138,6 +140,21 @@ public class StandardViewController {
             return;
         }
 
+    }
+
+    private void clearFilters() {
+
+        statusGroup.selectToggle(activeServiceToggleButton);
+        topStateService.getActivityFilter().setValue(ActivityFilter.ACTIVE);
+
+//        viewGroup.selectToggle(CardViewToggleButton);
+//        topStateService.getServiceFilter().setValue(ServiceFilter.ALL);
+
+        filterTimeChoiceBox.setValue(TimeFilter.TODAY);
+        topStateService.getTimeFilter().setValue(TimeFilter.TODAY);
+
+        searchtextField.textProperty().setValue("");
+        topStateService.getSearchText().setValue("");
     }
 
     private void onViewToggleChanged(StandardView newView) {

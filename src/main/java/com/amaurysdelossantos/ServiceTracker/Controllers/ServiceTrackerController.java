@@ -4,7 +4,6 @@ package com.amaurysdelossantos.ServiceTracker.Controllers;
 
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceTrackerService;
 import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
-import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.View;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,20 +16,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import static com.amaurysdelossantos.ServiceTracker.Helper.WindowHandler.handleAdd;
 
 @Component
 public class ServiceTrackerController {
-//
-//    @Autowired
-//    private ServiceItemService serviceItemService;
 
-    private static final double MIN_CARD_WIDTH = 280.0;
-    private static final double HGAP = 10.0;
-    private static final double VGAP = 10.0;
-    private static final double PADDING = 10.0;
-    private final List<Node> currentCardNodes = new ArrayList<>();
     @FXML
     public AnchorPane centerPane;
     @Autowired
@@ -41,31 +32,24 @@ public class ServiceTrackerController {
     private Text userInitials;
     @FXML
     private Button addButton;
-    private Node mapViewNode;
-    private MapViewController mapViewController;
-    private List<ServiceItem> allItems;
-    // Track last column count so we only re-grid when it actually changes
-    private int lastColCount = -1;
-
     @Autowired
     private ServiceTrackerService serviceTrackerService;
 
-
-    //ServiceTrackerService
     @FXML
     public void initialize() {
         userInitials.setText("AD");
-
-        // serviceItemService.loadInitialData();
 
         serviceTrackerService.activeViewProperty().addListener((e, oldItem, newItem) -> {
             onMainViewChange(newItem);
         });
 
+        addButton.setOnAction(e -> {
+            handleAdd();
+        });
+
         serviceTrackerService.activeViewProperty().setValue(View.STANDARD);
 
     }
-
 
     private void onMainViewChange(View newView) {
         try {
