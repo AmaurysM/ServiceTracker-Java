@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import fxmapcontrol.Map?>
+
 <StackPane xmlns:fx="http://javafx.com/fxml/1"
            xmlns="http://javafx.com/javafx/17.0.12"
-           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.MapViewController"
+           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.MapViewController"
            styleClass="map-root"
-           stylesheets="@../map-view-styles.css">
+           stylesheets="@../map-view-styles.css"
+           maxWidth="Infinity"
+           maxHeight="Infinity">
 
-    <StackPane fx:id="mapContainer" styleClass="map-container"/>
+    <Map fx:id="fxMap"
+         center="25.7959,-80.2870"
+         zoomLevel="14"
+         maxZoomLevel="20"
+         maxWidth="Infinity"
+         maxHeight="Infinity"/>
 
     <VBox alignment="TOP_RIGHT"
           mouseTransparent="true"

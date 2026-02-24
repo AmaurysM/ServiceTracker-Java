@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.oracle.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Options.UserOptionsController"
+      styleClass="root-container"
+      stylesheets="@settings-view.css">
+
+    <!-- ===== HEADER ===== -->
+    <VBox styleClass="header-wrapper" VBox.vgrow="NEVER">
+
+        <!-- Dark top bar -->
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT">
+            <Button fx:id="backBtn" styleClass="avatar-btn" mnemonicParsing="false">
+                <HBox.margin><Insets left="4"/></HBox.margin>
+            </Button>
+            <Label text="SETTINGS" styleClass="top-bar-title" HBox.hgrow="ALWAYS"/>
+            <!-- Spacer to balance the avatar button -->
+            <Region prefWidth="37"/>
+        </HBox>
+
+        <!-- Tab bar -->
+        <HBox styleClass="tab-bar">
+            <Button fx:id="profileTabBtn" text="Profile"
+                    styleClass="tab-btn, tab-btn-active"
+                    onAction="#onProfileTab"
+                    maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="statisticsTabBtn" text="Statistics"
+                    styleClass="tab-btn"
+                    onAction="#onStatisticsTab"
+                    maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </VBox>
+
+    <!-- ===== SCROLLABLE CONTENT ===== -->
+    <ScrollPane fx:id="scrollPane" styleClass="content-scroll"
+                fitToWidth="true" VBox.vgrow="ALWAYS"
+                hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+
+        <VBox styleClass="content-area" spacing="20">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+            <!-- ========== PROFILE TAB ========== -->
+            <VBox fx:id="profilePane" spacing="20">
+
+                <!-- Notification banner -->
+                <Label fx:id="messageBanner" styleClass="banner-hidden" maxWidth="Infinity" wrapText="true"/>
+
+                <!-- Account Information card -->
+                <VBox styleClass="card">
+                    <HBox styleClass="card-header">
+                        <Label text="ACCOUNT INFORMATION" styleClass="card-header-label"/>
+                    </HBox>
+                    <GridPane styleClass="card-body" hgap="16" vgap="14">
+                        <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+
+                        <Label text="ROLE" styleClass="field-caption" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label fx:id="roleLabel" text="—" styleClass="field-value" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+                        <Label text="COMPANY ID" styleClass="field-caption" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label fx:id="companyIdLabel" text="—" styleClass="field-value" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                        <Label text="MEMBER SINCE" styleClass="field-caption" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <Label fx:id="memberSinceLabel" text="—" styleClass="field-value" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+
+                        <Label text="LAST UPDATED" styleClass="field-caption" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        <Label fx:id="lastUpdatedLabel" text="—" styleClass="field-value" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+
+                <!-- Edit Profile card -->
+                <VBox styleClass="card">
+                    <HBox styleClass="card-header">
+                        <Label text="EDIT PROFILE" styleClass="card-header-label"/>
+                    </HBox>
+                    <VBox styleClass="card-body" spacing="16">
+                        <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+
+                        <GridPane hgap="16" vgap="14">
+                            <!-- First Name -->
+                            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label text="FIRST NAME *" styleClass="field-caption"/>
+                                <TextField fx:id="firstnameField" styleClass="form-input" promptText="First name"/>
+                            </VBox>
+                            <!-- Last Name -->
+                            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label text="LAST NAME *" styleClass="field-caption"/>
+                                <TextField fx:id="lastnameField" styleClass="form-input" promptText="Last name"/>
+                            </VBox>
+                            <!-- Email -->
+                            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <Label text="EMAIL *" styleClass="field-caption"/>
+                                <TextField fx:id="emailField" styleClass="form-input" promptText="Email"/>
+                            </VBox>
+                            <!-- Username -->
+                            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Label text="USERNAME *" styleClass="field-caption"/>
+                                <TextField fx:id="usernameField" styleClass="form-input" promptText="Username"/>
+                            </VBox>
+                            <!-- Nickname spans full width -->
+                            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+                                <Label text="NICKNAME (OPTIONAL)" styleClass="field-caption"/>
+                                <TextField fx:id="nicknameField" styleClass="form-input" promptText="Nickname"/>
+                            </VBox>
+
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                            </columnConstraints>
+                        </GridPane>
+
+                        <HBox alignment="CENTER_RIGHT">
+                            <Button fx:id="saveBtn" text="SAVE PROFILE"
+                                    styleClass="primary-btn"
+                                    onAction="#onSaveProfile"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+
+            <!-- ========== STATISTICS TAB ========== -->
+            <VBox fx:id="statisticsPane" spacing="20" visible="false" managed="false">
+
+                <!-- Company Info card -->
+                <VBox styleClass="card">
+                    <HBox styleClass="card-header">
+                        <Label text="COMPANY INFORMATION" styleClass="card-header-label"/>
+                    </HBox>
+                    <GridPane styleClass="card-body" hgap="16" vgap="14">
+                        <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+                        <Label text="COMPANY NAME" styleClass="field-caption" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label fx:id="companyNameLabel" text="—" styleClass="field-value" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <Label text="LOCATION" styleClass="field-caption" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label fx:id="companyLocationLabel" text="—" styleClass="field-value" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+
+                <!-- Overview stat tiles -->
+                <GridPane hgap="12" vgap="12">
+                    <VBox styleClass="stat-tile" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label text="TOTAL ITEMS" styleClass="stat-caption"/>
+                        <Label fx:id="totalItemsLabel" text="0" styleClass="stat-value"/>
+                    </VBox>
+                    <VBox styleClass="stat-tile, stat-tile-green" spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label text="COMPLETED" styleClass="stat-caption"/>
+                        <Label fx:id="completedItemsLabel" text="0" styleClass="stat-value, stat-value-green"/>
+                    </VBox>
+                    <VBox styleClass="stat-tile, stat-tile-blue" spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label text="ACTIVE" styleClass="stat-caption"/>
+                        <Label fx:id="activeItemsLabel" text="0" styleClass="stat-value, stat-value-blue"/>
+                    </VBox>
+                    <VBox styleClass="stat-tile" spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label text="COMPLETION RATE" styleClass="stat-caption"/>
+                        <Label fx:id="completionRateLabel" text="0%" styleClass="stat-value"/>
+                    </VBox>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                    </columnConstraints>
+                </GridPane>
+
+                <!-- Service breakdown card -->
+                <VBox styleClass="card">
+                    <HBox styleClass="card-header">
+                        <Label text="SERVICE BREAKDOWN" styleClass="card-header-label"/>
+                    </HBox>
+                    <VBox fx:id="serviceBreakdownContainer" styleClass="card-body" spacing="12">
+                        <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+                        <!-- Service rows injected programmatically -->
+                    </VBox>
+                </VBox>
+
+                <!-- Recent Activity card -->
+                <VBox styleClass="card">
+                    <HBox styleClass="card-header">
+                        <Label text="RECENT ACTIVITY" styleClass="card-header-label"/>
+                    </HBox>
+                    <GridPane styleClass="card-body" hgap="12" vgap="12">
+                        <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+
+                        <VBox styleClass="activity-tile" spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label text="ITEMS (LAST 7 DAYS)" styleClass="stat-caption"/>
+                            <Label fx:id="items7Label" text="0" styleClass="stat-value-sm"/>
+                        </VBox>
+                        <VBox styleClass="activity-tile" spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label text="ITEMS (LAST 30 DAYS)" styleClass="stat-caption"/>
+                            <Label fx:id="items30Label" text="0" styleClass="stat-value-sm"/>
+                        </VBox>
+                        <VBox styleClass="activity-tile, activity-tile-green" spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label text="COMPLETED (LAST 7 DAYS)" styleClass="stat-caption"/>
+                            <Label fx:id="completed7Label" text="0" styleClass="stat-value-sm, stat-value-green"/>
+                        </VBox>
+                        <VBox styleClass="activity-tile, activity-tile-green" spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label text="COMPLETED (LAST 30 DAYS)" styleClass="stat-caption"/>
+                            <Label fx:id="completed30Label" text="0" styleClass="stat-value-sm, stat-value-green"/>
+                        </VBox>
+
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+
+                <!-- Service Summary card -->
+                <VBox styleClass="card">
+                    <HBox styleClass="card-header">
+                        <Label text="SERVICE SUMMARY" styleClass="card-header-label"/>
+                    </HBox>
+                    <GridPane styleClass="card-body" hgap="16" vgap="14">
+                        <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+                        <Label text="TOTAL SERVICES" styleClass="field-caption" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                        <Label fx:id="totalServicesLabel" text="0" styleClass="stat-value-sm" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <Label text="COMPLETED SERVICES" styleClass="field-caption" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                        <Label fx:id="completedServicesLabel" text="0" styleClass="stat-value-sm, stat-value-green" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                        <Label text="PENDING SERVICES" styleClass="field-caption" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <Label fx:id="pendingServicesLabel" text="0" styleClass="stat-value-sm, stat-value-blue" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                        <Label text="SERVICE COMPLETION RATE" styleClass="field-caption" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        <Label fx:id="serviceRateLabel" text="0%" styleClass="stat-value-sm" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                        <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                            <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</VBox>

@@ -15,10 +15,10 @@ import java.io.IOException;
 
 @Component
 public class StageInitializer implements ApplicationListener<StageReadyEvent> {
-    @Value("classpath:/service-tracker.fxml")
+    @Value("classpath:/container.fxml")
     private Resource ServiceResource;
-    private String applicationTitle;
-    private ApplicationContext applicationContext;
+    private final String applicationTitle;
+    private final ApplicationContext applicationContext;
 
     public StageInitializer(@Value("${spring.application.ui.title}")
                             String applicationTitle,
@@ -32,7 +32,7 @@ public class StageInitializer implements ApplicationListener<StageReadyEvent> {
     public void onApplicationEvent(StageReadyEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ServiceResource.getURL());
-            fxmlLoader.setControllerFactory(aClass -> applicationContext.getBean(aClass));
+            fxmlLoader.setControllerFactory(applicationContext::getBean);
             Parent parent = fxmlLoader.load();
 
             Stage stage = event.getStage();

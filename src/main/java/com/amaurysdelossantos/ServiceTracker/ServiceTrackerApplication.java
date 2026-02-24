@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ServiceTrackerApplication {
 
     public static void main(String[] args) {
-
+        System.setProperty("https.agent", "ServiceTracker/1.0 amaurydlsm@gmail.com");
         Application.launch(ServiceApplication.class, args);
     }
 

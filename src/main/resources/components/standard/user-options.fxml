@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox styleClass="user-options-root" xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Options.UserOptionsController">
+
+    <!-- User Info Header -->
+    <VBox styleClass="user-info-section">
+        <Label fx:id="userNameLabel" styleClass="user-name-label" text="Full Name" />
+        <Label fx:id="userEmailLabel" styleClass="user-email-label" text="email@example.com" />
+    </VBox>
+
+    <Separator styleClass="user-options-separator" />
+
+    <!-- Actions -->
+    <VBox styleClass="user-actions-section">
+        <Button fx:id="settingsBtn" maxWidth="1.7976931348623157E308"
+                styleClass="user-option-btn" text="Settings" />
+        <Button fx:id="logoutBtn" maxWidth="1.7976931348623157E308"
+                styleClass="logout-btn" text="Log out" />
+    </VBox>
+
+</VBox>

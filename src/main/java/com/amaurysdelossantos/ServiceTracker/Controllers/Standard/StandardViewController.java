@@ -2,12 +2,15 @@ package com.amaurysdelossantos.ServiceTracker.Controllers.Standard;
 
 //import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 
+import com.amaurysdelossantos.ServiceTracker.Services.MainService;
+import com.amaurysdelossantos.ServiceTracker.Services.ServiceTrackerService;
 import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ActivityFilter;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceFilter;
-import com.amaurysdelossantos.ServiceTracker.models.enums.StandardView;
 import com.amaurysdelossantos.ServiceTracker.models.enums.TimeFilter;
+import com.amaurysdelossantos.ServiceTracker.models.enums.views.ServiceView;
+import com.amaurysdelossantos.ServiceTracker.models.enums.views.StandardView;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,6 +18,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -30,6 +34,9 @@ public class StandardViewController {
 
     @FXML
     public AnchorPane centerPane;
+
+    @FXML
+    public Pane onSwitchViewButton;
 
     @FXML
     private ToggleButton ListViewToggleButton;
@@ -70,6 +77,9 @@ public class StandardViewController {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private ServiceTrackerService serviceTrackerService;
+
     private ObservableList<ServiceItem> allItems;
     private List<ServiceItem> filterItems;
 
@@ -108,12 +118,17 @@ public class StandardViewController {
 
         clearButton.setOnAction(e -> clearFilters());
 
+        onSwitchViewButton.setOnMouseClicked( e-> {
+            serviceTrackerService.activeViewProperty().setValue(ServiceView.MAP);
+        });
+
         allItems = topStateService.getItems();
         ammountOfItemsInViewText.textProperty().bind(
                 Bindings.size(allItems).asString("SHOWING %d ITEMS")
         );
 
         attachButtonAnimation(clearButton);
+        attachButtonAnimation(onSwitchViewButton);
         attachToggleAnimation(ListViewToggleButton);
         attachToggleAnimation(activeCompletedToggleButton);
         attachToggleAnimation(activeServiceToggleButton);
@@ -144,11 +159,12 @@ public class StandardViewController {
 
     private void clearFilters() {
 
+
         statusGroup.selectToggle(activeServiceToggleButton);
         topStateService.getActivityFilter().setValue(ActivityFilter.ACTIVE);
 
-//        viewGroup.selectToggle(CardViewToggleButton);
-//        topStateService.getServiceFilter().setValue(ServiceFilter.ALL);
+        filterServiceChoiceBox.setValue(ServiceFilter.ALL);
+        topStateService.getServiceFilter().setValue(ServiceFilter.ALL);
 
         filterTimeChoiceBox.setValue(TimeFilter.TODAY);
         topStateService.getTimeFilter().setValue(TimeFilter.TODAY);
@@ -207,7 +223,6 @@ public class StandardViewController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 }
