@@ -15,10 +15,10 @@ import java.io.IOException;
 
 @Component
 public class StageInitializer implements ApplicationListener<StageReadyEvent> {
-    @Value("classpath:/container.fxml")
-    private Resource ServiceResource;
     private final String applicationTitle;
     private final ApplicationContext applicationContext;
+    @Value("classpath:/container.fxml")
+    private Resource ServiceResource;
 
     public StageInitializer(@Value("${spring.application.ui.title}")
                             String applicationTitle,

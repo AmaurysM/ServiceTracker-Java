@@ -1,4 +1,4 @@
-package com.amaurysdelossantos.ServiceTracker.Controllers.Map;
+package com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab;
 
 import com.amaurysdelossantos.ServiceTracker.Services.MapService;
 import javafx.fxml.FXML;
@@ -9,20 +9,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class TabPlacementPanelController {
+public class DrawingPanelController {
     @FXML
     private AnchorPane exitButton;
 
     @Autowired
     private MapService mapService;
 
-    public void initialize(){
-        exitButton.setOnMouseClicked( e -> {
+    public void initialize() {
+        exitButton.setOnMouseClicked(e -> {
             handledExit();
         });
     }
 
-    private void handledExit(){
+    private void handledExit() {
         mapService.tabOpenProperty().set(false);
         System.out.println("HandleExit: CLOSE");
     }

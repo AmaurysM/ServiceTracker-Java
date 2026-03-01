@@ -3,7 +3,6 @@ package com.amaurysdelossantos.ServiceTracker.Controllers.Map;
 import com.amaurysdelossantos.ServiceTracker.Services.MapService;
 import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
-import com.amaurysdelossantos.ServiceTracker.models.enums.views.TabView;
 import fxmapcontrol.*;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -12,7 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -25,36 +23,42 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
 public class MapViewController {
 
-    @FXML private fxmapcontrol.Map fxMap;
-    @FXML private Text coordText;
-    @FXML private Text itemCountText;
-
-    @Autowired private StandardControlsService standardControlsService;
-    @Autowired private MongoTemplate            mongoTemplate;
-    @Autowired private ApplicationContext applicationContext;
-    @Autowired private MapService mapService;
-    private Pane markerPane;
-
-    private final Map<String, AircraftMarkerController> markers = new HashMap<>();
-    private String selectedId = null;
-
-    @FXML private TabPane rightTabPane;
-    @FXML private Tab     dummyTab;
-    @FXML private Tab     tabFilters;
-    @FXML private Tab     tabDrawing;
-    @FXML private Tab     tabPlacement;
-
-    @FXML private VBox tabContent;
-
     private static final double PANEL_WIDTH = 260.0;
+    private final Map<String, AircraftMarkerController> markers = new HashMap<>();
+    @FXML
+    private fxmapcontrol.Map fxMap;
+    @FXML
+    private Text coordText;
+    @FXML
+    private Text itemCountText;
+    @Autowired
+    private StandardControlsService standardControlsService;
+    @Autowired
+    private MongoTemplate mongoTemplate;
+    @Autowired
+    private ApplicationContext applicationContext;
+    @Autowired
+    private MapService mapService;
+    private Pane markerPane;
+    private String selectedId = null;
+    @FXML
+    private TabPane rightTabPane;
+    @FXML
+    private Tab dummyTab;
+    @FXML
+    private Tab tabFilters;
+    @FXML
+    private Tab tabDrawing;
+    @FXML
+    private Tab tabPlacement;
+    @FXML
+    private VBox tabContent;
 
     @FXML
     public void initialize() {
@@ -73,10 +77,10 @@ public class MapViewController {
         markerPane.prefHeightProperty().bind(fxMap.heightProperty());
         fxMap.getChildren().add(markerPane);
 
-        fxMap.centerProperty().addListener((o, p, n)    -> relocateAll());
+        fxMap.centerProperty().addListener((o, p, n) -> relocateAll());
         fxMap.zoomLevelProperty().addListener((o, p, n) -> relocateAll());
-        fxMap.widthProperty().addListener((o, p, n)     -> relocateAll());
-        fxMap.heightProperty().addListener((o, p, n)    -> relocateAll());
+        fxMap.widthProperty().addListener((o, p, n) -> relocateAll());
+        fxMap.heightProperty().addListener((o, p, n) -> relocateAll());
 
         standardControlsService.getItems().forEach(this::addOrUpdateMarker);
         updateCount();
@@ -91,7 +95,7 @@ public class MapViewController {
             updateCount();
         });
 
-        mapService.tabOpenProperty().addListener((e, oldVal, newVal ) -> {
+        mapService.tabOpenProperty().addListener((e, oldVal, newVal) -> {
             if (!newVal) {
                 collapsePanel();
             } else {
@@ -125,7 +129,7 @@ public class MapViewController {
         tabContent.setMaxWidth(PANEL_WIDTH);
     }
 
-    private void renderTab(){
+    private void renderTab() {
         try {
             if (rightTabPane.getSelectionModel().getSelectedItem().equals(tabFilters)) {
                 tabContent.getChildren().clear();
@@ -146,7 +150,7 @@ public class MapViewController {
                 tabContent.getChildren().add(child);
                 return;
             }
-            if (rightTabPane.getSelectionModel().getSelectedItem().equals(tabPlacement)){
+            if (rightTabPane.getSelectionModel().getSelectedItem().equals(tabPlacement)) {
                 tabContent.getChildren().clear();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/map/tab/placement-panel.fxml"));
                 loader.setControllerFactory(applicationContext::getBean);
@@ -155,7 +159,7 @@ public class MapViewController {
                 tabContent.getChildren().add(child);
                 return;
             }
-            if (rightTabPane.getSelectionModel().getSelectedItem().equals(dummyTab)){
+            if (rightTabPane.getSelectionModel().getSelectedItem().equals(dummyTab)) {
                 tabContent.getChildren().clear();
                 return;
             }
@@ -238,7 +242,10 @@ public class MapViewController {
         AircraftMarkerController ctrl = markers.get(itemId);
         if (ctrl != null) {
             Map<String, Object> mp = AircraftMarkerController.mapPosition(ctrl.getItem());
-            if (mp != null) { mp.put("x", x); mp.put("y", y); }
+            if (mp != null) {
+                mp.put("x", x);
+                mp.put("y", y);
+            }
         }
         Thread t = new Thread(() ->
                 mongoTemplate.updateFirst(

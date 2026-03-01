@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/17"
+      stylesheets="@/components/map/tab/item/item-styles.css"
+      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab.Item.FilterItemController">
+
+    <!-- Collapsed row -->
+    <HBox fx:id="rowHeader"
+          alignment="CENTER_LEFT"
+          spacing="6"
+          styleClass="filter-item-row border-slate"
+          onMouseClicked="#onToggleExpand"
+    >
+
+        <HBox alignment="CENTER_LEFT"
+              spacing="4"
+              HBox.hgrow="ALWAYS"
+              minWidth="0">
+            <Label fx:id="tailLabel"
+                   styleClass="filter-tail"
+                   text="N12345"/>
+            <Label fx:id="npBadge"
+                   styleClass="filter-np-badge"
+                   text="NP"
+                   visible="false"
+                   managed="false"/>
+        </HBox>
+
+        <HBox fx:id="serviceDotsBox"
+              alignment="CENTER_RIGHT"
+              spacing="2"/>
+
+        <Label fx:id="expandArrow"
+               styleClass="filter-expand-arrow"
+               text="▶"/>
+    </HBox>
+
+    <!-- Expanded detail pane -->
+    <VBox fx:id="detailPane"
+          spacing="5"
+          styleClass="filter-detail-pane"
+          visible="false"
+          managed="false">
+
+        <HBox fx:id="timesBox"
+              spacing="10"
+              visible="false"
+              managed="false">
+
+            <HBox spacing="3">
+                <Label text="Arr:" styleClass="count-label"/>
+                <Label fx:id="arrivalLabel"
+                       text="—"
+                       styleClass="filter-detail-time"/>
+            </HBox>
+
+            <HBox spacing="3">
+                <Label text="Dep:" styleClass="count-label"/>
+                <Label fx:id="departureLabel"
+                       text="—"
+                       styleClass="filter-detail-time"/>
+            </HBox>
+        </HBox>
+
+        <HBox fx:id="serviceChipsBox" spacing="3"/>
+
+        <HBox spacing="6" alignment="CENTER_LEFT">
+            <Label fx:id="noteLabel"
+                   wrapText="true"
+                   maxWidth="200"
+                   styleClass="filter-detail-note"/>
+
+            <Label fx:id="completedBadge"
+                   text="✓"
+                   visible="false"
+                   managed="false"
+                   style="-fx-background-color:#DCFCE7;
+                          -fx-text-fill:#15803D;
+                          -fx-font-size:8px;
+                          -fx-font-weight:bold;
+                          -fx-padding:1 4 1 4;"/>
+        </HBox>
+    </VBox>
+
+</VBox>

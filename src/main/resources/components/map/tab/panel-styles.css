@@ -1,6 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    panel-styles.css  –  shared styles for Filters / Drawing / Placement panels
-   Mirrors the Next.js sidebar components exactly.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── Root ──────────────────────────────────────────────────────────────────── */
@@ -10,7 +9,7 @@
 
 /* ── Header ─────────────────────────────────────────────────────────────────── */
 .panel-header {
-    -fx-background-color: #0F172A;   /* slate-900 */
+    -fx-background-color: #0F172A;
     -fx-pref-height: 36;
     -fx-min-height: 36;
     -fx-max-height: 36;
@@ -25,16 +24,14 @@
     -fx-font-family: "Monospace";
     -fx-font-size: 12px;
     -fx-font-weight: bold;
-    /* letter-spacing not supported natively, monospace gives the tracker feel */
 }
 
-/* Header variant — green when drawing active */
 .panel-header-drawing {
-    -fx-background-color: #166534;   /* green-800 */
+    -fx-background-color: #166534;
 }
 
 .panel-close-btn {
-    -fx-background-color: #DC2626;   /* red-600 */
+    -fx-background-color: #DC2626;
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
@@ -54,14 +51,14 @@
 
 /* ── Generic section blocks ─────────────────────────────────────────────────── */
 .panel-section {
-    -fx-background-color: #F9FAFB;   /* gray-50/50 */
+    -fx-background-color: #F9FAFB;
     -fx-border-color: #E5E7EB;
     -fx-border-width: 0 0 1 0;
     -fx-padding: 8 12 8 12;
 }
 
 .panel-section-blue {
-    -fx-background-color: #EFF6FF;   /* blue-50 */
+    -fx-background-color: #EFF6FF;
     -fx-border-color: #E5E7EB;
     -fx-border-width: 0 0 1 0;
     -fx-padding: 6 12 6 12;
@@ -76,7 +73,7 @@
 
 /* ── Labels ─────────────────────────────────────────────────────────────────── */
 .section-label {
-    -fx-text-fill: #374151;          /* gray-700 */
+    -fx-text-fill: #374151;
     -fx-font-size: 9px;
     -fx-font-weight: bold;
     -fx-font-family: "Monospace";
@@ -120,7 +117,7 @@
 }
 
 .tips-title {
-    -fx-text-fill: #1E3A5F;          /* blue-900 */
+    -fx-text-fill: #1E3A5F;
     -fx-font-size: 9px;
     -fx-font-weight: bold;
     -fx-font-family: "Monospace";
@@ -170,9 +167,66 @@
     -fx-font-size: 11px;
 }
 
+/* ── Checkbox — modern blue/slate ────────────────────────────────────────────
+   Replaces the dated default JavaFX checkbox look with a clean, squared
+   component that matches the rest of the panel's blue/slate design language.
+   ─────────────────────────────────────────────────────────────────────────── */
 .panel-checkbox {
-    -fx-box-border-color: #D1D5DB;
-    -fx-mark-color: #2563EB;
+    -fx-mark-color: #FFFFFF;
+    -fx-background-color: transparent;
+}
+
+/* The box: crisp slate border, white fill, slightly rounded corners */
+.panel-checkbox .box {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #94A3B8;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-pref-width: 14;
+    -fx-pref-height: 14;
+    -fx-min-width: 14;
+    -fx-min-height: 14;
+}
+
+/* Hover: blue border + very light blue tint signals interactivity */
+.panel-checkbox:hover .box {
+    -fx-border-color: #2563EB;
+    -fx-background-color: #EFF6FF;
+}
+
+/* Checked: solid brand blue fill, white mark */
+.panel-checkbox:selected .box {
+    -fx-background-color: #2563EB;
+    -fx-border-color: #2563EB;
+}
+
+.panel-checkbox:selected:hover .box {
+    -fx-background-color: #1D4ED8;
+    -fx-border-color: #1D4ED8;
+}
+
+/* White checkmark */
+.panel-checkbox .mark {
+    -fx-background-color: #FFFFFF;
+    -fx-scale-x: 0.7;
+    -fx-scale-y: 0.7;
+}
+
+/* Focused: subtle blue glow ring for keyboard accessibility */
+.panel-checkbox:focused .box {
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.35), 4, 0.5, 0, 0);
+}
+
+/* Disabled states */
+.panel-checkbox:disabled .box {
+    -fx-background-color: #F3F4F6;
+    -fx-border-color: #D1D5DB;
+}
+
+.panel-checkbox:selected:disabled .box {
+    -fx-background-color: #BFDBFE;
+    -fx-border-color: #BFDBFE;
 }
 
 /* ── Slider ─────────────────────────────────────────────────────────────────── */
@@ -243,18 +297,14 @@
     -fx-text-fill: #FFFFFF;
 }
 
-.draw-toggle-off:hover {
-    -fx-background-color: #1D4ED8;
-}
+.draw-toggle-off:hover { -fx-background-color: #1D4ED8; }
 
 .draw-toggle-on {
     -fx-background-color: #DC2626;
     -fx-text-fill: #FFFFFF;
 }
 
-.draw-toggle-on:hover {
-    -fx-background-color: #B91C1C;
-}
+.draw-toggle-on:hover { -fx-background-color: #B91C1C; }
 
 /* ── Mode buttons ────────────────────────────────────────────────────────────── */
 .mode-btn {
@@ -268,9 +318,7 @@
     -fx-cursor: hand;
 }
 
-.mode-btn:hover {
-    -fx-background-color: #F3F4F6;
-}
+.mode-btn:hover { -fx-background-color: #F3F4F6; }
 
 .mode-btn-active-pen {
     -fx-background-color: #2563EB;
@@ -279,7 +327,7 @@
 }
 
 .mode-btn-active-eraser {
-    -fx-background-color: #DB2777;   /* pink-600 */
+    -fx-background-color: #DB2777;
     -fx-text-fill: #FFFFFF;
     -fx-border-color: #DB2777;
 }
@@ -296,9 +344,7 @@
     -fx-cursor: hand;
 }
 
-.ctrl-btn:hover {
-    -fx-background-color: #F3F4F6;
-}
+.ctrl-btn:hover { -fx-background-color: #F3F4F6; }
 
 .ctrl-btn:disabled {
     -fx-background-color: #E5E7EB;
@@ -352,7 +398,7 @@
 
 .ctrl-btn-blue:hover { -fx-background-color: #1D4ED8; }
 
-/* ── Color swatch border indicator ──────────────────────────────────────────── */
+/* ── Color swatch ────────────────────────────────────────────────────────────── */
 .color-swatch-border {
     -fx-stroke: #374151;
     -fx-stroke-width: 1;
@@ -396,7 +442,7 @@
     -fx-cursor: move;
 }
 
-/* ── Aircraft card (used inside placement list cells) ────────────────────────── */
+/* ── Aircraft card ────────────────────────────────────────────────────────────── */
 .aircraft-card {
     -fx-background-color: #FFFFFF;
     -fx-border-color: #E5E7EB;
@@ -405,7 +451,7 @@
 }
 
 .aircraft-card-header {
-    -fx-background-color: #1E293B;  /* slate-800 */
+    -fx-background-color: #1E293B;
     -fx-padding: 4 10 4 10;
 }
 
@@ -451,7 +497,6 @@
     -fx-background-color: #F3F4F6;
 }
 
-/* left accent borders */
 .border-slate  { -fx-border-color: #0F172A; -fx-border-width: 0 0 0 3; }
 .border-orange { -fx-border-color: #F97316; -fx-border-width: 0 0 0 3; }
 .border-green  { -fx-border-color: #16A34A; -fx-border-width: 0 0 0 3; }
@@ -476,7 +521,6 @@
     -fx-font-size: 9px;
 }
 
-/* expanded detail rows */
 .filter-detail-pane {
     -fx-background-color: #F9FAFB;
     -fx-padding: 4 8 6 11;

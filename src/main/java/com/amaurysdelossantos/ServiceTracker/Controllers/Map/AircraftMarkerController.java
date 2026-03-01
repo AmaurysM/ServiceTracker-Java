@@ -30,37 +30,40 @@ import java.util.function.Consumer;
 @Scope("prototype")
 public class AircraftMarkerController {
 
-    @FXML private StackPane root;
-    @FXML private StackPane innerRotating;
-    @FXML private Circle    selectionRing;
-    @FXML private Circle    rotateHandle;
-    @FXML private SVGPath   planeIcon;
-    @FXML private StackPane labelContainer;
-    @FXML private Label     tailLabel;
-    @FXML private HBox      serviceBar;
-
+    private static final long DBL_CLICK_MS = 300;
+    @FXML
+    private StackPane root;
+    @FXML
+    private StackPane innerRotating;
+    @FXML
+    private Circle selectionRing;
+    @FXML
+    private Circle rotateHandle;
+    @FXML
+    private SVGPath planeIcon;
+    @FXML
+    private StackPane labelContainer;
+    @FXML
+    private Label tailLabel;
+    @FXML
+    private HBox serviceBar;
     private double posX;
     private double posY;
     private double rotation = 0;
-
     private ServiceItem item;
-    private MapBase     map;
-    private boolean     selected = false;
-
-    private enum DragMode { NONE, MOVE, ROTATE }
+    private MapBase map;
+    private boolean selected = false;
     private DragMode dragMode = DragMode.NONE;
 
-    private double  dragOffsetX, dragOffsetY;
-    private double  rotateCenterX, rotateCenterY;
-    private double  rotationOffset;
-    private boolean hasDragged  = false;
-    private long    lastClickMs = 0;
-    private static final long DBL_CLICK_MS = 300;
-
-    private Consumer<AircraftMarkerController>  onSelect;
-    private Consumer<AircraftMarkerController>  onContextMenu;
+    private double dragOffsetX, dragOffsetY;
+    private double rotateCenterX, rotateCenterY;
+    private double rotationOffset;
+    private boolean hasDragged = false;
+    private long lastClickMs = 0;
+    private Consumer<AircraftMarkerController> onSelect;
+    private Consumer<AircraftMarkerController> onContextMenu;
     private TriConsumer<String, Double, Double> onPositionUpdate;
-    private BiConsumer<String, Double>          onRotationUpdate;
+    private BiConsumer<String, Double> onRotationUpdate;
 
     public static AircraftMarkerController create(ServiceItem item, MapBase map) {
         try {
@@ -76,14 +79,48 @@ public class AircraftMarkerController {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> mapPosition(ServiceItem item) {
+        if (item.getMetadata() == null) return null;
+        Object mp = item.getMetadata().get("mapPosition");
+        return (mp instanceof Map<?, ?> m) ? (Map<String, Object>) m : null;
+    }
+
     // ── Lifecycle ─────────────────────────────────────────────────────────────
+
+    public static boolean hasMapPosition(ServiceItem item) {
+        return mapPosition(item) != null;
+    }
+
+    private static double angleTo(double cx, double cy, double px, double py) {
+        return Math.toDegrees(Math.atan2(py - cy, px - cx)) + 90.0;
+    }
+
+    // ── Public API ────────────────────────────────────────────────────────────
+
+    private static double norm(double a) {
+        double n = a % 360;
+        return n < 0 ? n + 360 : n;
+    }
+
+    private static String serviceColor(ServiceType type) {
+        return switch (type) {
+            case FUEL -> "#f59e0b";
+            case CATERING -> "#10b981";
+            case GPU -> "#8b5cf6";
+            case LAVATORY -> "#06b6d4";
+            case POTABLE_WATER -> "#3b82f6";
+            case WINDSHIELD_CLEANING -> "#f97316";
+            case OIL_SERVICE -> "#ef4444";
+        };
+    }
 
     @FXML
     public void initialize() { /* real wiring in init() after FXMLLoader finishes */ }
 
     private void init(ServiceItem item, MapBase map) {
         this.item = item;
-        this.map  = map;
+        this.map = map;
         readPosition();
         rebuildLabel();
         wireEvents();
@@ -91,21 +128,42 @@ public class AircraftMarkerController {
         relocate();
     }
 
-    // ── Public API ────────────────────────────────────────────────────────────
+    public StackPane getNode() {
+        return root;
+    }
 
-    public StackPane   getNode() { return root; }
-    public ServiceItem getItem() { return item; }
-    public String      getId()   { return item.getId(); }
+    public ServiceItem getItem() {
+        return item;
+    }
 
-    public void setOnSelect(Consumer<AircraftMarkerController> cb)         { onSelect = cb; }
-    public void setOnContextMenu(Consumer<AircraftMarkerController> cb)     { onContextMenu = cb; }
-    public void setOnPositionUpdate(TriConsumer<String, Double, Double> cb) { onPositionUpdate = cb; }
-    public void setOnRotationUpdate(BiConsumer<String, Double> cb)          { onRotationUpdate = cb; }
+    public String getId() {
+        return item.getId();
+    }
+
+    public void setOnSelect(Consumer<AircraftMarkerController> cb) {
+        onSelect = cb;
+    }
+
+    public void setOnContextMenu(Consumer<AircraftMarkerController> cb) {
+        onContextMenu = cb;
+    }
+
+    public void setOnPositionUpdate(TriConsumer<String, Double, Double> cb) {
+        onPositionUpdate = cb;
+    }
+
+    // ── Visuals ───────────────────────────────────────────────────────────────
+
+    public void setOnRotationUpdate(BiConsumer<String, Double> cb) {
+        onRotationUpdate = cb;
+    }
 
     public void setSelected(boolean sel) {
         selected = sel;
         refreshVisuals();
     }
+
+    // ── Events ────────────────────────────────────────────────────────────────
 
     /**
      * Call this when the live change-stream pushes an updated ServiceItem.
@@ -119,17 +177,19 @@ public class AircraftMarkerController {
         relocate();
     }
 
-    /** Re-project lat/lng → pixels after a map pan / zoom / resize. */
+    // ── Coordinate helpers ────────────────────────────────────────────────────
+
+    /**
+     * Re-project lat/lng → pixels after a map pan / zoom / resize.
+     */
     public void relocate() {
         Platform.runLater(() -> {
             Point2D pt = toPixel(posX, posY);
             if (pt == null) return;
-            root.setLayoutX(pt.getX() - root.getWidth()  / 2.0);
+            root.setLayoutX(pt.getX() - root.getWidth() / 2.0);
             root.setLayoutY(pt.getY() - root.getHeight() / 2.0);
         });
     }
-
-    // ── Visuals ───────────────────────────────────────────────────────────────
 
     private void refreshVisuals() {
         boolean allDone = Lib.areAllServicesCompleted(item);
@@ -142,9 +202,9 @@ public class AircraftMarkerController {
 
         labelContainer.getStyleClass()
                 .removeAll("label-default", "label-selected", "label-completed");
-        if      (selected) labelContainer.getStyleClass().add("label-selected");
-        else if (allDone)  labelContainer.getStyleClass().add("label-completed");
-        else               labelContainer.getStyleClass().add("label-default");
+        if (selected) labelContainer.getStyleClass().add("label-selected");
+        else if (allDone) labelContainer.getStyleClass().add("label-completed");
+        else labelContainer.getStyleClass().add("label-default");
 
         innerRotating.setRotate(rotation);
     }
@@ -175,7 +235,7 @@ public class AircraftMarkerController {
         }
     }
 
-    // ── Events ────────────────────────────────────────────────────────────────
+    // ── Static metadata helpers ───────────────────────────────────────────────
 
     private void wireEvents() {
         root.setCursor(Cursor.HAND);
@@ -183,9 +243,9 @@ public class AircraftMarkerController {
         // ── Move drag ────────────────────────────────────────────────────────
         root.setOnMousePressed(e -> {
             if (!e.isPrimaryButtonDown()) return;
-            hasDragged  = false;
-            dragMode    = DragMode.MOVE;
-            Point2D pt  = toPixel(posX, posY);
+            hasDragged = false;
+            dragMode = DragMode.MOVE;
+            Point2D pt = toPixel(posX, posY);
             if (pt != null) {
                 dragOffsetX = e.getSceneX() - pt.getX();
                 dragOffsetY = e.getSceneY() - pt.getY();
@@ -197,13 +257,13 @@ public class AircraftMarkerController {
         root.setOnMouseDragged(e -> {
             if (dragMode == DragMode.MOVE) {
                 hasDragged = true;
-                double sx  = e.getSceneX() - dragOffsetX;
-                double sy  = e.getSceneY() - dragOffsetY;
+                double sx = e.getSceneX() - dragOffsetX;
+                double sy = e.getSceneY() - dragOffsetY;
                 Location loc = toLatLng(sx, sy);
                 if (loc != null) {
                     posX = loc.getLatitude();
                     posY = loc.getLongitude();
-                    root.setLayoutX(sx - root.getWidth()  / 2.0);
+                    root.setLayoutX(sx - root.getWidth() / 2.0);
                     root.setLayoutY(sy - root.getHeight() / 2.0);
                     if (onPositionUpdate != null)
                         onPositionUpdate.accept(getId(), posX, posY);
@@ -264,8 +324,8 @@ public class AircraftMarkerController {
             if (!e.isPrimaryButtonDown()) return;
             dragMode = DragMode.ROTATE;
             Bounds b = innerRotating.localToScene(innerRotating.getBoundsInLocal());
-            rotateCenterX  = b.getCenterX();
-            rotateCenterY  = b.getCenterY();
+            rotateCenterX = b.getCenterX();
+            rotateCenterY = b.getCenterY();
             rotationOffset = rotation
                     - angleTo(rotateCenterX, rotateCenterY, e.getSceneX(), e.getSceneY());
             rotateHandle.setCursor(Cursor.CROSSHAIR);
@@ -274,71 +334,42 @@ public class AircraftMarkerController {
         // Drag and release for the handle bubble up to root's handlers naturally.
     }
 
-    // ── Coordinate helpers ────────────────────────────────────────────────────
-
     /**
      * Reads metadata.mapPosition using the real MongoDB keys:
-     *   x → latitude
-     *   y → longitude
-     *   rotation → degrees
+     * x → latitude
+     * y → longitude
+     * rotation → degrees
      */
     private void readPosition() {
         Map<String, Object> mp = mapPosition(item);
         if (mp == null) return;
-        if (mp.get("x")        instanceof Number n) posX     = n.doubleValue();
-        if (mp.get("y")        instanceof Number n) posY     = n.doubleValue();
+        if (mp.get("x") instanceof Number n) posX = n.doubleValue();
+        if (mp.get("y") instanceof Number n) posY = n.doubleValue();
         if (mp.get("rotation") instanceof Number n) rotation = n.doubleValue();
     }
 
+    // ── Math helpers ──────────────────────────────────────────────────────────
+
     private Point2D toPixel(double lat, double lng) {
-        try { return map.locationToView(new Location(lat, lng)); }
-        catch (Exception e) { return null; }
+        try {
+            return map.locationToView(new Location(lat, lng));
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private Location toLatLng(double sceneX, double sceneY) {
         try {
             Point2D local = map.sceneToLocal(sceneX, sceneY);
             return map.viewToLocation(local);
-        } catch (Exception e) { return null; }
-    }
-
-    // ── Static metadata helpers ───────────────────────────────────────────────
-
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> mapPosition(ServiceItem item) {
-        if (item.getMetadata() == null) return null;
-        Object mp = item.getMetadata().get("mapPosition");
-        return (mp instanceof Map<?, ?> m) ? (Map<String, Object>) m : null;
-    }
-
-    public static boolean hasMapPosition(ServiceItem item) {
-        return mapPosition(item) != null;
-    }
-
-    // ── Math helpers ──────────────────────────────────────────────────────────
-
-    private static double angleTo(double cx, double cy, double px, double py) {
-        return Math.toDegrees(Math.atan2(py - cy, px - cx)) + 90.0;
-    }
-
-    private static double norm(double a) {
-        double n = a % 360;
-        return n < 0 ? n + 360 : n;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     // ── Service colours ───────────────────────────────────────────────────────
 
-    private static String serviceColor(ServiceType type) {
-        return switch (type) {
-            case FUEL                -> "#f59e0b";
-            case CATERING            -> "#10b981";
-            case GPU                 -> "#8b5cf6";
-            case LAVATORY            -> "#06b6d4";
-            case POTABLE_WATER       -> "#3b82f6";
-            case WINDSHIELD_CLEANING -> "#f97316";
-            case OIL_SERVICE         -> "#ef4444";
-        };
-    }
+    private enum DragMode {NONE, MOVE, ROTATE}
 
     // ── Functional interface ──────────────────────────────────────────────────
 

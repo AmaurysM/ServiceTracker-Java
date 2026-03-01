@@ -1,28 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="267.0"
+      stylesheets="@/components/map/tab/panel-styles.css" xmlns="http://javafx.com/javafx/17.0.12"
+      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab.FiltersPanelController">
 
-<AnchorPane prefHeight="512.0" prefWidth="267.0" stylesheets="@/components/map/tab/panel-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab.FiltersPanelController">
-    <!-- Blurred Background Layer -->
+    <!-- ── Header ─────────────────────────────────────────────────────── -->
+    <HBox alignment="CENTER_LEFT" styleClass="panel-header">
+        <HBox alignment="CENTER_LEFT" styleClass="panel-header-title" HBox.hgrow="ALWAYS">
+            <Text fill="WHITE" styleClass="panel-title-text" text="FILTERS"/>
+        </HBox>
+        <Button fx:id="exitButton" styleClass="panel-close-btn" text="✕"/>
+    </HBox>
 
-    <AnchorPane prefHeight="47.0" prefWidth="213.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="54.0" AnchorPane.topAnchor="0.0">
-        <Text layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filters" AnchorPane.bottomAnchor="9.478515625" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="136.158203125" AnchorPane.topAnchor="8.259765625">
-            <font>
-                <Font name="System Bold" size="22.0" />
-            </font>
-        </Text>
-    </AnchorPane>
-    <AnchorPane fx:id="exitButton" layoutX="211.0" layoutY="14.0" prefHeight="47.0" prefWidth="50.0" AnchorPane.leftAnchor="217.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <Text layoutX="21.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
-      <cursor>
-         <Cursor fx:constant="HAND" />
-      </cursor>
-    </AnchorPane>
-    <AnchorPane layoutY="50.0" prefHeight="159.0" prefWidth="267.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
-        <TextField fx:id="searchBar" layoutY="14.0" prefHeight="25.0" prefWidth="267.0" AnchorPane.bottomAnchor="423.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="14.0" />
-    </AnchorPane>
-</AnchorPane>
+    <!-- ── Search + Service filter ───────────────────────────────────── -->
+    <HBox spacing="8" styleClass="panel-section">
+        <!-- Tail search -->
+        <VBox spacing="3" HBox.hgrow="ALWAYS">
+            <Text styleClass="section-label" text="TAIL"/>
+            <TextField fx:id="searchBar" maxWidth="Infinity" prefHeight="26" promptText="Search..."
+                       styleClass="panel-input"/>
+        </VBox>
+        <!-- Service combo -->
+        <VBox prefWidth="100" spacing="3">
+            <Text styleClass="section-label" text="SERVICE"/>
+            <ComboBox fx:id="serviceFilter" prefHeight="26" prefWidth="100" styleClass="panel-combo"/>
+        </VBox>
+    </HBox>
+
+    <!-- ── Placement filter tabs ──────────────────────────────────────── -->
+    <HBox styleClass="placement-tab-row">
+        <Button fx:id="tabAll" maxWidth="Infinity" styleClass="placement-tab,placement-tab-active" text="All (0)"
+                HBox.hgrow="ALWAYS"/>
+        <Button fx:id="tabPlaced" maxWidth="Infinity" styleClass="placement-tab" text="Placed (0)" HBox.hgrow="ALWAYS"/>
+        <Button fx:id="tabNotPlaced" maxWidth="Infinity" styleClass="placement-tab" text="Not Placed (0)"
+                HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- ── Labels / Display toggles + counts ─────────────────────────── -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="panel-section-blue">
+        <!-- Toggles -->
+        <HBox alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
+            <CheckBox fx:id="showLabelsCheck" styleClass="panel-checkbox">
+                <graphic>
+                    <Text styleClass="toggle-label" text="Labels"/>
+                </graphic>
+            </CheckBox>
+            <!-- Fixed size — shown only when Labels is checked; controller toggles visibility -->
+            <CheckBox fx:id="fixedLabelSizeCheck" managed="false" styleClass="panel-checkbox" visible="false">
+                <graphic>
+                    <Text fx:id="fixedLabelText" styleClass="toggle-label" text="Fixed size"/>
+                </graphic>
+            </CheckBox>
+        </HBox>
+        <!-- Counts -->
+        <HBox alignment="CENTER_RIGHT" spacing="2">
+            <Label fx:id="totalCountLabel" styleClass="count-label" text="0"/>
+            <Label styleClass="count-label" text=" total"/>
+            <Label fx:id="onScreenSeparator" styleClass="count-label" text=" · "/>
+            <Label fx:id="onScreenCountLabel" styleClass="count-label" text="0"/>
+            <Label fx:id="onScreenText" styleClass="count-label" text=" on screen"/>
+        </HBox>
+    </HBox>
+
+    <!-- ── Section heading ───────────────────────────────────────────── -->
+    <HBox styleClass="section-heading-row">
+        <Text fx:id="sectionHeading" styleClass="section-heading-text" text="ALL AIRCRAFT"/>
+    </HBox>
+
+    <!-- ── Items list ────────────────────────────────────────────────── -->
+    <ScrollPane fx:id="itemsScrollPane" fitToWidth="true" hbarPolicy="NEVER"
+                style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-width: 0;"
+                styleClass="items-list" VBox.vgrow="ALWAYS">
+        <VBox fx:id="itemsContainer" fillWidth="true"/>
+    </ScrollPane>
+
+</VBox>

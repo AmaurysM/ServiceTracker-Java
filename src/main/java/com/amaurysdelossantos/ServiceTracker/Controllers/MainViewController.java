@@ -2,7 +2,6 @@ package com.amaurysdelossantos.ServiceTracker.Controllers;
 
 import com.amaurysdelossantos.ServiceTracker.Services.MainService;
 import com.amaurysdelossantos.ServiceTracker.models.enums.views.MainView;
-import com.amaurysdelossantos.ServiceTracker.models.enums.views.ServiceView;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -17,17 +16,15 @@ import java.io.IOException;
 @Component
 public class MainViewController {
 
+    @FXML
+    public AnchorPane containerAnchorPane;
     @Autowired
     private ApplicationContext applicationContext;
-
     @Autowired
     private MainService mainService;
 
     @FXML
-    public AnchorPane containerAnchorPane;
-
-    @FXML
-    public void initialize(){
+    public void initialize() {
 
         mainService.activeViewProperty().addListener((e, oldItem, newItem) -> {
             onMainViewChange(newItem);

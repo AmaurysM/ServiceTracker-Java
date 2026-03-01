@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -29,15 +28,14 @@ import static com.amaurysdelossantos.ServiceTracker.Helper.WindowHandler.handleA
 @Component
 public class ServiceTrackerController {
 
-    @Autowired
-    private ApplicationContext applicationContext;
-    @Autowired
-    private StandardControlsService topStateService;
-
     @FXML
     public AnchorPane centerPane;
     @FXML
     public StackPane initialsStackPane;
+    @Autowired
+    private ApplicationContext applicationContext;
+    @Autowired
+    private StandardControlsService topStateService;
     @FXML
     private Text userInitials;
     @FXML

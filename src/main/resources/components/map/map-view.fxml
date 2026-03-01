@@ -1,51 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import fxmapcontrol.*?>
+<?import fxmapcontrol.Map?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="Infinity" maxWidth="Infinity" styleClass="map-root"
+           stylesheets="@map-view-styles.css" xmlns="http://javafx.com/javafx/17.0.12"
+           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.MapViewController">
 
-<StackPane maxHeight="Infinity" maxWidth="Infinity" styleClass="map-root" stylesheets="@map-view-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.MapViewController">
-
-    <Map fx:id="fxMap" center="25.7959,-80.2870" maxHeight="Infinity" maxWidth="Infinity" maxZoomLevel="20" zoomLevel="14" />
+    <Map fx:id="fxMap" center="25.7959,-80.2870" maxHeight="Infinity" maxWidth="Infinity" maxZoomLevel="20"
+         zoomLevel="14"/>
 
     <!-- Layer 1: Tab strip, centered vertically on the right edge -->
-    <VBox alignment="CENTER_RIGHT" maxHeight="Infinity" pickOnBounds="false" prefHeight="Infinity" StackPane.alignment="CENTER_RIGHT">
+    <VBox alignment="CENTER_RIGHT" maxHeight="Infinity" pickOnBounds="false" prefHeight="Infinity"
+          StackPane.alignment="CENTER_RIGHT">
 
-        <TabPane fx:id="rightTabPane" maxWidth="45" pickOnBounds="false" prefWidth="45" side="RIGHT" tabClosingPolicy="UNAVAILABLE">
+        <TabPane fx:id="rightTabPane" maxWidth="45" pickOnBounds="false" prefWidth="45" side="RIGHT"
+                 tabClosingPolicy="UNAVAILABLE">
 
             <Tab fx:id="dummyTab" styleClass="dummy-tab">
-                <StackPane />
+                <StackPane/>
             </Tab>
             <Tab fx:id="tabFilters" text="Filters">
-                <StackPane />
+                <StackPane/>
             </Tab>
             <Tab fx:id="tabDrawing" text="Drawing">
-                <StackPane />
+                <StackPane/>
             </Tab>
             <Tab fx:id="tabPlacement" text="Placement">
-                <StackPane />
+                <StackPane/>
             </Tab>
 
         </TabPane>
     </VBox>
 
     <!-- Layer 2: Content panel overlays on top, slides in from right, covers the tabs -->
-    <VBox fx:id="tabContent" maxHeight="Infinity" maxWidth="0" pickOnBounds="false" prefHeight="Infinity" style="-fx-background-color: RGBA(255, 255, 255, 0.5);" StackPane.alignment="CENTER_RIGHT">
+    <VBox fx:id="tabContent" maxHeight="Infinity" maxWidth="0" pickOnBounds="false" prefHeight="Infinity"
+          style="-fx-background-color: RGBA(255, 255, 255, 0.5);" StackPane.alignment="CENTER_RIGHT">
 
-<!--        <VBox fx:id="filtersPane" visible="false" managed="false"-->
-<!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
-<!--            <Label text="Filters" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
-<!--        </VBox>-->
+        <!--        <VBox fx:id="filtersPane" visible="false" managed="false"-->
+        <!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
+        <!--            <Label text="Filters" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
+        <!--        </VBox>-->
 
-<!--        <VBox fx:id="drawingPane" visible="false" managed="false"-->
-<!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
-<!--            <Label text="Drawing" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
-<!--        </VBox>-->
+        <!--        <VBox fx:id="drawingPane" visible="false" managed="false"-->
+        <!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
+        <!--            <Label text="Drawing" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
+        <!--        </VBox>-->
 
-<!--        <VBox fx:id="placementPane" visible="false" managed="false"-->
-<!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
-<!--            <Label text="Placement" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
-<!--        </VBox>-->
+        <!--        <VBox fx:id="placementPane" visible="false" managed="false"-->
+        <!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
+        <!--            <Label text="Placement" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
+        <!--        </VBox>-->
 
     </VBox>
 

@@ -3,8 +3,9 @@ package com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Options;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -18,68 +19,111 @@ import java.util.Map;
 
 /**
  * Controller for settings-view.fxml.
- *
+ * <p>
  * Mirrors the Next.js settings page:
- *   – Profile tab  : read-only account info + editable profile form
- *   – Statistics tab: company overview, service breakdown, recent activity
- *
+ * – Profile tab  : read-only account info + editable profile form
+ * – Statistics tab: company overview, service breakdown, recent activity
+ * <p>
  * Wire your real services / API calls where the TODO comments appear.
  */
 @Component
 public class UserOptionsController {
 
     // ── Header / tabs ────────────────────────────────────────────────────────
-    @FXML private Button  backBtn;
-    @FXML private Button  profileTabBtn;
-    @FXML private Button  statisticsTabBtn;
+    @FXML
+    private Button backBtn;
+    @FXML
+    private Button profileTabBtn;
+    @FXML
+    private Button statisticsTabBtn;
 
     // ── Tab panes ─────────────────────────────────────────────────────────────
-    @FXML private VBox    profilePane;
-    @FXML private VBox    statisticsPane;
+    @FXML
+    private VBox profilePane;
+    @FXML
+    private VBox statisticsPane;
 
     // ── Notification banner ───────────────────────────────────────────────────
-    @FXML private Label   messageBanner;
+    @FXML
+    private Label messageBanner;
 
     // ── Account info labels ───────────────────────────────────────────────────
-    @FXML private Label   roleLabel;
-    @FXML private Label   companyIdLabel;
-    @FXML private Label   memberSinceLabel;
-    @FXML private Label   lastUpdatedLabel;
+    @FXML
+    private Label roleLabel;
+    @FXML
+    private Label companyIdLabel;
+    @FXML
+    private Label memberSinceLabel;
+    @FXML
+    private Label lastUpdatedLabel;
 
     // ── Profile form fields ───────────────────────────────────────────────────
-    @FXML private TextField firstnameField;
-    @FXML private TextField lastnameField;
-    @FXML private TextField emailField;
-    @FXML private TextField usernameField;
-    @FXML private TextField nicknameField;
-    @FXML private Button    saveBtn;
+    @FXML
+    private TextField firstnameField;
+    @FXML
+    private TextField lastnameField;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private TextField nicknameField;
+    @FXML
+    private Button saveBtn;
 
     // ── Company info ──────────────────────────────────────────────────────────
-    @FXML private Label companyNameLabel;
-    @FXML private Label companyLocationLabel;
+    @FXML
+    private Label companyNameLabel;
+    @FXML
+    private Label companyLocationLabel;
 
     // ── Overview tiles ────────────────────────────────────────────────────────
-    @FXML private Label totalItemsLabel;
-    @FXML private Label completedItemsLabel;
-    @FXML private Label activeItemsLabel;
-    @FXML private Label completionRateLabel;
+    @FXML
+    private Label totalItemsLabel;
+    @FXML
+    private Label completedItemsLabel;
+    @FXML
+    private Label activeItemsLabel;
+    @FXML
+    private Label completionRateLabel;
 
     // ── Service breakdown container (rows injected in code) ───────────────────
-    @FXML private VBox serviceBreakdownContainer;
+    @FXML
+    private VBox serviceBreakdownContainer;
 
     // ── Recent activity ───────────────────────────────────────────────────────
-    @FXML private Label items7Label;
-    @FXML private Label items30Label;
-    @FXML private Label completed7Label;
-    @FXML private Label completed30Label;
+    @FXML
+    private Label items7Label;
+    @FXML
+    private Label items30Label;
+    @FXML
+    private Label completed7Label;
+    @FXML
+    private Label completed30Label;
 
     // ── Service summary ───────────────────────────────────────────────────────
-    @FXML private Label totalServicesLabel;
-    @FXML private Label completedServicesLabel;
-    @FXML private Label pendingServicesLabel;
-    @FXML private Label serviceRateLabel;
+    @FXML
+    private Label totalServicesLabel;
+    @FXML
+    private Label completedServicesLabel;
+    @FXML
+    private Label pendingServicesLabel;
+    @FXML
+    private Label serviceRateLabel;
 
     // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Converts a JavaFX Color to a CSS #rrggbb hex string.
+     */
+    private static String toFxHex(Color c) {
+        return String.format("#%02x%02x%02x",
+                (int) (c.getRed() * 255),
+                (int) (c.getGreen() * 255),
+                (int) (c.getBlue() * 255));
+    }
+
+    // ── Tab switching ─────────────────────────────────────────────────────────
 
     @FXML
     public void initialize() {
@@ -90,10 +134,6 @@ public class UserOptionsController {
 //        populateStatisticsData();
 //        showTab(Tab.PROFILE);
     }
-
-    // ── Tab switching ─────────────────────────────────────────────────────────
-
-    private enum Tab { PROFILE, STATISTICS }
 
     @FXML
     private void onProfileTab() {
@@ -149,10 +189,10 @@ public class UserOptionsController {
     @FXML
     private void onSaveProfile() {
         String firstname = firstnameField.getText().trim();
-        String lastname  = lastnameField.getText().trim();
-        String email     = emailField.getText().trim();
-        String username  = usernameField.getText().trim();
-        String nickname  = nicknameField.getText().trim();
+        String lastname = lastnameField.getText().trim();
+        String email = emailField.getText().trim();
+        String username = usernameField.getText().trim();
+        String nickname = nicknameField.getText().trim();
 
         if (firstname.isEmpty() || lastname.isEmpty() || email.isEmpty() || username.isEmpty()) {
             showBanner("Please fill in all required fields.", false);
@@ -188,10 +228,10 @@ public class UserOptionsController {
         companyLocationLabel.setText("Miami, FL");       // TODO: companyStats.getLocation()
 
         // Overview
-        int total     = 120;   // TODO: companyStats.getTotalItems()
+        int total = 120;   // TODO: companyStats.getTotalItems()
         int completed = 87;    // TODO: companyStats.getCompletedItems()
-        int active    = 33;    // TODO: companyStats.getActiveItems()
-        int rate      = total > 0 ? (int) Math.round((completed * 100.0) / total) : 0;
+        int active = 33;    // TODO: companyStats.getActiveItems()
+        int rate = total > 0 ? (int) Math.round((completed * 100.0) / total) : 0;
 
         totalItemsLabel.setText(String.valueOf(total));
         completedItemsLabel.setText(String.valueOf(completed));
@@ -200,13 +240,13 @@ public class UserOptionsController {
 
         // Service breakdown  TODO: replace with real service map
         Map<String, int[]> breakdown = new LinkedHashMap<>();
-        breakdown.put("Fuel",              new int[]{30, 22});
-        breakdown.put("Catering",          new int[]{25, 20});
-        breakdown.put("GPU",               new int[]{15, 12});
-        breakdown.put("Lavatory",          new int[]{18, 14});
-        breakdown.put("Potable Water",     new int[]{12,  9});
-        breakdown.put("Windshield",        new int[]{10,  6});
-        breakdown.put("Oil Service",       new int[]{ 8,  4});
+        breakdown.put("Fuel", new int[]{30, 22});
+        breakdown.put("Catering", new int[]{25, 20});
+        breakdown.put("GPU", new int[]{15, 12});
+        breakdown.put("Lavatory", new int[]{18, 14});
+        breakdown.put("Potable Water", new int[]{12, 9});
+        breakdown.put("Windshield", new int[]{10, 6});
+        breakdown.put("Oil Service", new int[]{8, 4});
 
         // Accent colours matching the Next.js serviceColors palette
         String[] colours = {
@@ -235,7 +275,7 @@ public class UserOptionsController {
         completed30Label.setText("39");
 
         // Service summary  TODO: real data
-        int totalSvc     = 118;
+        int totalSvc = 118;
         int completedSvc = 87;
         totalServicesLabel.setText(String.valueOf(totalSvc));
         completedServicesLabel.setText(String.valueOf(completedSvc));
@@ -247,7 +287,7 @@ public class UserOptionsController {
 
     /**
      * Builds a single service-breakdown row:
-     *   [colour icon] Name  |  total/completed/pending  |  progress bar  N%
+     * [colour icon] Name  |  total/completed/pending  |  progress bar  N%
      */
     private VBox buildServiceRow(String name, int total, int completed, String hexColour) {
         Color accent = Color.web(hexColour);
@@ -277,22 +317,26 @@ public class UserOptionsController {
 
         // ── Stats column
         int pending = total - completed;
-        int pct     = total > 0 ? (int) Math.round((completed * 100.0) / total) : 0;
+        int pct = total > 0 ? (int) Math.round((completed * 100.0) / total) : 0;
 
-        Label totalLbl     = buildStatLine("Total",     String.valueOf(total),     "#374151");
+        Label totalLbl = buildStatLine("Total", String.valueOf(total), "#374151");
         Label completedLbl = buildStatLine("Completed", String.valueOf(completed), "#15803d");
-        Label pendingLbl   = buildStatLine("Pending",   String.valueOf(pending),   "#1d4ed8");
+        Label pendingLbl = buildStatLine("Pending", String.valueOf(pending), "#1d4ed8");
 
         // ── Progress bar
         AnchorPane track = new AnchorPane();
         track.getStyleClass().add("progress-track");
-        track.setPrefHeight(8); track.setMinHeight(8); track.setMaxHeight(8);
+        track.setPrefHeight(8);
+        track.setMinHeight(8);
+        track.setMaxHeight(8);
         track.setPrefWidth(200);
 
         Region fill = new Region();
         fill.getStyleClass().add("progress-fill");
         fill.setStyle("-fx-background-color: " + fxColour + ";");
-        fill.setPrefHeight(8); fill.setMinHeight(8); fill.setMaxHeight(8);
+        fill.setPrefHeight(8);
+        fill.setMinHeight(8);
+        fill.setMaxHeight(8);
         AnchorPane.setTopAnchor(fill, 0.0);
         AnchorPane.setBottomAnchor(fill, 0.0);
         AnchorPane.setLeftAnchor(fill, 0.0);
@@ -326,7 +370,9 @@ public class UserOptionsController {
         return card;
     }
 
-    /** Creates a right-aligned stat line "label  value" */
+    /**
+     * Creates a right-aligned stat line "label  value"
+     */
     private Label buildStatLine(String caption, String value, String valueColour) {
         Label l = new Label(caption + "   " + value);
         l.setStyle(
@@ -375,11 +421,5 @@ public class UserOptionsController {
 
     // ── Utility ───────────────────────────────────────────────────────────────
 
-    /** Converts a JavaFX Color to a CSS #rrggbb hex string. */
-    private static String toFxHex(Color c) {
-        return String.format("#%02x%02x%02x",
-                (int) (c.getRed()   * 255),
-                (int) (c.getGreen() * 255),
-                (int) (c.getBlue()  * 255));
-    }
+    private enum Tab {PROFILE, STATISTICS}
 }
