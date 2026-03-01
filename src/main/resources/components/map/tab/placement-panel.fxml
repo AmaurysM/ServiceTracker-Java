@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="512.0" prefWidth="267.0" stylesheets="@/components/map/tab/panel-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.TabPlacementPanelController">
+    <AnchorPane prefHeight="47.0" prefWidth="211.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="0.0">
+        <Text layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Placement" AnchorPane.bottomAnchor="9.478515625" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="8.259765625">
+            <font>
+                <Font name="System Bold" size="22.0" />
+            </font>
+        </Text>
+    </AnchorPane>
+    <AnchorPane fx:id="exitButton" layoutX="217.0" prefHeight="47.0" prefWidth="50.0" AnchorPane.leftAnchor="217.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Text layoutX="21.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" AnchorPane.bottomAnchor="15.98828125" AnchorPane.leftAnchor="21.0" AnchorPane.rightAnchor="21.921875" AnchorPane.topAnchor="15.05078125" />
+    </AnchorPane>
+</AnchorPane>

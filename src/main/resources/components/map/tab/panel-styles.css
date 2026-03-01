@@ -1,0 +1,500 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   panel-styles.css  –  shared styles for Filters / Drawing / Placement panels
+   Mirrors the Next.js sidebar components exactly.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Root ──────────────────────────────────────────────────────────────────── */
+.panel-root {
+    -fx-background-color: #FFFFFF;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+.panel-header {
+    -fx-background-color: #0F172A;   /* slate-900 */
+    -fx-pref-height: 36;
+    -fx-min-height: 36;
+    -fx-max-height: 36;
+}
+
+.panel-header-title {
+    -fx-padding: 0 0 0 12;
+}
+
+.panel-title-text {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Monospace";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    /* letter-spacing not supported natively, monospace gives the tracker feel */
+}
+
+/* Header variant — green when drawing active */
+.panel-header-drawing {
+    -fx-background-color: #166534;   /* green-800 */
+}
+
+.panel-close-btn {
+    -fx-background-color: #DC2626;   /* red-600 */
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 40;
+    -fx-min-width: 40;
+    -fx-pref-height: 36;
+    -fx-min-height: 36;
+    -fx-max-height: 36;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+}
+
+.panel-close-btn:hover {
+    -fx-background-color: #B91C1C;
+}
+
+/* ── Generic section blocks ─────────────────────────────────────────────────── */
+.panel-section {
+    -fx-background-color: #F9FAFB;   /* gray-50/50 */
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8 12 8 12;
+}
+
+.panel-section-blue {
+    -fx-background-color: #EFF6FF;   /* blue-50 */
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 6 12 6 12;
+}
+
+.panel-section-tips {
+    -fx-background-color: #EFF6FF;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 6 12 8 12;
+}
+
+/* ── Labels ─────────────────────────────────────────────────────────────────── */
+.section-label {
+    -fx-text-fill: #374151;          /* gray-700 */
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Monospace";
+}
+
+.section-heading-row {
+    -fx-padding: 6 12 3 12;
+    -fx-background-color: #FFFFFF;
+}
+
+.section-heading-text {
+    -fx-text-fill: #374151;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Monospace";
+}
+
+.toggle-label {
+    -fx-text-fill: #374151;
+    -fx-font-size: 10px;
+}
+
+.toggle-label-blue {
+    -fx-text-fill: #2563EB;
+    -fx-font-size: 10px;
+}
+
+.count-label {
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 10px;
+}
+
+.empty-label {
+    -fx-text-fill: #9CA3AF;
+    -fx-font-size: 10px;
+}
+
+.range-hint {
+    -fx-text-fill: #9CA3AF;
+    -fx-font-size: 9px;
+}
+
+.tips-title {
+    -fx-text-fill: #1E3A5F;          /* blue-900 */
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Monospace";
+}
+
+.tips-text {
+    -fx-text-fill: #374151;
+    -fx-font-size: 9px;
+}
+
+.active-color-name {
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 9px;
+}
+
+/* ── Inputs ─────────────────────────────────────────────────────────────────── */
+.panel-input {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D1D5DB;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-font-size: 11px;
+    -fx-padding: 3 6 3 6;
+    -fx-pref-height: 26;
+    -fx-min-height: 26;
+}
+
+.panel-input:focused {
+    -fx-border-color: #3B82F6;
+}
+
+.panel-combo {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D1D5DB;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-font-size: 11px;
+    -fx-pref-height: 26;
+    -fx-min-height: 26;
+    -fx-padding: 0 2 0 2;
+}
+
+.panel-combo .list-cell {
+    -fx-padding: 2 6 2 6;
+    -fx-font-size: 11px;
+}
+
+.panel-checkbox {
+    -fx-box-border-color: #D1D5DB;
+    -fx-mark-color: #2563EB;
+}
+
+/* ── Slider ─────────────────────────────────────────────────────────────────── */
+.panel-slider .track {
+    -fx-background-color: #D1D5DB;
+    -fx-pref-height: 4;
+}
+
+.panel-slider .thumb {
+    -fx-background-color: #2563EB;
+    -fx-pref-width: 12;
+    -fx-pref-height: 12;
+    -fx-background-radius: 6;
+}
+
+/* ── Placement filter tabs ───────────────────────────────────────────────────── */
+.placement-tab-row {
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: #FFFFFF;
+}
+
+.placement-tab {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #374151;
+    -fx-font-size: 10px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+    -fx-pref-height: 32;
+    -fx-min-height: 32;
+    -fx-border-color: transparent #E5E7EB transparent transparent;
+    -fx-border-width: 1;
+}
+
+.placement-tab:hover {
+    -fx-background-color: #F9FAFB;
+}
+
+.placement-tab-active {
+    -fx-background-color: #2563EB;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+}
+
+.placement-tab-active:hover {
+    -fx-background-color: #1D4ED8;
+}
+
+/* ── Draw toggle button ──────────────────────────────────────────────────────── */
+.draw-toggle-btn {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Monospace";
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-cursor: hand;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 0 0 1 0;
+    -fx-pref-height: 30;
+    -fx-min-height: 30;
+    -fx-max-height: 30;
+}
+
+.draw-toggle-off {
+    -fx-background-color: #2563EB;
+    -fx-text-fill: #FFFFFF;
+}
+
+.draw-toggle-off:hover {
+    -fx-background-color: #1D4ED8;
+}
+
+.draw-toggle-on {
+    -fx-background-color: #DC2626;
+    -fx-text-fill: #FFFFFF;
+}
+
+.draw-toggle-on:hover {
+    -fx-background-color: #B91C1C;
+}
+
+/* ── Mode buttons ────────────────────────────────────────────────────────────── */
+.mode-btn {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #374151;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 0;
+    -fx-border-color: #D1D5DB;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.mode-btn:hover {
+    -fx-background-color: #F3F4F6;
+}
+
+.mode-btn-active-pen {
+    -fx-background-color: #2563EB;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #2563EB;
+}
+
+.mode-btn-active-eraser {
+    -fx-background-color: #DB2777;   /* pink-600 */
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #DB2777;
+}
+
+/* ── Generic control buttons ─────────────────────────────────────────────────── */
+.ctrl-btn {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #374151;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 0;
+    -fx-border-color: #D1D5DB;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.ctrl-btn:hover {
+    -fx-background-color: #F3F4F6;
+}
+
+.ctrl-btn:disabled {
+    -fx-background-color: #E5E7EB;
+    -fx-text-fill: #9CA3AF;
+    -fx-cursor: default;
+}
+
+.ctrl-btn-danger {
+    -fx-background-color: #DC2626;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+}
+
+.ctrl-btn-danger:hover { -fx-background-color: #B91C1C; }
+.ctrl-btn-danger:disabled {
+    -fx-background-color: #E5E7EB;
+    -fx-text-fill: #9CA3AF;
+    -fx-cursor: default;
+}
+
+.ctrl-btn-green {
+    -fx-background-color: #16A34A;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+}
+
+.ctrl-btn-green:hover { -fx-background-color: #15803D; }
+.ctrl-btn-green:disabled {
+    -fx-background-color: #E5E7EB;
+    -fx-text-fill: #9CA3AF;
+    -fx-cursor: default;
+}
+
+.ctrl-btn-blue {
+    -fx-background-color: #2563EB;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-cursor: hand;
+}
+
+.ctrl-btn-blue:hover { -fx-background-color: #1D4ED8; }
+
+/* ── Color swatch border indicator ──────────────────────────────────────────── */
+.color-swatch-border {
+    -fx-stroke: #374151;
+    -fx-stroke-width: 1;
+}
+
+.active-color-row {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 1;
+    -fx-padding: 3 8 3 8;
+}
+
+/* ── Items list (Filters) ────────────────────────────────────────────────────── */
+.items-list {
+    -fx-background-color: #FFFFFF;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+.items-list .list-cell {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-border-color: #F3F4F6;
+    -fx-border-width: 0 0 1 0;
+}
+
+.items-list .list-cell:selected {
+    -fx-background-color: #EFF6FF;
+}
+
+/* ── Placement list ──────────────────────────────────────────────────────────── */
+.placement-list {
+    -fx-background-color: #FFFFFF;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+.placement-list .list-cell {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-cursor: move;
+}
+
+/* ── Aircraft card (used inside placement list cells) ────────────────────────── */
+.aircraft-card {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 0 0 1 0;
+    -fx-cursor: move;
+}
+
+.aircraft-card-header {
+    -fx-background-color: #1E293B;  /* slate-800 */
+    -fx-padding: 4 10 4 10;
+}
+
+.aircraft-tail {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Monospace";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.aircraft-progress {
+    -fx-text-fill: rgba(255,255,255,0.65);
+    -fx-font-family: "Monospace";
+    -fx-font-size: 9px;
+}
+
+.aircraft-time {
+    -fx-text-fill: #1F2937;
+    -fx-font-family: "Monospace";
+    -fx-font-size: 9px;
+}
+
+.aircraft-time-late {
+    -fx-text-fill: #DC2626;
+    -fx-font-family: "Monospace";
+    -fx-font-size: 9px;
+}
+
+.aircraft-note {
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 9px;
+}
+
+/* ── Filters list row ────────────────────────────────────────────────────────── */
+.filter-item-row {
+    -fx-padding: 4 8 4 0;
+    -fx-cursor: hand;
+    -fx-border-color: #F3F4F6;
+    -fx-border-width: 0 0 1 0;
+}
+
+.filter-item-row:hover {
+    -fx-background-color: #F3F4F6;
+}
+
+/* left accent borders */
+.border-slate  { -fx-border-color: #0F172A; -fx-border-width: 0 0 0 3; }
+.border-orange { -fx-border-color: #F97316; -fx-border-width: 0 0 0 3; }
+.border-green  { -fx-border-color: #16A34A; -fx-border-width: 0 0 0 3; }
+
+.filter-tail {
+    -fx-font-family: "Monospace";
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #0F172A;
+}
+
+.filter-np-badge {
+    -fx-background-color: #FEF3C7;
+    -fx-text-fill: #92400E;
+    -fx-font-size: 8px;
+    -fx-padding: 1 3 1 3;
+    -fx-background-radius: 0;
+}
+
+.filter-expand-arrow {
+    -fx-text-fill: #9CA3AF;
+    -fx-font-size: 9px;
+}
+
+/* expanded detail rows */
+.filter-detail-pane {
+    -fx-background-color: #F9FAFB;
+    -fx-padding: 4 8 6 11;
+}
+
+.filter-detail-time {
+    -fx-font-family: "Monospace";
+    -fx-font-size: 9px;
+    -fx-text-fill: #1F2937;
+}
+
+.filter-detail-time-late {
+    -fx-font-family: "Monospace";
+    -fx-font-size: 9px;
+    -fx-text-fill: #DC2626;
+}
+
+.filter-detail-note {
+    -fx-font-size: 9px;
+    -fx-text-fill: #374151;
+}

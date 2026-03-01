@@ -95,3 +95,100 @@
     -fx-font-weight: bold;
     -fx-alignment: CENTER;
 }
+
+/* Make entire tabpane transparent */
+* {
+	-fx-primary-color: #007acc;
+	-fx-secondary-color: #4B6EAF;
+
+	-fx-focus-color: -fx-secondary-color;
+}
+
+.tab-header-area .tab-header-background {
+ 	-fx-background-color: transparent;
+}
+.tab-pane .tab:selected {
+	-fx-background-color: -fx-secondary-color;
+	-fx-background-insets: 0 0 0 0;
+	-fx-background-radius: 0 0 0 0;
+}
+.tab .tab-label {
+ 	-fx-alignment: CENTER;
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+	-fx-padding: 0 10 0 10;
+}
+.tab-pane:top *.tab-header-area {
+	-fx-padding: 0 0 0 0;
+
+	/* NO SPACE LEFT OF FIRST TAB */
+	/* -fx-padding: 0 0 0 30; */
+}
+.tab-pane {
+	-fx-background-color: transparent;
+	-fx-tab-min-width: 100px;
+	-fx-tab-min-height: 30px;
+	-fx-tab-max-height: 30px;
+}
+.tab-pane .tab {
+	-fx-background-color: -fx-primary-color;
+	-fx-background-radius: 0 0 0 0;
+}
+.tab-pane:focused .tab-header-area .headers-region .tab:selected .focus-indicator {
+ 	-fx-border-width: 0;
+	-fx-border-insets: 0 0 0 0;
+	-fx-border-radius: 0;
+}
+
+/* Make spacer tabs take vertical space */
+.spacer-tab {
+    -fx-opacity: 0;
+}
+
+/* Force spacer tabs to grow */
+.tab-pane > .tab-header-area > .headers-region > .spacer-tab {
+
+    -fx-pref-width: 1000; /* big value to push real tabs inward */
+}
+
+
+.side-panel {
+    -fx-background-color: rgba(30, 30, 30, 0.92);
+    -fx-padding: 12;
+}
+
+.side-panel-title {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 8 0;
+}
+
+.tab-strip {
+    -fx-background-color: rgba(20, 20, 20, 0.85);
+    -fx-padding: 8 4;
+}
+
+.vertical-tab {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cccccc;
+    -fx-cursor: hand;
+    -fx-padding: 6 10;
+}
+
+.vertical-tab:hover {
+    -fx-background-color: rgba(255,255,255,0.08);
+}
+
+.vertical-tab-active {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-text-fill: white;
+}
+
+.dummy-tab  {
+    visibility: hidden;
+    -fx-min-width: 0;
+    -fx-max-width: 0;
+    -fx-pref-width: 0;
+    -fx-padding: 0;
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="512.0" prefWidth="267.0" stylesheets="@/components/map/tab/panel-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab.FiltersPanelController">
+    <!-- Blurred Background Layer -->
+
+    <AnchorPane prefHeight="47.0" prefWidth="213.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="54.0" AnchorPane.topAnchor="0.0">
+        <Text layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filters" AnchorPane.bottomAnchor="9.478515625" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="136.158203125" AnchorPane.topAnchor="8.259765625">
+            <font>
+                <Font name="System Bold" size="22.0" />
+            </font>
+        </Text>
+    </AnchorPane>
+    <AnchorPane fx:id="exitButton" layoutX="211.0" layoutY="14.0" prefHeight="47.0" prefWidth="50.0" AnchorPane.leftAnchor="217.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <Text layoutX="21.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" />
+      <cursor>
+         <Cursor fx:constant="HAND" />
+      </cursor>
+    </AnchorPane>
+    <AnchorPane layoutY="50.0" prefHeight="159.0" prefWidth="267.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+        <TextField fx:id="searchBar" layoutY="14.0" prefHeight="25.0" prefWidth="267.0" AnchorPane.bottomAnchor="423.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="14.0" />
+    </AnchorPane>
+</AnchorPane>

@@ -1,0 +1,96 @@
+/* ================================================================
+   aircraft-marker.css
+   src/main/resources/css/aircraft-marker.css
+   ================================================================ */
+
+/* ── Outer hit-area ─────────────────────────────────────────────────────── */
+.aircraft-marker-root {
+    -fx-padding: 8;
+}
+
+/* ── Rotating inner group ───────────────────────────────────────────────── */
+.aircraft-inner {
+    -fx-min-width:  56;
+    -fx-min-height: 56;
+    -fx-pref-width: 56;
+    -fx-pref-height: 56;
+}
+
+/* ── Plane icon ─────────────────────────────────────────────────────────── */
+.plane-icon {
+    -fx-fill: #1e293b;      /* overridden inline per state */
+    -fx-scale-x: 1.6;
+    -fx-scale-y: 1.6;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.40), 4, 0, 0, 1);
+}
+
+/* ── Selection ring ─────────────────────────────────────────────────────── */
+.selection-ring {
+    -fx-stroke: rgba(59, 130, 246, 0.9);
+    -fx-stroke-width: 2;
+    -fx-fill: rgba(59, 130, 246, 0.08);
+    -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.25), 8, 0, 0, 0);
+}
+
+/* ── Rotate handle ──────────────────────────────────────────────────────── */
+.rotate-handle {
+    -fx-fill: #3b82f6;
+    -fx-stroke: white;
+    -fx-stroke-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 4, 0, 0, 1);
+    -fx-cursor: crosshair;
+}
+
+.rotate-handle:hover {
+    -fx-scale-x: 1.4;
+    -fx-scale-y: 1.4;
+    -fx-fill: #60a5fa;
+}
+
+/* ── Label pill ─────────────────────────────────────────────────────────── */
+.label-container {
+    -fx-padding: 4 8 4 8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-min-width: 52;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.16), 6, 0, 0, 2);
+}
+
+.label-default {
+    -fx-background-color: rgba(248, 250, 252, 0.96);
+    -fx-border-color: rgba(148, 163, 184, 0.4);
+}
+
+.label-selected {
+    -fx-background-color: rgba(219, 234, 254, 0.97);
+    -fx-border-color: rgba(59, 130, 246, 0.5);
+    -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.22), 8, 0, 0, 2);
+}
+
+.label-completed {
+    -fx-background-color: rgba(220, 252, 231, 0.97);
+    -fx-border-color: rgba(34, 197, 94, 0.5);
+    -fx-effect: dropshadow(gaussian, rgba(34,197,94,0.20), 8, 0, 0, 2);
+}
+
+/* ── Tail-number label ──────────────────────────────────────────────────── */
+.tail-label {
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+    -fx-font-family: "JetBrains Mono", "Fira Code", "Consolas", "Courier New", monospace;
+    -fx-text-fill: #0f172a;
+}
+
+.label-selected .tail-label  { -fx-text-fill: #1d4ed8; }
+.label-completed .tail-label { -fx-text-fill: #15803d; }
+
+/* ── Service colour bar ─────────────────────────────────────────────────── */
+.service-bar {
+    -fx-pref-height: 3;
+    -fx-min-height:  3;
+    -fx-max-height:  3;
+    -fx-padding: 0;
+    -fx-spacing: 0;
+    -fx-background-radius: 0 0 9 9;
+}

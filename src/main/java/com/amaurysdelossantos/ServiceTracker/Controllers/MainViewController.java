@@ -37,7 +37,7 @@ public class MainViewController {
     }
 
 
-    private void onMainViewChange(MainView newView) {System.out.println("Main view picked: " + newView);
+    private void onMainViewChange(MainView newView) {
         try {
             switch (newView) {
                 case SERVICES -> {

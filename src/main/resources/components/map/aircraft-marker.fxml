@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.SVGPath?>
+
+<!--
+    src/main/resources/fxml/map/aircraft-marker.fxml
+    Instantiate only via AircraftMarkerController.create(item, map).
+-->
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
+           xmlns="http://javafx.com/javafx/17.0.12"
+           fx:id="root"
+           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.AircraftMarkerController"
+           styleClass="aircraft-marker-root"
+           stylesheets="@aircraft-marker.css"
+           pickOnBounds="false">
+
+    <!--
+        innerRotating: rotated as a unit by the controller.
+        Contains the selection ring, rotate handle, and plane icon.
+    -->
+    <StackPane fx:id="innerRotating"
+               styleClass="aircraft-inner"
+               pickOnBounds="false">
+
+        <!-- Selection ring – shown only when this aircraft is selected -->
+        <Circle fx:id="selectionRing"
+                radius="28"
+                styleClass="selection-ring"
+                mouseTransparent="true"
+                visible="false"/>
+
+        <!--
+            Rotate handle – small dot pinned to the top-left of the icon.
+            Negative translate pushes it just outside the icon boundary.
+        -->
+        <Circle fx:id="rotateHandle"
+                radius="6"
+                styleClass="rotate-handle"
+                visible="false"
+                StackPane.alignment="TOP_LEFT"
+                translateX="-22"
+                translateY="-22"/>
+
+        <!--
+            Plane SVG – top-view silhouette.
+            Fill is overridden inline by the controller to reflect state.
+        -->
+        <SVGPath fx:id="planeIcon"
+                 styleClass="plane-icon"
+                 content="M21 16v-2l-8-5V3.5C13 2.67 12.33 2 11.5 2S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+                 mouseTransparent="true"/>
+    </StackPane>
+
+    <!--
+        Label pill – floated above the icon.
+        Tail number + optional coloured service-type bar (built in code).
+    -->
+    <StackPane fx:id="labelContainer"
+               styleClass="label-container label-default"
+               mouseTransparent="true"
+               StackPane.alignment="TOP_CENTER"
+               translateY="-60">
+
+        <Label fx:id="tailLabel"
+               text="—"
+               styleClass="tail-label"/>
+
+        <HBox fx:id="serviceBar"
+              styleClass="service-bar"
+              StackPane.alignment="BOTTOM_CENTER"
+              visible="false"
+              managed="false"/>
+
+    </StackPane>
+
+</StackPane>

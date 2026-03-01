@@ -1,27 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import fxmapcontrol.Map?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml/1"
-           xmlns="http://javafx.com/javafx/17.0.12"
-           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.MapViewController"
-           styleClass="map-root"
-           stylesheets="@../map-view-styles.css"
-           maxWidth="Infinity"
-           maxHeight="Infinity">
+<?import fxmapcontrol.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-    <Map fx:id="fxMap"
-         center="25.7959,-80.2870"
-         zoomLevel="14"
-         maxZoomLevel="20"
-         maxWidth="Infinity"
-         maxHeight="Infinity"/>
+<StackPane maxHeight="Infinity" maxWidth="Infinity" styleClass="map-root" stylesheets="@map-view-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.MapViewController">
 
-    <VBox alignment="TOP_RIGHT"
-          mouseTransparent="true"
-          StackPane.alignment="TOP_RIGHT"
-          style="-fx-padding: 12 12 0 0;">
+    <Map fx:id="fxMap" center="25.7959,-80.2870" maxHeight="Infinity" maxWidth="Infinity" maxZoomLevel="20" zoomLevel="14" />
+
+    <!-- Layer 1: Tab strip, centered vertically on the right edge -->
+    <VBox alignment="CENTER_RIGHT" maxHeight="Infinity" pickOnBounds="false" prefHeight="Infinity" StackPane.alignment="CENTER_RIGHT">
+
+        <TabPane fx:id="rightTabPane" maxWidth="45" pickOnBounds="false" prefWidth="45" side="RIGHT" tabClosingPolicy="UNAVAILABLE">
+
+            <Tab fx:id="dummyTab" styleClass="dummy-tab">
+                <StackPane />
+            </Tab>
+            <Tab fx:id="tabFilters" text="Filters">
+                <StackPane />
+            </Tab>
+            <Tab fx:id="tabDrawing" text="Drawing">
+                <StackPane />
+            </Tab>
+            <Tab fx:id="tabPlacement" text="Placement">
+                <StackPane />
+            </Tab>
+
+        </TabPane>
+    </VBox>
+
+    <!-- Layer 2: Content panel overlays on top, slides in from right, covers the tabs -->
+    <VBox fx:id="tabContent" maxHeight="Infinity" maxWidth="0" pickOnBounds="false" prefHeight="Infinity" style="-fx-background-color: RGBA(255, 255, 255, 0.5);" StackPane.alignment="CENTER_RIGHT">
+
+<!--        <VBox fx:id="filtersPane" visible="false" managed="false"-->
+<!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
+<!--            <Label text="Filters" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
+<!--        </VBox>-->
+
+<!--        <VBox fx:id="drawingPane" visible="false" managed="false"-->
+<!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
+<!--            <Label text="Drawing" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
+<!--        </VBox>-->
+
+<!--        <VBox fx:id="placementPane" visible="false" managed="false"-->
+<!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
+<!--            <Label text="Placement" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
+<!--        </VBox>-->
+
     </VBox>
 
 </StackPane>
