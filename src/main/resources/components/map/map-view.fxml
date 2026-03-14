@@ -10,27 +10,31 @@
     <Map fx:id="fxMap" center="25.7959,-80.2870" maxHeight="Infinity" maxWidth="Infinity" maxZoomLevel="20"
          zoomLevel="14"/>
 
-    <!-- Layer 1: Tab strip, centered vertically on the right edge -->
+    <!-- Layer 1: Tab strip + back button, centered vertically on the right edge -->
     <VBox alignment="CENTER_RIGHT" maxHeight="Infinity" pickOnBounds="false" prefHeight="Infinity"
           StackPane.alignment="CENTER_RIGHT">
 
-        <TabPane fx:id="rightTabPane" maxWidth="45" pickOnBounds="false" prefWidth="45" side="RIGHT"
-                 tabClosingPolicy="UNAVAILABLE">
+        <VBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS" pickOnBounds="false"  maxWidth="45"  prefWidth="45">
+            <TabPane fx:id="rightTabPane" maxWidth="45" pickOnBounds="false" prefWidth="45" side="RIGHT"
+                     tabClosingPolicy="UNAVAILABLE">
+                <Tab fx:id="dummyTab" styleClass="dummy-tab">
+                    <StackPane/>
+                </Tab>
+                <Tab fx:id="tabFilters" text="Filters">
+                    <StackPane/>
+                </Tab>
+                <Tab fx:id="tabDrawing" text="Drawing">
+                    <StackPane/>
+                </Tab>
+                <Tab fx:id="tabPlacement" text="Placement">
+                    <StackPane/>
+                </Tab>
+            </TabPane>
+        </VBox>
 
-            <Tab fx:id="dummyTab" styleClass="dummy-tab">
-                <StackPane/>
-            </Tab>
-            <Tab fx:id="tabFilters" text="Filters">
-                <StackPane/>
-            </Tab>
-            <Tab fx:id="tabDrawing" text="Drawing">
-                <StackPane/>
-            </Tab>
-            <Tab fx:id="tabPlacement" text="Placement">
-                <StackPane/>
-            </Tab>
+        <!-- Back button sits below the tabs, flush to the right edge -->
+        <Button fx:id="backBtn" styleClass="map-back-btn" text="&#8249; Back To List"/>
 
-        </TabPane>
     </VBox>
 
     <!-- Layer 2: Content panel overlays on top, slides in from right, covers the tabs -->

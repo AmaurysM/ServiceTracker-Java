@@ -1,14 +1,17 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Map;
 
+import com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab.PlacementPanelController;
 import com.amaurysdelossantos.ServiceTracker.Services.MapService;
+import com.amaurysdelossantos.ServiceTracker.Services.ServiceTrackerService;
 import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
+import com.amaurysdelossantos.ServiceTracker.models.enums.views.ServiceView;
 import fxmapcontrol.*;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
@@ -31,34 +34,26 @@ public class MapViewController {
 
     private static final double PANEL_WIDTH = 260.0;
     private final Map<String, AircraftMarkerController> markers = new HashMap<>();
-    @FXML
-    private fxmapcontrol.Map fxMap;
-    @FXML
-    private Text coordText;
-    @FXML
-    private Text itemCountText;
-    @Autowired
-    private StandardControlsService standardControlsService;
-    @Autowired
-    private MongoTemplate mongoTemplate;
-    @Autowired
-    private ApplicationContext applicationContext;
-    @Autowired
-    private MapService mapService;
+
+    @FXML private fxmapcontrol.Map fxMap;
+    @FXML private Text coordText;
+    @FXML private Text itemCountText;
+    @FXML private Button backBtn;
+    @FXML private TabPane rightTabPane;
+    @FXML private Tab dummyTab;
+    @FXML private Tab tabFilters;
+    @FXML private Tab tabDrawing;
+    @FXML private Tab tabPlacement;
+    @FXML private VBox tabContent;
+
+    @Autowired private ServiceTrackerService serviceTrackerService;
+    @Autowired private StandardControlsService standardControlsService;
+    @Autowired private MongoTemplate mongoTemplate;
+    @Autowired private ApplicationContext applicationContext;
+    @Autowired private MapService mapService;
+
     private Pane markerPane;
     private String selectedId = null;
-    @FXML
-    private TabPane rightTabPane;
-    @FXML
-    private Tab dummyTab;
-    @FXML
-    private Tab tabFilters;
-    @FXML
-    private Tab tabDrawing;
-    @FXML
-    private Tab tabPlacement;
-    @FXML
-    private VBox tabContent;
 
     @FXML
     public void initialize() {
@@ -76,6 +71,29 @@ public class MapViewController {
         markerPane.prefWidthProperty().bind(fxMap.widthProperty());
         markerPane.prefHeightProperty().bind(fxMap.heightProperty());
         fxMap.getChildren().add(markerPane);
+
+        PlacementPanelController.installMapDropTarget(fxMap, fxMap, (itemId, lat, lon) -> {
+            standardControlsService.getItems().stream()
+                    .filter(i -> i.getId().equals(itemId))
+                    .findFirst()
+                    .ifPresent(item -> {
+                        if (item.getMetadata() == null) item.setMetadata(new HashMap<>());
+                        Map<String, Object> mp = new HashMap<>();
+                        mp.put("x", lat);
+                        mp.put("y", lon);
+                        mp.put("rotation", 0.0);
+                        item.getMetadata().put("mapPosition", mp);
+
+                        int idx = standardControlsService.getItems().indexOf(item);
+                        if (idx >= 0) {
+                            standardControlsService.getItems().set(idx, item);
+                        }
+
+                        Platform.runLater(() -> addOrUpdateMarker(item));
+                    });
+
+            persistPosition(itemId, lat, lon);
+        });
 
         fxMap.centerProperty().addListener((o, p, n) -> relocateAll());
         fxMap.zoomLevelProperty().addListener((o, p, n) -> relocateAll());
@@ -103,15 +121,14 @@ public class MapViewController {
             }
         });
 
+        backBtn.setOnAction(e -> serviceTrackerService.activeViewProperty().set(ServiceView.STANDARD));
         rightTabPane.getSelectionModel().select(dummyTab);
 
         Platform.runLater(this::attachTabToggleHandlers);
         Platform.runLater(() -> fxMap.requestLayout());
-        System.out.println("Map initialized");
     }
 
     private void attachTabToggleHandlers() {
-
         rightTabPane.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldTab, newTab) -> {
                     if (newTab == null || newTab == dummyTab) {
@@ -135,9 +152,7 @@ public class MapViewController {
                 tabContent.getChildren().clear();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/map/tab/filters-panel.fxml"));
                 loader.setControllerFactory(applicationContext::getBean);
-                Node child = loader.load();
-
-                tabContent.getChildren().add(child);
+                tabContent.getChildren().add(loader.load());
                 return;
             }
 
@@ -145,23 +160,20 @@ public class MapViewController {
                 tabContent.getChildren().clear();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/map/tab/drawing-panel.fxml"));
                 loader.setControllerFactory(applicationContext::getBean);
-                Node child = loader.load();
-
-                tabContent.getChildren().add(child);
+                tabContent.getChildren().add(loader.load());
                 return;
             }
+
             if (rightTabPane.getSelectionModel().getSelectedItem().equals(tabPlacement)) {
                 tabContent.getChildren().clear();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/map/tab/placement-panel.fxml"));
                 loader.setControllerFactory(applicationContext::getBean);
-                Node child = loader.load();
-
-                tabContent.getChildren().add(child);
+                tabContent.getChildren().add(loader.load());
                 return;
             }
+
             if (rightTabPane.getSelectionModel().getSelectedItem().equals(dummyTab)) {
                 tabContent.getChildren().clear();
-                return;
             }
 
         } catch (IOException e) {
@@ -174,8 +186,6 @@ public class MapViewController {
         tabContent.getChildren().clear();
         rightTabPane.getSelectionModel().select(dummyTab);
     }
-
-    // ── Everything below is unchanged ────────────────────────────────────────
 
     public void flyTo(double lat, double lon, double zoom) {
         Platform.runLater(() -> {
@@ -212,7 +222,6 @@ public class MapViewController {
         });
 
         ctrl.setOnContextMenu(c -> System.out.println("Context menu → " + c.getId()));
-
         ctrl.setOnPositionUpdate(this::persistPosition);
         ctrl.setOnRotationUpdate(this::persistRotation);
 
@@ -237,6 +246,7 @@ public class MapViewController {
         if (itemCountText != null)
             itemCountText.setText(String.valueOf(markers.size()));
     }
+
 
     private void persistPosition(String itemId, double x, double y) {
         AircraftMarkerController ctrl = markers.get(itemId);

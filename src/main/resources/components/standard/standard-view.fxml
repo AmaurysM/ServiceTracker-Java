@@ -4,23 +4,24 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxWidth="Infinity" xmlns="http://javafx.com/javafx/17.0.12"
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxWidth="Infinity"
+            xmlns="http://javafx.com/javafx/17.0.12"
             fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.StandardViewController">
     <top>
         <HBox BorderPane.alignment="CENTER">
             <children>
-                <AnchorPane fx:id="topControlsMainAnchor" maxWidth="1.7976931348623157E308" styleClass="controls-pane"
-                            HBox.hgrow="ALWAYS">
+                <AnchorPane fx:id="topControlsMainAnchor" maxWidth="1.7976931348623157E308"
+                            styleClass="controls-pane" HBox.hgrow="ALWAYS">
 
-                    <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0" AnchorPane.leftAnchor="0.0"
-                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <!-- Search Row -->
+                    <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0"
+                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <children>
-
-                            <!-- Search Row -->
-                            <TextField fx:id="searchtextField" maxWidth="1.7976931348623157E308" promptText="Search..."
-                                       styleClass="input" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="clearButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                                    styleClass="clear-btn" text="Clear"/>
+                            <TextField fx:id="searchtextField" maxWidth="1.7976931348623157E308"
+                                       promptText="Search..." styleClass="input" HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="clearButton" maxWidth="1.7976931348623157E308"
+                                    mnemonicParsing="false" styleClass="clear-btn" text="Clear"/>
                         </children>
                         <padding>
                             <Insets bottom="5.0" left="10.0" right="10.0" top="10.0"/>
@@ -28,13 +29,13 @@
                     </HBox>
 
                     <!-- Filters Row -->
-                    <HBox maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.leftAnchor="10"
-                          AnchorPane.rightAnchor="10" AnchorPane.topAnchor="50">
+                    <HBox maxWidth="1.7976931348623157E308" spacing="10.0"
+                          AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="50">
 
-                        <ComboBox fx:id="filterServiceChoiceBox" maxHeight="1.7976931348623157E308" prefWidth="160"
-                                  styleClass="combo-filter"/>
-                        <ComboBox fx:id="filterTimeChoiceBox" maxHeight="1.7976931348623157E308" prefWidth="160"
-                                  styleClass="combo-filter"/>
+                        <ComboBox fx:id="filterServiceChoiceBox" maxHeight="1.7976931348623157E308"
+                                  prefWidth="160" styleClass="combo-filter"/>
+                        <ComboBox fx:id="filterTimeChoiceBox" maxHeight="1.7976931348623157E308"
+                                  prefWidth="160" styleClass="combo-filter"/>
 
                         <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
                             <ToggleButton fx:id="activeServiceToggleButton" maxWidth="1.7976931348623157E308"
@@ -59,11 +60,11 @@
                                           styleClass="toggle-list" text="List" toggleGroup="$viewGroup"
                                           HBox.hgrow="ALWAYS"/>
                         </HBox>
-
                     </HBox>
 
-                    <HBox maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="81.0">
+                    <!-- Item Count Row -->
+                    <HBox maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0"
+                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="81.0">
                         <padding>
                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                         </padding>
@@ -75,7 +76,15 @@
                     </HBox>
 
                 </AnchorPane>
-                <Pane fx:id="onSwitchViewButton" prefHeight="117.0" prefWidth="8.0" styleClass="service-view-btn"/>
+
+                <!-- ✦ Improved Switch View Button ✦ -->
+                <Button fx:id="onSwitchViewButton"
+                        prefHeight="117.0" prefWidth="16.0"
+                        mnemonicParsing="false"
+                        styleClass="service-view-btn"
+                        text="&#8250;"
+                        focusTraversable="false"/>
+
             </children>
         </HBox>
     </top>

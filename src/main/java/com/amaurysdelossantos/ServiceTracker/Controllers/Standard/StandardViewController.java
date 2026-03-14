@@ -42,7 +42,7 @@ public class StandardViewController {
     @FXML
     public AnchorPane centerPane;
     @FXML
-    public Pane onSwitchViewButton;
+    public Button onSwitchViewButton;
     @FXML
     private ToggleButton ListViewToggleButton;
     @FXML
@@ -113,7 +113,7 @@ public class StandardViewController {
                 Bindings.size(allItems).asString("SHOWING %d ITEMS"));
 
         attachButtonAnimation(clearButton);
-        attachButtonAnimation(onSwitchViewButton);
+        //attachButtonAnimation(onSwitchViewButton);
         attachToggleAnimation(ListViewToggleButton);
         attachToggleAnimation(activeCompletedToggleButton);
         attachToggleAnimation(activeServiceToggleButton);
@@ -123,7 +123,6 @@ public class StandardViewController {
         preventDeselection(statusGroup);
         preventDeselection(viewGroup);
 
-        // Wire filter changes → reload + restart stream
         stateService.getActivityFilter().addListener((obs, o, n) -> reloadAndRestart());
         stateService.getServiceFilter().addListener((obs, o, n) -> reloadAndRestart());
         stateService.getTimeFilter().addListener((obs, o, n) -> reloadAndRestart());
@@ -131,7 +130,6 @@ public class StandardViewController {
 
         onViewToggleChanged(StandardView.CARD);
 
-        // Set initial values — triggers listeners above
         stateService.getActivityFilter().setValue(ActivityFilter.ACTIVE);
         stateService.getTimeFilter().setValue(TimeFilter.TODAY);
 

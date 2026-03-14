@@ -133,6 +133,7 @@
 .tab-pane .tab {
 	-fx-background-color: -fx-primary-color;
 	-fx-background-radius: 0 0 0 0;
+	-fx-cursor: hand;
 }
 .tab-pane:focused .tab-header-area .headers-region .tab:selected .focus-indicator {
  	-fx-border-width: 0;
@@ -191,4 +192,37 @@
     -fx-max-width: 0;
     -fx-pref-width: 0;
     -fx-padding: 0;
+}
+
+///////
+
+.map-back-btn {
+    -fx-background-color: #0f172b;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 0;
+    -fx-border-color: #2a3f6a;
+    -fx-border-width: 0 1 1 1;
+    -fx-border-radius: 0 0 6 0;
+    -fx-cursor: hand;
+    -fx-pref-width: 100px;
+    -fx-max-height: 30px;
+    -fx-pref-height: 25px;
+    -fx-min-height: 20px;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 6, 0, 3, 0);
+}
+
+.map-back-btn:hover {
+    -fx-background-color: #293f77;
+    -fx-text-fill: #5b9bd5;
+    -fx-border-color: #3a5fa0;
+    -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.25), 8, 0, 4, 0);
+}
+
+.map-back-btn:pressed {
+    -fx-background-color: #142050;
+    -fx-text-fill: #3b6eb5;
+    -fx-effect: none;
 }

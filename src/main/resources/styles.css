@@ -379,8 +379,27 @@
 }
 ////////
 
-.service-view-btn{
+.service-view-btn {
+    -fx-background-color: #0F172B;
     -fx-background-radius: 0;
-    -fx-border:0;
-    -fx-background-color: #3b82f6;
+    -fx-border-radius: 0;
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+    -fx-border-color: #314158;
+    -fx-border-width: 0 1 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 2, 0);
+}
+
+.service-view-btn:hover {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #3b82f6;
+}
+
+.service-view-btn:pressed {
+    -fx-background-color: #0f172a;
+    -fx-text-fill: #2563eb;
+    -fx-effect: none;
 }

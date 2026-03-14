@@ -94,3 +94,49 @@
     -fx-spacing: 0;
     -fx-background-radius: 0 0 9 9;
 }
+
+/* ── Marker context menu ─────────────────────────────────────────────────── */
+.marker-context-menu {
+    -fx-background-color: rgba(255, 255, 255, 0.98);
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(148, 163, 184, 0.35);
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 12, 0, 0, 4);
+    -fx-padding: 4 0 4 0;
+}
+
+.marker-context-menu .menu-item {
+    -fx-padding: 6 16 6 16;
+    -fx-font-size: 12;
+    -fx-font-family: "JetBrains Mono", "Fira Code", "Consolas", "Courier New", monospace;
+    -fx-text-fill: #1e293b;
+    -fx-background-color: transparent;
+}
+
+.marker-context-menu .menu-item:hover,
+.marker-context-menu .menu-item:focused {
+    -fx-background-color: rgba(59, 130, 246, 0.08);
+    -fx-background-radius: 4;
+    -fx-text-fill: #1e293b;
+}
+
+.marker-context-menu .separator .line {
+    -fx-border-color: rgba(148, 163, 184, 0.3);
+    -fx-border-width: 1 0 0 0;
+}
+
+/* "Remove from map" — red tint */
+.marker-context-menu .menu-item-danger .label {
+    -fx-text-fill: #dc2626;
+}
+
+.marker-context-menu .menu-item-danger:hover .label,
+.marker-context-menu .menu-item-danger:focused .label {
+    -fx-text-fill: #b91c1c;
+}
+
+.marker-context-menu .menu-item-danger:hover,
+.marker-context-menu .menu-item-danger:focused {
+    -fx-background-color: rgba(220, 38, 38, 0.06);
+}
