@@ -1,94 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxWidth="Infinity"
-            xmlns="http://javafx.com/javafx/17.0.12"
-            fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.StandardViewController">
+<BorderPane maxWidth="Infinity" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.StandardViewController">
     <top>
         <HBox BorderPane.alignment="CENTER">
             <children>
-                <AnchorPane fx:id="topControlsMainAnchor" maxWidth="1.7976931348623157E308"
-                            styleClass="controls-pane" HBox.hgrow="ALWAYS">
+                <AnchorPane fx:id="topControlsMainAnchor" maxWidth="1.7976931348623157E308" styleClass="controls-pane" HBox.hgrow="ALWAYS">
 
                     <!-- Search Row -->
-                    <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0"
-                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <HBox alignment="CENTER" prefWidth="200.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <children>
-                            <TextField fx:id="searchtextField" maxWidth="1.7976931348623157E308"
-                                       promptText="Search..." styleClass="input" HBox.hgrow="ALWAYS"/>
-                            <Button fx:id="clearButton" maxWidth="1.7976931348623157E308"
-                                    mnemonicParsing="false" styleClass="clear-btn" text="Clear"/>
+                            <TextField fx:id="searchtextField" maxWidth="1.7976931348623157E308" promptText="Search..." styleClass="input" HBox.hgrow="ALWAYS" />
+                            <Button fx:id="clearButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="clear-btn" text="Clear" />
                         </children>
                         <padding>
-                            <Insets bottom="5.0" left="10.0" right="10.0" top="10.0"/>
+                            <Insets bottom="5.0" left="10.0" right="10.0" top="10.0" />
                         </padding>
                     </HBox>
 
                     <!-- Filters Row -->
-                    <HBox maxWidth="1.7976931348623157E308" spacing="10.0"
-                          AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="50">
+                    <HBox maxWidth="1.7976931348623157E308" spacing="10.0" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10" AnchorPane.topAnchor="50">
 
-                        <ComboBox fx:id="filterServiceChoiceBox" maxHeight="1.7976931348623157E308"
-                                  prefWidth="160" styleClass="combo-filter"/>
-                        <ComboBox fx:id="filterTimeChoiceBox" maxHeight="1.7976931348623157E308"
-                                  prefWidth="160" styleClass="combo-filter"/>
+                        <ComboBox fx:id="filterServiceChoiceBox" maxHeight="1.7976931348623157E308" prefWidth="160" styleClass="combo-filter" />
+                        <ComboBox fx:id="filterTimeChoiceBox" maxHeight="1.7976931348623157E308" prefWidth="160" styleClass="combo-filter" />
 
                         <HBox alignment="CENTER" HBox.hgrow="ALWAYS">
-                            <ToggleButton fx:id="activeServiceToggleButton" maxWidth="1.7976931348623157E308"
-                                          styleClass="toggle-active" text="Active" HBox.hgrow="ALWAYS">
+                            <ToggleButton fx:id="activeServiceToggleButton" maxWidth="1.7976931348623157E308" styleClass="toggle-active" text="Active" HBox.hgrow="ALWAYS">
                                 <toggleGroup>
-                                    <ToggleGroup fx:id="statusGroup"/>
+                                    <ToggleGroup fx:id="statusGroup" />
                                 </toggleGroup>
                             </ToggleButton>
-                            <ToggleButton fx:id="activeCompletedToggleButton" maxWidth="1.7976931348623157E308"
-                                          styleClass="toggle-done" text="Done" textAlignment="CENTER"
-                                          toggleGroup="$statusGroup" HBox.hgrow="ALWAYS"/>
+                            <ToggleButton fx:id="activeCompletedToggleButton" maxWidth="1.7976931348623157E308" styleClass="toggle-done" text="Done" textAlignment="CENTER" toggleGroup="$statusGroup" HBox.hgrow="ALWAYS" />
                         </HBox>
 
                         <HBox HBox.hgrow="ALWAYS">
-                            <ToggleButton fx:id="CardViewToggleButton" maxWidth="1.7976931348623157E308"
-                                          styleClass="toggle-card" text="Cards" HBox.hgrow="ALWAYS">
+                            <ToggleButton fx:id="CardViewToggleButton" maxWidth="1.7976931348623157E308" styleClass="toggle-card" text="Cards" HBox.hgrow="ALWAYS">
                                 <toggleGroup>
-                                    <ToggleGroup fx:id="viewGroup"/>
+                                    <ToggleGroup fx:id="viewGroup" />
                                 </toggleGroup>
                             </ToggleButton>
-                            <ToggleButton fx:id="ListViewToggleButton" maxWidth="1.7976931348623157E308"
-                                          styleClass="toggle-list" text="List" toggleGroup="$viewGroup"
-                                          HBox.hgrow="ALWAYS"/>
+                            <ToggleButton fx:id="ListViewToggleButton" maxWidth="1.7976931348623157E308" styleClass="toggle-list" text="List" toggleGroup="$viewGroup" HBox.hgrow="ALWAYS" />
                         </HBox>
                     </HBox>
 
                     <!-- Item Count Row -->
-                    <HBox maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0"
-                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="81.0">
+                    <HBox maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="81.0">
                         <padding>
-                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                         </padding>
                         <Text fx:id="ammountOfItemsInViewText" strokeType="OUTSIDE" strokeWidth="0.0">
                             <HBox.margin>
-                                <Insets/>
+                                <Insets />
                             </HBox.margin>
                         </Text>
                     </HBox>
 
                 </AnchorPane>
-
-                <!-- ✦ Improved Switch View Button ✦ -->
-                <Button fx:id="onSwitchViewButton"
-                        prefHeight="117.0" prefWidth="16.0"
-                        mnemonicParsing="false"
-                        styleClass="service-view-btn"
-                        text="&#8250;"
-                        focusTraversable="false"/>
-
             </children>
         </HBox>
     </top>
     <center>
-        <AnchorPane fx:id="centerPane" styleClass="content-area"/>
+        <StackPane BorderPane.alignment="CENTER">
+            <AnchorPane fx:id="centerPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="content-area" StackPane.alignment="CENTER" />
+
+            <!-- Floating page-turn button, bottom-right corner -->
+            <Button fx:id="onSwitchViewButton" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="1.7976931348623157E308" mnemonicParsing="false" pickOnBounds="false" styleClass="map-back-btn" StackPane.alignment="BOTTOM_RIGHT">
+                <StackPane.margin>
+                    <Insets />
+                </StackPane.margin>
+                <graphic>
+                    <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="page-turn-icon">
+                        <Pane styleClass="page-body" />
+                        <StackPane alignment="BOTTOM_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="page-corner" StackPane.alignment="TOP_RIGHT">
+                            <Label alignment="BOTTOM_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="page-return-arrow" text="↩ " StackPane.alignment="TOP_LEFT">
+                                <StackPane.margin>
+                                    <Insets bottom="-10.0" right="-5.0" />
+                                </StackPane.margin>
+                            </Label>
+                        </StackPane>
+                    </StackPane>
+                </graphic>
+            </Button>
+        </StackPane>
     </center>
 </BorderPane>

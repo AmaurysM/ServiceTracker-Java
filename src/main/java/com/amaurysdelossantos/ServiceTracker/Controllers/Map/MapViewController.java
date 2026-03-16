@@ -1,14 +1,18 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Map;
 
 import com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab.PlacementPanelController;
-import com.amaurysdelossantos.ServiceTracker.Services.MapService;
-import com.amaurysdelossantos.ServiceTracker.Services.ServiceTrackerService;
-import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
+import com.amaurysdelossantos.ServiceTracker.Services.*;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
+import com.amaurysdelossantos.ServiceTracker.models.enums.ActivityFilter;
+import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceFilter;
+import com.amaurysdelossantos.ServiceTracker.models.enums.TimeFilter;
 import com.amaurysdelossantos.ServiceTracker.models.enums.views.ServiceView;
+import com.mongodb.client.model.changestream.ChangeStreamDocument;
+import com.mongodb.client.model.changestream.OperationType;
 import fxmapcontrol.*;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -17,6 +21,9 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.bson.BsonType;
+import org.bson.BsonValue;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -26,6 +33,9 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +57,8 @@ public class MapViewController {
     @FXML private VBox tabContent;
 
     @Autowired private ServiceTrackerService serviceTrackerService;
-    @Autowired private StandardControlsService standardControlsService;
+    @Autowired private ServiceItemService serviceItemService;
+    @Autowired private DataService dataService;
     @Autowired private MongoTemplate mongoTemplate;
     @Autowired private ApplicationContext applicationContext;
     @Autowired private MapService mapService;
@@ -73,7 +84,7 @@ public class MapViewController {
         fxMap.getChildren().add(markerPane);
 
         PlacementPanelController.installMapDropTarget(fxMap, fxMap, (itemId, lat, lon) -> {
-            standardControlsService.getItems().stream()
+            mapService.getItems().stream()
                     .filter(i -> i.getId().equals(itemId))
                     .findFirst()
                     .ifPresent(item -> {
@@ -83,27 +94,21 @@ public class MapViewController {
                         mp.put("y", lon);
                         mp.put("rotation", 0.0);
                         item.getMetadata().put("mapPosition", mp);
-
-                        int idx = standardControlsService.getItems().indexOf(item);
-                        if (idx >= 0) {
-                            standardControlsService.getItems().set(idx, item);
-                        }
-
                         Platform.runLater(() -> addOrUpdateMarker(item));
                     });
-
-            persistPosition(itemId, lat, lon);
+            persistPosition(itemId, lat, lon); // ← now also sets it on the shared list item
         });
 
-        fxMap.centerProperty().addListener((o, p, n) -> relocateAll());
-        fxMap.zoomLevelProperty().addListener((o, p, n) -> relocateAll());
-        fxMap.widthProperty().addListener((o, p, n) -> relocateAll());
-        fxMap.heightProperty().addListener((o, p, n) -> relocateAll());
+        fxMap.centerProperty().addListener((o, p, n) -> relocateAllAsync());
+        fxMap.zoomLevelProperty().addListener((o, p, n) -> relocateAllAsync());
+        fxMap.widthProperty().addListener((o, p, n) -> relocateAllAsync());
+        fxMap.heightProperty().addListener((o, p, n) -> relocateAllAsync());
 
-        standardControlsService.getItems().forEach(this::addOrUpdateMarker);
+        // ── Seed markers from the shared list, then keep them in sync ──────
+        mapService.getItems().forEach(this::addOrUpdateMarker);
         updateCount();
 
-        standardControlsService.getItems().addListener((ListChangeListener<ServiceItem>) change -> {
+        mapService.getItems().addListener((ListChangeListener<ServiceItem>) change -> {
             while (change.next()) {
                 if (change.wasRemoved())
                     change.getRemoved().forEach(item -> removeMarker(item.getId()));
@@ -113,29 +118,156 @@ public class MapViewController {
             updateCount();
         });
 
+        // ── Initial load + live change stream (mirrors StandardViewController) ──
+        reload();
+        dataService.startChangeStream(this::handleChange);
+
+        // ── Re-reload when map filter state changes ────────────────────────
+        mapService.getTimeFilter().addListener((obs, o, n) -> reloadAndRestart());
+        mapService.getServiceFilter().addListener((obs, o, n) -> reloadAndRestart());
+        mapService.getSearchText().addListener((obs, o, n) -> reloadAndRestart());
+
         mapService.tabOpenProperty().addListener((e, oldVal, newVal) -> {
-            if (!newVal) {
-                collapsePanel();
-            } else {
-                expandPanel();
+            if (!newVal) collapsePanel();
+            else expandPanel();
+        });
+
+        markerPane.setOnMousePressed(e -> {
+            if (selectedId != null) {
+                AircraftMarkerController prev = markers.get(selectedId);
+                if (prev != null) prev.setSelected(false);
+                selectedId = null;
             }
         });
 
-        backBtn.setOnAction(e -> serviceTrackerService.activeViewProperty().set(ServiceView.STANDARD));
+        backBtn.setOnAction(e -> {
+            dataService.stopChangeStream();
+            serviceTrackerService.activeViewProperty().set(ServiceView.STANDARD);
+        });
+
         rightTabPane.getSelectionModel().select(dummyTab);
 
         Platform.runLater(this::attachTabToggleHandlers);
         Platform.runLater(() -> fxMap.requestLayout());
     }
 
+    // ── Data loading (mirrors StandardViewController) ──────────────────────
+
+    private void reloadAndRestart() {
+        reload();
+        dataService.restartChangeStream(this::handleChange);
+    }
+
+    private void reload() {
+        dataService.reload(
+                null,                                        // map shows all activity states
+                mapService.getTimeFilter().get(),
+                mapService.getServiceFilter().get(),
+                mapService.getSearchText().get(),
+                mapService.getItems()::setAll
+        );
+    }
+
+    // ── Change stream (mirrors StandardViewController) ─────────────────────
+
+    private void handleChange(ChangeStreamDocument<Document> change) {
+        OperationType op = change.getOperationType();
+
+        if (op == OperationType.DELETE) {
+            BsonValue idValue = change.getDocumentKey().get("_id");
+            String deletedId = idValue.getBsonType() == BsonType.OBJECT_ID
+                    ? idValue.asObjectId().getValue().toString()
+                    : idValue.asString().getValue();
+            Platform.runLater(() ->
+                    mapService.getItems().removeIf(i -> i.getId().equals(deletedId)));
+            return;
+        }
+
+        Document doc = change.getFullDocument();
+        if (doc == null) return;
+
+        ServiceItem updatedItem = mongoTemplate.getConverter().read(ServiceItem.class, doc);
+        Platform.runLater(() -> applyChange(updatedItem, op));
+    }
+
+    private void applyChange(ServiceItem updatedItem, OperationType op) {
+        ObservableList<ServiceItem> items = mapService.getItems();
+        int index = findIndexById(updatedItem.getId(), items);
+        boolean matches = matchesCurrentFilter(updatedItem);
+
+        switch (op) {
+            case INSERT -> {
+                if (matches) items.add(updatedItem);
+            }
+            case UPDATE, REPLACE -> {
+                if (index != -1 && matches) items.set(index, updatedItem);
+                else if (index != -1)       items.remove(index);
+                else if (matches)           items.add(updatedItem);
+            }
+        }
+    }
+
+    private int findIndexById(String id, ObservableList<ServiceItem> items) {
+        for (int i = 0; i < items.size(); i++)
+            if (items.get(i).getId().equals(id)) return i;
+        return -1;
+    }
+
+    private boolean matchesCurrentFilter(ServiceItem item) {
+        if (item.getDeletedAt() != null) return false;
+
+        ServiceFilter service = mapService.getServiceFilter().get();
+        if (service != null && service != ServiceFilter.ALL) {
+            boolean matches = switch (service) {
+                case FUEL              -> item.getFuel() != null;
+                case GPU               -> item.getGpu() != null;
+                case LAVATORY          -> item.getLavatory() != null;
+                case POTABLE_WATER     -> item.getPotableWater() != null;
+                case CATERING          -> item.getCatering() != null && !item.getCatering().isEmpty();
+                case WINDSHIELD_CLEANING -> item.getWindshieldCleaning() != null;
+                case OIL_SERVICE       -> item.getOilService() != null;
+                default                -> true;
+            };
+            if (!matches) return false;
+        }
+
+        TimeFilter time = mapService.getTimeFilter().get();
+        if (time != null && item.getCreatedAt() != null) {
+            ZonedDateTime now = ZonedDateTime.now();
+            Instant start = switch (time) {
+                case TODAY -> now.toLocalDate().atStartOfDay(now.getZone()).toInstant();
+                case WEEK  -> now.toLocalDate().with(DayOfWeek.MONDAY).atStartOfDay(now.getZone()).toInstant();
+                case MONTH -> now.toLocalDate().withDayOfMonth(1).atStartOfDay(now.getZone()).toInstant();
+            };
+            if (item.getCreatedAt().isBefore(start)) return false;
+            if (time == TimeFilter.TODAY) {
+                Instant end = now.toLocalDate().atStartOfDay(now.getZone()).plusDays(1).toInstant();
+                if (!item.getCreatedAt().isBefore(end)) return false;
+            }
+        }
+
+        String search = mapService.getSearchText().get();
+        if (search != null && !search.isBlank()) {
+            String lower = search.toLowerCase();
+            boolean tailMatch = item.getTail() != null && item.getTail().toLowerCase().contains(lower);
+            boolean descMatch = item.getDescription() != null && item.getDescription().toLowerCase().contains(lower);
+            if (!tailMatch && !descMatch) return false;
+        }
+
+        return true;
+    }
+
+    // ── The rest is unchanged from your original ───────────────────────────
+
+    private void relocateAllAsync() {
+        markers.values().forEach(AircraftMarkerController::relocateAsync);
+    }
+
     private void attachTabToggleHandlers() {
         rightTabPane.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldTab, newTab) -> {
-                    if (newTab == null || newTab == dummyTab) {
-                        collapsePanel();
-                    } else {
-                        expandPanel();
-                    }
+                    if (newTab == null || newTab == dummyTab) collapsePanel();
+                    else expandPanel();
                 }
         );
     }
@@ -148,34 +280,19 @@ public class MapViewController {
 
     private void renderTab() {
         try {
-            if (rightTabPane.getSelectionModel().getSelectedItem().equals(tabFilters)) {
-                tabContent.getChildren().clear();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/map/tab/filters-panel.fxml"));
+            Tab selected = rightTabPane.getSelectionModel().getSelectedItem();
+
+            String fxml = null;
+            if (selected.equals(tabFilters))   fxml = "/components/map/tab/filters-panel.fxml";
+            else if (selected.equals(tabDrawing))   fxml = "/components/map/tab/drawing-panel.fxml";
+            else if (selected.equals(tabPlacement)) fxml = "/components/map/tab/placement-panel.fxml";
+
+            tabContent.getChildren().clear();
+            if (fxml != null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
                 loader.setControllerFactory(applicationContext::getBean);
                 tabContent.getChildren().add(loader.load());
-                return;
             }
-
-            if (rightTabPane.getSelectionModel().getSelectedItem().equals(tabDrawing)) {
-                tabContent.getChildren().clear();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/map/tab/drawing-panel.fxml"));
-                loader.setControllerFactory(applicationContext::getBean);
-                tabContent.getChildren().add(loader.load());
-                return;
-            }
-
-            if (rightTabPane.getSelectionModel().getSelectedItem().equals(tabPlacement)) {
-                tabContent.getChildren().clear();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/components/map/tab/placement-panel.fxml"));
-                loader.setControllerFactory(applicationContext::getBean);
-                tabContent.getChildren().add(loader.load());
-                return;
-            }
-
-            if (rightTabPane.getSelectionModel().getSelectedItem().equals(dummyTab)) {
-                tabContent.getChildren().clear();
-            }
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -238,30 +355,37 @@ public class MapViewController {
         }
     }
 
-    private void relocateAll() {
-        markers.values().forEach(AircraftMarkerController::relocate);
-    }
-
     private void updateCount() {
         if (itemCountText != null)
             itemCountText.setText(String.valueOf(markers.size()));
     }
 
-
     private void persistPosition(String itemId, double x, double y) {
+        // 1. Update in-memory item so the change stream echo finds it already correct
+        mapService.getItems().stream()
+                .filter(i -> i.getId().equals(itemId))
+                .findFirst()
+                .ifPresent(item -> {
+                    if (item.getMetadata() == null) item.setMetadata(new HashMap<>());
+                    Map<String, Object> mp = (Map<String, Object>)
+                            item.getMetadata().computeIfAbsent("mapPosition", k -> new HashMap<>());
+                    mp.put("x", x);
+                    mp.put("y", y);
+                });
+
+        // 2. Also update the marker controller's own reference
         AircraftMarkerController ctrl = markers.get(itemId);
         if (ctrl != null) {
             Map<String, Object> mp = AircraftMarkerController.mapPosition(ctrl.getItem());
-            if (mp != null) {
-                mp.put("x", x);
-                mp.put("y", y);
-            }
+            if (mp != null) { mp.put("x", x); mp.put("y", y); }
         }
+
+        // 3. Persist — change stream will echo this back, applyChange will
+        //    find index != -1 and matches == true → safe set, no disappear
         Thread t = new Thread(() ->
                 mongoTemplate.updateFirst(
                         Query.query(Criteria.where("_id").is(itemId)),
-                        new Update()
-                                .set("metadata.mapPosition.x", x)
+                        new Update().set("metadata.mapPosition.x", x)
                                 .set("metadata.mapPosition.y", y),
                         ServiceItem.class));
         t.setDaemon(true);
@@ -269,11 +393,26 @@ public class MapViewController {
     }
 
     private void persistRotation(String itemId, double rotation) {
+        // 1. Update in-memory item
+        mapService.getItems().stream()
+                .filter(i -> i.getId().equals(itemId))
+                .findFirst()
+                .ifPresent(item -> {
+                    if (item.getMetadata() != null) {
+                        Map<String, Object> mp = (Map<String, Object>)
+                                item.getMetadata().get("mapPosition");
+                        if (mp != null) mp.put("rotation", rotation);
+                    }
+                });
+
+        // 2. Update marker controller reference
         AircraftMarkerController ctrl = markers.get(itemId);
         if (ctrl != null) {
             Map<String, Object> mp = AircraftMarkerController.mapPosition(ctrl.getItem());
             if (mp != null) mp.put("rotation", rotation);
         }
+
+        // 3. Persist
         Thread t = new Thread(() ->
                 mongoTemplate.updateFirst(
                         Query.query(Criteria.where("_id").is(itemId)),

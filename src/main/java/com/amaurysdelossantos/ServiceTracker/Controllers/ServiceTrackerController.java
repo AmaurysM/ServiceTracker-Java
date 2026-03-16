@@ -47,7 +47,6 @@ public class ServiceTrackerController {
 
     @FXML
     public void initialize() {
-        System.out.println("9999999999999");
 
         userInitials.setText("AD");
 
@@ -129,7 +128,6 @@ public class ServiceTrackerController {
                     AnchorPane.setRightAnchor(child1, 0.0);
                     centerPane.getChildren().add(child1);
 
-                    // Tell the map to re-measure itself after layout is done
                     MapViewController mapCtrl = loader1.getController();
                     Platform.runLater(mapCtrl::invalidateSize);
                 }

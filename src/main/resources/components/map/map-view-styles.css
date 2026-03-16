@@ -195,34 +195,65 @@
 }
 
 ///////
-
 .map-back-btn {
-    -fx-background-color: #0f172b;
-    -fx-text-fill: white;
-    -fx-font-size: 10px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 0;
-    -fx-border-color: #2a3f6a;
-    -fx-border-width: 0 1 1 1;
-    -fx-border-radius: 0 0 6 0;
+    -fx-background-radius: 6 0 0 6;
+    -fx-border-radius: 6 0 0 6;
     -fx-cursor: hand;
-    -fx-pref-width: 100px;
-    -fx-max-height: 30px;
-    -fx-pref-height: 25px;
-    -fx-min-height: 20px;
+    -fx-pref-width: 40px;
+    -fx-pref-height: 40px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
     -fx-padding: 0;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 6, 0, 3, 0);
-}
-
-.map-back-btn:hover {
-    -fx-background-color: #293f77;
-    -fx-text-fill: #5b9bd5;
-    -fx-border-color: #3a5fa0;
-    -fx-effect: dropshadow(gaussian, rgba(59,130,246,0.25), 8, 0, 4, 0);
+    -fx-background-color: #ffffff;
 }
 
 .map-back-btn:pressed {
-    -fx-background-color: #142050;
-    -fx-text-fill: #3b6eb5;
     -fx-effect: none;
+}
+
+/* ── Page body (the blue rectangle) ─────────────────────────────────────── */
+.page-body {
+    -fx-pref-width: 40px;
+    -fx-pref-height: 40px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+        -fx-max-width: 40px;
+        -fx-max-height: 40px;
+    -fx-background-radius: 3 3 0 3;  /* flat bottom-right corner */
+}
+
+
+
+/* ── Folded corner (dog-ear triangle at top-right) ───────────────────────── */
+.page-corner {
+    -fx-background-radius: 6 0 0 0;
+    -fx-border-radius: 6 0 0 0;
+    -fx-pref-width: 40px;
+    -fx-pref-height: 40px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-background-color:
+        linear-gradient(to top left, transparent 50%, #1a3a6e 50%);
+}
+
+.map-back-btn:hover .page-corner {
+    -fx-background-color:
+        linear-gradient(to top left, #293f77 50%, #2a5fa0 50%);
+}
+
+/* ── Return arrow label (↩ bottom-right of page) ────────────────────────── */
+.page-return-arrow {
+    -fx-text-fill: #2563eb;
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+
+    -fx-padding: 0 0 0 0;
+}
+
+.map-back-btn:hover .page-return-arrow {
+    -fx-text-fill: #ffffff;
 }

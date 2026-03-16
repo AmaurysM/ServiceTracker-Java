@@ -30,6 +30,14 @@
         </VBox>
     </HBox>
 
+    <!-- ── Date / Time filter ─────────────────────────────────────────── -->
+    <HBox spacing="8" styleClass="panel-section">
+        <VBox spacing="3" HBox.hgrow="ALWAYS">
+            <Text styleClass="section-label" text="TIME RANGE"/>
+            <ComboBox fx:id="timeFilter" maxWidth="Infinity" prefHeight="26" styleClass="panel-combo"/>
+        </VBox>
+    </HBox>
+
     <!-- ── Placement filter tabs ──────────────────────────────────────── -->
     <HBox styleClass="placement-tab-row">
         <Button fx:id="tabAll" maxWidth="Infinity" styleClass="placement-tab,placement-tab-active" text="All (0)"

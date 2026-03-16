@@ -1,6 +1,7 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Standard;
 
 import com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Item.CardItemController;
+import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import javafx.collections.ListChangeListener;
@@ -38,6 +39,8 @@ public class GridViewController {
     @Autowired
     private StandardControlsService standardControlsService;
     private int currentColumns = 0;
+    @Autowired
+    private ServiceItemService serviceItemService;
 
     @FXML
     public void initialize() {

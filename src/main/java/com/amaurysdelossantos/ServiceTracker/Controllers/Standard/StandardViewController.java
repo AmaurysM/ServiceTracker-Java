@@ -1,6 +1,7 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Standard;
 
 import com.amaurysdelossantos.ServiceTracker.Services.DataService;
+import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceTrackerService;
 import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
@@ -127,6 +128,10 @@ public class StandardViewController {
         stateService.getServiceFilter().addListener((obs, o, n) -> reloadAndRestart());
         stateService.getTimeFilter().addListener((obs, o, n) -> reloadAndRestart());
         stateService.getSearchText().addListener((obs, o, n) -> reloadAndRestart());
+
+        // Reset active view so the guard in onViewToggleChanged never blocks
+        // the initial render when returning from another view (e.g. Map view).
+        stateService.getActiveView().set(null);
 
         onViewToggleChanged(StandardView.CARD);
 
@@ -258,6 +263,9 @@ public class StandardViewController {
 
     private void onViewToggleChanged(StandardView newView) {
         if (centerPane == null) return;
+        // Guard removed: stateService is a singleton and retains its value across
+        // view loads. Without resetting it first (done above in initialize()), this
+        // guard would cause the child view to never render when returning from Map view.
         if (stateService.getActiveView().get() == newView) return;
 
         centerPane.getChildren().clear();

@@ -403,3 +403,59 @@
     -fx-text-fill: #2563eb;
     -fx-effect: none;
 }
+
+/* ── Back / Switch-View Button (page-turn icon) ─────────────────────────── */
+.map-back-btn {
+    -fx-background-radius: 6 0 0 6;
+    -fx-border-radius: 6 0 0 6;
+    -fx-cursor: hand;
+    -fx-pref-width: 40px;
+    -fx-pref-height: 40px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-padding: 0;
+    -fx-background-color: #ffffff;
+}
+
+.map-back-btn:pressed {
+    -fx-effect: none;
+}
+
+.page-body {
+    -fx-pref-width: 40px;
+    -fx-pref-height: 40px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-background-radius: 3 3 0 3;
+}
+
+.page-corner {
+    -fx-background-radius: 6 0 0 0;
+    -fx-border-radius: 6 0 0 0;
+    -fx-pref-width: 40px;
+    -fx-pref-height: 40px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-background-color: linear-gradient(to top left, #3b82f6 50%, #0f172b 50%);
+}
+
+.map-back-btn:hover .page-corner {
+    -fx-background-color: linear-gradient(to top left, #293f77 50%, #2a5fa0 50%);
+}
+
+.page-return-arrow {
+    -fx-text-fill: #15305c;
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-padding: 0;
+}
+
+.map-back-btn:hover .page-return-arrow {
+    -fx-text-fill: #ffffff;
+}

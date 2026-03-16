@@ -1,60 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import fxmapcontrol.Map?>
+<?import fxmapcontrol.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<StackPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="Infinity" maxWidth="Infinity" styleClass="map-root"
-           stylesheets="@map-view-styles.css" xmlns="http://javafx.com/javafx/17.0.12"
-           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.MapViewController">
 
-    <Map fx:id="fxMap" center="25.7959,-80.2870" maxHeight="Infinity" maxWidth="Infinity" maxZoomLevel="20"
-         zoomLevel="14"/>
+<StackPane maxHeight="Infinity" maxWidth="Infinity" pickOnBounds="false" styleClass="map-root" stylesheets="@map-view-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.MapViewController">
+
+    <Map fx:id="fxMap" center="25.7959,-80.2870" maxHeight="Infinity" maxWidth="Infinity" maxZoomLevel="20" zoomLevel="14" />
 
     <!-- Layer 1: Tab strip + back button, centered vertically on the right edge -->
-    <VBox alignment="CENTER_RIGHT" maxHeight="Infinity" pickOnBounds="false" prefHeight="Infinity"
-          StackPane.alignment="CENTER_RIGHT">
+    <VBox alignment="CENTER_RIGHT" maxHeight="Infinity" pickOnBounds="false" prefHeight="Infinity" StackPane.alignment="CENTER_RIGHT">
 
-        <VBox alignment="CENTER_RIGHT" VBox.vgrow="ALWAYS" pickOnBounds="false"  maxWidth="45"  prefWidth="45">
-            <TabPane fx:id="rightTabPane" maxWidth="45" pickOnBounds="false" prefWidth="45" side="RIGHT"
-                     tabClosingPolicy="UNAVAILABLE">
+        <VBox alignment="CENTER_RIGHT" maxWidth="45" pickOnBounds="false" prefWidth="45" VBox.vgrow="ALWAYS">
+            <TabPane fx:id="rightTabPane" maxWidth="45" pickOnBounds="false" prefWidth="45" side="RIGHT" tabClosingPolicy="UNAVAILABLE">
                 <Tab fx:id="dummyTab" styleClass="dummy-tab">
-                    <StackPane/>
+                    <StackPane />
                 </Tab>
                 <Tab fx:id="tabFilters" text="Filters">
-                    <StackPane/>
+                    <StackPane />
                 </Tab>
                 <Tab fx:id="tabDrawing" text="Drawing">
-                    <StackPane/>
+                    <StackPane />
                 </Tab>
                 <Tab fx:id="tabPlacement" text="Placement">
-                    <StackPane/>
+                    <StackPane />
                 </Tab>
             </TabPane>
         </VBox>
 
         <!-- Back button sits below the tabs, flush to the right edge -->
-        <Button fx:id="backBtn" styleClass="map-back-btn" text="&#8249; Back To List"/>
-
+        <Button fx:id="backBtn" contentDisplay="GRAPHIC_ONLY" pickOnBounds="false" styleClass="map-back-btn">
+            <graphic>
+                <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="page-turn-icon">
+                    <!-- Page body -->
+                    <Pane styleClass="page-body" />
+                    <!-- Folded corner triangle (top-right) -->
+                    <StackPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="page-corner" StackPane.alignment="TOP_RIGHT">
+                        <Label alignment="BOTTOM_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="page-return-arrow" text="↩ " StackPane.alignment="TOP_LEFT">
+                     <StackPane.margin>
+                        <Insets bottom="-10.0" right="-5.0" />
+                     </StackPane.margin></Label>
+                    </StackPane>
+                    <!-- Return arrow at bottom-right -->
+                </StackPane>
+            </graphic>
+        </Button>
     </VBox>
 
     <!-- Layer 2: Content panel overlays on top, slides in from right, covers the tabs -->
-    <VBox fx:id="tabContent" maxHeight="Infinity" maxWidth="0" pickOnBounds="false" prefHeight="Infinity"
-          style="-fx-background-color: RGBA(255, 255, 255, 0.5);" StackPane.alignment="CENTER_RIGHT">
-
-        <!--        <VBox fx:id="filtersPane" visible="false" managed="false"-->
-        <!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
-        <!--            <Label text="Filters" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
-        <!--        </VBox>-->
-
-        <!--        <VBox fx:id="drawingPane" visible="false" managed="false"-->
-        <!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
-        <!--            <Label text="Drawing" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
-        <!--        </VBox>-->
-
-        <!--        <VBox fx:id="placementPane" visible="false" managed="false"-->
-        <!--              maxHeight="Infinity" prefHeight="Infinity" style="-fx-padding: 12;">-->
-        <!--            <Label text="Placement" style="-fx-text-fill: white; -fx-font-weight: bold;"/>-->
-        <!--        </VBox>-->
+    <VBox fx:id="tabContent" maxHeight="Infinity" maxWidth="0" pickOnBounds="false" prefHeight="Infinity" style="-fx-background-color: RGBA(255, 255, 255, 0.5);" StackPane.alignment="CENTER_RIGHT">
 
     </VBox>
 

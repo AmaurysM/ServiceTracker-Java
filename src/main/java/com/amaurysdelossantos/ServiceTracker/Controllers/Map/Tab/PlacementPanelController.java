@@ -1,7 +1,7 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab;
 
 import com.amaurysdelossantos.ServiceTracker.Services.MapService;
-import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
+import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;  // ← changed
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -24,31 +24,18 @@ import java.util.*;
 @Scope("prototype")
 public class PlacementPanelController {
 
-    // ── Constants ─────────────────────────────────────────────────────────────
-
-    /**
-     * Custom DataFormat used to pass the aircraft ID through the JavaFX
-     * drag-and-drop Dragboard. Must match between the drag source (cell) and
-     * the drop target (map pane).
-     */
     static final DataFormat AIRCRAFT_ID_FORMAT =
             new DataFormat("application/x-aircraft-id");
 
     private static final DateTimeFormatter DT_FMT =
             DateTimeFormatter.ofPattern("MM/dd HH:mm").withZone(ZoneId.systemDefault());
 
-    // ── FXML ──────────────────────────────────────────────────────────────────
-
     @FXML private Button closeBtn;
     @FXML private VBox emptyState;
     @FXML private ListView<ServiceItem> aircraftList;
 
-    // ── Spring ────────────────────────────────────────────────────────────────
-
     @Autowired private MapService mapService;
-    @Autowired private StandardControlsService standardControlsService;
-
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
+    @Autowired private ServiceItemService serviceItemService;  // ← changed
 
     public void initialize() {
         closeBtn.setOnAction(e -> mapService.tabOpenProperty().set(false));
@@ -58,14 +45,13 @@ public class PlacementPanelController {
 
         refreshList();
 
-        standardControlsService.getItems().addListener(
+        // ── Listen to the shared live list, same as MapViewController ────────
+        mapService.getItems().addListener(
                 (ListChangeListener<ServiceItem>) c -> Platform.runLater(this::refreshList));
     }
 
-    // ── List helpers ──────────────────────────────────────────────────────────
-
     private void refreshList() {
-        List<ServiceItem> unplaced = standardControlsService.getItems().stream()
+        List<ServiceItem> unplaced = mapService.getItems().stream()  // ← changed
                 .filter(item -> !hasMapPosition(item))
                 .sorted(Comparator.comparing(ServiceItem::getTail, String.CASE_INSENSITIVE_ORDER))
                 .toList();
@@ -84,13 +70,8 @@ public class PlacementPanelController {
         return pos.containsKey("x") && pos.containsKey("y");
     }
 
-    // ── Map drop target ───────────────────────────────────────────────────────
+    // ── Everything below is unchanged ─────────────────────────────────────────
 
-    /**
-     * Installs drag-over / drag-dropped handlers on the given map pane node.
-     * The onDrop TriConsumer receives (itemId, lat, lon) — all in-memory
-     * updates and persistence are the caller's responsibility.
-     */
     public static void installMapDropTarget(Node mapPane,
                                             fxmapcontrol.Map fxMap,
                                             TriConsumer onDrop) {
@@ -107,12 +88,9 @@ public class PlacementPanelController {
             Dragboard db = e.getDragboard();
             if (db.hasContent(AIRCRAFT_ID_FORMAT)) {
                 String itemId = (String) db.getContent(AIRCRAFT_ID_FORMAT);
-
                 double[] latLon = pixelToLatLon(
-                        fxMap,
-                        e.getX(), e.getY(),
+                        fxMap, e.getX(), e.getY(),
                         fxMap.getWidth(), fxMap.getHeight());
-
                 onDrop.accept(itemId, latLon[0], latLon[1]);
                 e.setDropCompleted(true);
             }
@@ -120,10 +98,6 @@ public class PlacementPanelController {
         });
     }
 
-    /**
-     * Converts a viewport pixel (x, y) to [latitude, longitude] using
-     * standard WebMercator math.
-     */
     private static double[] pixelToLatLon(fxmapcontrol.Map fxMap,
                                           double dropX, double dropY,
                                           double viewWidth, double viewHeight) {
@@ -138,13 +112,9 @@ public class PlacementPanelController {
         double dropWorldX = centerPx + (dropX - viewWidth  / 2.0);
         double dropWorldY = centerPy + (dropY - viewHeight / 2.0);
 
-        double lon = worldPxToLon(dropWorldX, mapSize);
-        double lat = worldPyToLat(dropWorldY, mapSize);
-
-        return new double[]{lat, lon};
+        return new double[]{ worldPyToLat(dropWorldY, mapSize),
+                worldPxToLon(dropWorldX, mapSize) };
     }
-
-    // ── WebMercator helpers ───────────────────────────────────────────────────
 
     private static double lonToWorldPx(double lon, double mapSize) {
         return (lon + 180.0) / 360.0 * mapSize;
@@ -165,14 +135,10 @@ public class PlacementPanelController {
         return Math.toDegrees(Math.atan(Math.sinh(n)));
     }
 
-    // ── Functional interface ──────────────────────────────────────────────────
-
     @FunctionalInterface
     public interface TriConsumer {
         void accept(String itemId, double lat, double lon);
     }
-
-    // ── Cell ──────────────────────────────────────────────────────────────────
 
     private class AircraftCell extends ListCell<ServiceItem> {
 

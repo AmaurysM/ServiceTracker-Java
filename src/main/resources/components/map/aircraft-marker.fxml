@@ -13,8 +13,7 @@
            fx:id="root"
            fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.AircraftMarkerController"
            styleClass="aircraft-marker-root"
-           stylesheets="@aircraft-marker.css"
-           pickOnBounds="false">
+           stylesheets="@aircraft-marker.css">
 
     <!--
         innerRotating: rotated as a unit by the controller.

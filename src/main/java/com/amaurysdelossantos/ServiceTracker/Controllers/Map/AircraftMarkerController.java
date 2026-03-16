@@ -21,6 +21,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -44,9 +46,12 @@ public class AircraftMarkerController {
     @FXML private Label tailLabel;
     @FXML private HBox serviceBar;
 
+    private double dragLatOffset, dragLngOffset;
+
     private double posX;
     private double posY;
     private double rotation = 0;
+    @Getter
     private ServiceItem item;
     private MapBase map;
     private boolean selected = false;
@@ -60,10 +65,16 @@ public class AircraftMarkerController {
 
     private ContextMenu contextMenu;
 
+    @Setter
     private Consumer<AircraftMarkerController> onSelect;
+    @Setter
     private Consumer<AircraftMarkerController> onContextMenu;
+    @Setter
     private TriConsumer<String, Double, Double> onPositionUpdate;
+    @Setter
     private BiConsumer<String, Double> onRotationUpdate;
+
+    // ── Factory ───────────────────────────────────────────────────────────────
 
     public static AircraftMarkerController create(ServiceItem item, MapBase map) {
         try {
@@ -79,6 +90,7 @@ public class AircraftMarkerController {
         }
     }
 
+    // ── Static helpers ────────────────────────────────────────────────────────
 
     @SuppressWarnings("unchecked")
     public static Map<String, Object> mapPosition(ServiceItem item) {
@@ -112,9 +124,10 @@ public class AircraftMarkerController {
         };
     }
 
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
     @FXML
-    public void initialize() {  }
+    public void initialize() { }
 
     private void init(ServiceItem item, MapBase map) {
         this.item = item;
@@ -124,17 +137,14 @@ public class AircraftMarkerController {
         buildContextMenu();
         wireEvents();
         refreshVisuals();
-        relocate();
+        Platform.runLater(this::relocate); // wait for layout pass
     }
 
-    public StackPane getNode()  { return root; }
-    public ServiceItem getItem() { return item; }
-    public String getId()        { return item.getId(); }
+    // ── Public API ────────────────────────────────────────────────────────────
 
-    public void setOnSelect(Consumer<AircraftMarkerController> cb)              { onSelect = cb; }
-    public void setOnContextMenu(Consumer<AircraftMarkerController> cb)         { onContextMenu = cb; }
-    public void setOnPositionUpdate(TriConsumer<String, Double, Double> cb)     { onPositionUpdate = cb; }
-    public void setOnRotationUpdate(BiConsumer<String, Double> cb)              { onRotationUpdate = cb; }
+    public StackPane getNode()  { return root; }
+
+    public String getId()        { return item.getId(); }
 
     public void setSelected(boolean sel) {
         selected = sel;
@@ -142,21 +152,30 @@ public class AircraftMarkerController {
     }
 
     public void refresh(ServiceItem updated) {
+        double oldX = this.posX, oldY = this.posY, oldRot = this.rotation;
         this.item = updated;
         readPosition();
         rebuildLabel();
         refreshVisuals();
-        relocate();
+        if (posX != oldX || posY != oldY || rotation != oldRot) {
+            relocate();
+        }
     }
 
     public void relocate() {
-        Platform.runLater(() -> {
-            Point2D pt = toPixel(posX, posY);
-            if (pt == null) return;
-            root.setLayoutX(pt.getX() - root.getWidth()  / 2.0);
-            root.setLayoutY(pt.getY() - root.getHeight() / 2.0);
-        });
+        Point2D pt = toPixel(posX, posY);
+        if (pt == null) return;
+        double w = root.getWidth()  > 0 ? root.getWidth()  : root.prefWidth(-1);
+        double h = root.getHeight() > 0 ? root.getHeight() : root.prefHeight(-1);
+        root.setLayoutX(pt.getX() - w / 2.0);
+        root.setLayoutY(pt.getY() - h / 2.0);
     }
+
+    public void relocateAsync() {
+        Platform.runLater(this::relocate);
+    }
+
+    // ── Context menu ──────────────────────────────────────────────────────────
 
     private void buildContextMenu() {
         contextMenu = new ContextMenu();
@@ -241,38 +260,42 @@ public class AircraftMarkerController {
         }
     }
 
+    // ── Events ────────────────────────────────────────────────────────────────
 
     private void wireEvents() {
         root.setCursor(Cursor.HAND);
 
+        // ── Root mouse pressed (only for move, ignore rotate handle) ──
         root.setOnMousePressed(e -> {
-            contextMenu.hide();
-
             if (!e.isPrimaryButtonDown()) return;
-            hasDragged = false;
-            dragMode   = DragMode.MOVE;
-            Point2D pt = toPixel(posX, posY);
-            if (pt != null) {
-                dragOffsetX = e.getSceneX() - pt.getX();
-                dragOffsetY = e.getSceneY() - pt.getY();
+
+            // If the target is the rotate handle, let its own handler take over
+            if (e.getTarget() == rotateHandle) {
+                return;                     // do not start move drag
             }
+
+            contextMenu.hide();
+            Location cursorLoc = toLatLng(e.getSceneX(), e.getSceneY());
+            if (cursorLoc == null) return;
+
+            hasDragged = false;
+            dragMode = DragMode.MOVE;
+            dragLatOffset = cursorLoc.getLatitude()  - posX;
+            dragLngOffset = cursorLoc.getLongitude() - posY;
+
             root.setCursor(Cursor.CLOSED_HAND);
             e.consume();
         });
 
+        // ── Move drag (already correct) ──
         root.setOnMouseDragged(e -> {
             if (dragMode == DragMode.MOVE) {
                 hasDragged = true;
-                double sx  = e.getSceneX() - dragOffsetX;
-                double sy  = e.getSceneY() - dragOffsetY;
-                Location loc = toLatLng(sx, sy);
-                if (loc != null) {
-                    posX = loc.getLatitude();
-                    posY = loc.getLongitude();
-                    root.setLayoutX(sx - root.getWidth()  / 2.0);
-                    root.setLayoutY(sy - root.getHeight() / 2.0);
-                    if (onPositionUpdate != null)
-                        onPositionUpdate.accept(getId(), posX, posY);
+                Location cursorLoc = toLatLng(e.getSceneX(), e.getSceneY());
+                if (cursorLoc != null) {
+                    posX = cursorLoc.getLatitude()  - dragLatOffset;
+                    posY = cursorLoc.getLongitude() - dragLngOffset;
+                    relocate();
                 }
             } else if (dragMode == DragMode.ROTATE) {
                 hasDragged = true;
@@ -281,28 +304,26 @@ public class AircraftMarkerController {
                 if (e.isShiftDown()) angle = Math.round(angle / 15.0) * 15.0;
                 rotation = norm(angle);
                 innerRotating.setRotate(rotation);
-                if (onRotationUpdate != null)
-                    onRotationUpdate.accept(getId(), rotation);
             }
             e.consume();
         });
 
+        // ── Move release ──
         root.setOnMouseReleased(e -> {
             if (dragMode == DragMode.MOVE && onPositionUpdate != null)
-                onPositionUpdate.accept(getId(), posX, posY);   // final save
+                onPositionUpdate.accept(getId(), posX, posY);
             if (dragMode == DragMode.ROTATE && onRotationUpdate != null)
-                onRotationUpdate.accept(getId(), rotation);     // final save
+                onRotationUpdate.accept(getId(), rotation);
             dragMode = DragMode.NONE;
             root.setCursor(Cursor.HAND);
             e.consume();
         });
 
+        // ── Click handling (selection & context menu) ──
         root.setOnMouseClicked(e -> {
             if (hasDragged) return;
             switch (e.getButton()) {
-                case PRIMARY -> {
-                    if (onSelect != null) onSelect.accept(this);
-                }
+                case PRIMARY  -> { if (onSelect != null) onSelect.accept(this); }
                 case SECONDARY -> {
                     if (onSelect != null) onSelect.accept(this);
                     contextMenu.show(root, e.getScreenX(), e.getScreenY());
@@ -312,7 +333,9 @@ public class AircraftMarkerController {
             e.consume();
         });
 
+        // ── Scroll rotation ──
         root.setOnScroll(e -> {
+            if (!selected) return;
             double step = e.isShiftDown() ? 15.0 : 5.0;
             rotation = norm(rotation + (e.getDeltaY() > 0 ? step : -step));
             innerRotating.setRotate(rotation);
@@ -320,6 +343,7 @@ public class AircraftMarkerController {
             e.consume();
         });
 
+        // ── Rotate handle (unchanged, but ensure it consumes) ──
         rotateHandle.setOnMousePressed(e -> {
             if (!e.isPrimaryButtonDown()) return;
             dragMode = DragMode.ROTATE;
@@ -329,11 +353,11 @@ public class AircraftMarkerController {
             rotationOffset = rotation
                     - angleTo(rotateCenterX, rotateCenterY, e.getSceneX(), e.getSceneY());
             rotateHandle.setCursor(Cursor.CROSSHAIR);
-            e.consume();
+            e.consume();   // already present
         });
     }
 
-
+    // ── Position helpers ──────────────────────────────────────────────────────
     private void readPosition() {
         Map<String, Object> mp = mapPosition(item);
         if (mp == null) return;

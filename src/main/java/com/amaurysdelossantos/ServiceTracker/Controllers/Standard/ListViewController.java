@@ -1,6 +1,7 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Standard;
 
 import com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Item.ListItemController;
+import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.Services.StandardControlsService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import javafx.collections.ListChangeListener;
@@ -39,6 +40,9 @@ public class ListViewController {
 
     @Autowired
     private StandardControlsService standardControlsService;
+
+    @Autowired
+    private ServiceItemService serviceItemService;
 
     public void populate() {
         items = standardControlsService.getItems();

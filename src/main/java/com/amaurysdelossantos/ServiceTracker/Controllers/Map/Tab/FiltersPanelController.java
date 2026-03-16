@@ -1,11 +1,14 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab;
 
 import com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab.Item.FilterItemController;
-import com.amaurysdelossantos.ServiceTracker.Services.DataService;
+import com.amaurysdelossantos.ServiceTracker.Helper.Lib;
 import com.amaurysdelossantos.ServiceTracker.Services.MapService;
+import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceFilter;
+import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceType;
 import com.amaurysdelossantos.ServiceTracker.models.enums.TimeFilter;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -17,121 +20,104 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
 @Scope("prototype")
 public class FiltersPanelController {
 
+    @FXML public Text fixedLabelText;
+    @FXML private CheckBox showLabelsCheck;
+    @FXML private CheckBox fixedLabelSizeCheck;
+    @FXML private Button exitButton;
+    @FXML private TextField searchBar;
+    @FXML private ComboBox<String> serviceFilter;
+    @FXML private ComboBox<TimeFilter> timeFilter;
+    @FXML private Button tabAll;
+    @FXML private Button tabPlaced;
+    @FXML private Button tabNotPlaced;
+    @FXML private Label totalCountLabel;
+    @FXML private Label onScreenCountLabel;
+    @FXML private Label onScreenSeparator;
+    @FXML private Label onScreenText;
+    @FXML private Text sectionHeading;
+    @FXML private VBox itemsContainer;
 
-    @FXML
-    public Text fixedLabelText;
-    // ── FXML ───────────────────────────────────────────────────────────────
-    @FXML
-    private CheckBox showLabelsCheck;
-    @FXML
-    private CheckBox fixedLabelSizeCheck;    // ── FXML
-    // ───────────────────────────────────────────────────────────────
-    @FXML
-    private Button exitButton;
-    @FXML
-    private TextField searchBar;
-    @FXML
-    private ComboBox<String> serviceFilter;
-    @FXML
-    private Button tabAll;
-    @FXML
-    private Button tabPlaced;
-    @FXML
-    private Button tabNotPlaced;
-    @FXML
-    private Label totalCountLabel;
-    @FXML
-    private Label onScreenCountLabel;
-    @FXML
-    private Label onScreenSeparator;
-    @FXML
-    private Label onScreenText;
-    @FXML
-    private Text sectionHeading;
-    @FXML
-    private VBox itemsContainer;
-
-
-    // ── Spring ─────────────────────────────────────────────────────────────
-    @Autowired
-    private MapService mapService;
-    @Autowired
-    private DataService dataService;
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    // ── State ──────────────────────────────────────────────────────────────
-    private String activePlacementFilter = "all";
-    private String activeServiceFilter = "ALL";
-    private String activeSearchText = "";
-    private List<ServiceItem> allItems = List.of();
-
-    // ── Lifecycle ──────────────────────────────────────────────────────────
+    @Autowired private MapService mapService;
+    @Autowired private ApplicationContext applicationContext;
+    @Autowired private ServiceItemService serviceItemService;
 
     @FXML
     public void initialize() {
         exitButton.setOnAction(e -> mapService.tabOpenProperty().set(false));
 
-        // Placement tab buttons
-        tabAll.setOnAction(e -> setPlacementFilter("all"));
-        tabPlaced.setOnAction(e -> setPlacementFilter("placed"));
-        tabNotPlaced.setOnAction(e -> setPlacementFilter("notPlaced"));
-        setPlacementFilter("all"); // set initial active style
+        // ── Placement tab buttons — write to MapControlsService ────────────
+        tabAll.setOnAction(e -> mapService.getPlacementFilter().set("all"));
+        tabPlaced.setOnAction(e -> mapService.getPlacementFilter().set("placed"));
+        tabNotPlaced.setOnAction(e -> mapService.getPlacementFilter().set("notPlaced"));
 
-        // Service filter combo
+        // ── Service filter combo — write to MapControlsService ─────────────
         serviceFilter.getItems().setAll("ALL", "FUEL", "CATERING", "GPU",
                 "LAVATORY", "POTABLE_WATER", "WINDSHIELD_CLEANING", "OIL_SERVICE");
-        serviceFilter.setValue("ALL");
+        serviceFilter.setValue(mapService.getServiceFilter().get().name());
         serviceFilter.valueProperty().addListener((obs, o, n) -> {
-            activeServiceFilter = n != null ? n : "ALL";
+            try {
+                mapService.getServiceFilter().set(ServiceFilter.valueOf(n != null ? n : "ALL"));
+            } catch (IllegalArgumentException ignored) {
+                mapService.getServiceFilter().set(ServiceFilter.ALL);
+            }
+        });
+
+        // ── Time filter combo — write to MapControlsService ────────────────
+        timeFilter.getItems().setAll(TimeFilter.values());
+        timeFilter.setValue(mapService.getTimeFilter().get());
+        timeFilter.valueProperty().addListener((obs, o, n) ->
+                mapService.getTimeFilter().set(n != null ? n : TimeFilter.TODAY));
+
+        // ── Search — write to MapControlsService ───────────────────────────
+        searchBar.setText(mapService.getSearchText().get());
+        searchBar.textProperty().addListener((obs, o, n) ->
+                mapService.getSearchText().set(n != null ? n : ""));
+
+        // ── React to shared item list changes ──────────────────────────────
+        mapService.getItems().addListener(
+                (ListChangeListener<ServiceItem>) change -> refreshList());
+
+        // ── React to placement filter changes ─────────────────────────────
+        mapService.getPlacementFilter().addListener((obs, o, n) -> {
+            updatePlacementTabStyles(n);
             refreshList();
         });
 
-        // Search
-        searchBar.textProperty().addListener((obs, o, n) -> {
-            activeSearchText = n != null ? n : "";
-            refreshList();
-        });
-
-        // Load today's items
-        dataService.reload(null, TimeFilter.TODAY, ServiceFilter.ALL, "",
-                items -> {
-                    allItems = items;
-                    refreshList();
-                });
-
-        // Labels / Fixed-size toggle
+        // ── Labels toggle ──────────────────────────────────────────────────
         showLabelsCheck.selectedProperty().addListener((obs, oldVal, isSelected) -> {
             fixedLabelSizeCheck.setVisible(isSelected);
             fixedLabelSizeCheck.setManaged(isSelected);
         });
+
+        // ── Initial render ─────────────────────────────────────────────────
+        updatePlacementTabStyles(mapService.getPlacementFilter().get());
+        refreshList();
     }
 
-    // ── Private ────────────────────────────────────────────────────────────
+    // ── Private helpers ────────────────────────────────────────────────────
 
-    private void setPlacementFilter(String filter) {
-        activePlacementFilter = filter;
-
+    private void updatePlacementTabStyles(String filter) {
         tabAll.getStyleClass().remove("placement-tab-active");
         tabPlaced.getStyleClass().remove("placement-tab-active");
         tabNotPlaced.getStyleClass().remove("placement-tab-active");
 
         switch (filter) {
-            case "placed" -> tabPlaced.getStyleClass().add("placement-tab-active");
+            case "placed"    -> tabPlaced.getStyleClass().add("placement-tab-active");
             case "notPlaced" -> tabNotPlaced.getStyleClass().add("placement-tab-active");
-            default -> tabAll.getStyleClass().add("placement-tab-active");
+            default          -> tabAll.getStyleClass().add("placement-tab-active");
         }
 
         sectionHeading.setText(switch (filter) {
-            case "placed" -> "PLACED";
+            case "placed"    -> "PLACED";
             case "notPlaced" -> "NOT PLACED";
-            default -> "ALL AIRCRAFT";
+            default          -> "ALL AIRCRAFT";
         });
 
         boolean showOnScreen = !filter.equals("notPlaced");
@@ -141,30 +127,27 @@ public class FiltersPanelController {
         onScreenCountLabel.setManaged(showOnScreen);
         onScreenText.setVisible(showOnScreen);
         onScreenText.setManaged(showOnScreen);
-
-        refreshList();
     }
 
     private void refreshList() {
-        List<ServiceItem> filtered = allItems.stream()
+        List<ServiceItem> source = mapService.getItems();
+
+        List<ServiceItem> filtered = source.stream()
                 .filter(this::matchesPlacement)
                 .filter(this::matchesServiceFilter)
                 .filter(this::matchesSearch)
                 .collect(Collectors.toList());
 
-        // Count stats
-        long placedCount = allItems.stream().filter(i -> hasMapPosition(i)).count();
-        long notPlacedCount = allItems.stream().filter(i -> !hasMapPosition(i)).count();
-        long onScreenCount = filtered.stream().filter(i -> hasMapPosition(i)).count();
+        long placedCount    = source.stream().filter(this::hasMapPosition).count();
+        long notPlacedCount = source.stream().filter(i -> !hasMapPosition(i)).count();
+        long onScreenCount  = filtered.stream().filter(this::hasMapPosition).count();
 
         totalCountLabel.setText(String.valueOf(filtered.size()));
         onScreenCountLabel.setText(String.valueOf(onScreenCount));
-
-        tabAll.setText("All (" + allItems.size() + ")");
+        tabAll.setText("All (" + source.size() + ")");
         tabPlaced.setText("Placed (" + placedCount + ")");
         tabNotPlaced.setText("Not Placed (" + notPlacedCount + ")");
 
-        // Rebuild item rows
         itemsContainer.getChildren().clear();
         for (ServiceItem item : filtered) {
             try {
@@ -172,10 +155,8 @@ public class FiltersPanelController {
                         getClass().getResource("/components/map/tab/item/filter-item.fxml"));
                 loader.setControllerFactory(applicationContext::getBean);
                 VBox node = loader.load();
-
                 FilterItemController ctrl = loader.getController();
                 ctrl.setItem(item);
-
                 itemsContainer.getChildren().add(node);
             } catch (Exception ex) {
                 System.err.println("FiltersPanelController — failed to load FilterItem: " + ex.getMessage());
@@ -183,33 +164,28 @@ public class FiltersPanelController {
         }
     }
 
-    // ── Filter predicates ──────────────────────────────────────────────────
-
     private boolean matchesPlacement(ServiceItem item) {
-        return switch (activePlacementFilter) {
-            case "placed" -> hasMapPosition(item);
+        return switch (mapService.getPlacementFilter().get()) {
+            case "placed"    -> hasMapPosition(item);
             case "notPlaced" -> !hasMapPosition(item);
-            default -> true;
+            default          -> true;
         };
     }
 
     private boolean matchesServiceFilter(ServiceItem item) {
-        return switch (activeServiceFilter) {
-            case "FUEL" -> item.getFuel() != null;
-            case "CATERING" -> item.getCatering() != null && !item.getCatering().isEmpty();
-            case "GPU" -> item.getGpu() != null;
-            case "LAVATORY" -> item.getLavatory() != null;
-            case "POTABLE_WATER" -> item.getPotableWater() != null;
-            case "WINDSHIELD_CLEANING" -> item.getWindshieldCleaning() != null;
-            case "OIL_SERVICE" -> item.getOilService() != null;
-            default -> true; // ALL
-        };
+        String raw = mapService.getServiceFilter().get().name();
+        if (raw.equals("ALL")) return true;
+        ServiceType type;
+        try { type = ServiceType.valueOf(raw); }
+        catch (IllegalArgumentException e) { return true; }
+        Map<ServiceType, Boolean> activeServices = Lib.getActiveServices(item);
+        return activeServices.containsKey(type) && !activeServices.get(type);
     }
 
     private boolean matchesSearch(ServiceItem item) {
-        if (activeSearchText.isBlank()) return true;
-        String lower = activeSearchText.toLowerCase();
-        return item.getTail() != null && item.getTail().toLowerCase().contains(lower);
+        String search = mapService.getSearchText().get();
+        if (search == null || search.isBlank()) return true;
+        return item.getTail() != null && item.getTail().toLowerCase().contains(search.toLowerCase());
     }
 
     private boolean hasMapPosition(ServiceItem item) {

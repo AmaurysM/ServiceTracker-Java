@@ -2,6 +2,9 @@ package com.amaurysdelossantos.ServiceTracker.Services;
 
 import com.amaurysdelossantos.ServiceTracker.Repository.ServiceItemRepo;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
