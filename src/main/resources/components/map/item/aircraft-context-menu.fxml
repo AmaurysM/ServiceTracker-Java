@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox fx:id="root"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.item.AircraftContextMenuController"
+      styleClass="acm-root"
+      stylesheets="@/components/map/item/aircraft-context-menu.css"
+      spacing="0"
+      prefWidth="280"
+      maxWidth="280">
+
+    <!-- ══ HEADER ══════════════════════════════════════════════════════════ -->
+    <HBox fx:id="header" styleClass="acm-header" alignment="CENTER_LEFT" spacing="0">
+        <VBox HBox.hgrow="ALWAYS" styleClass="acm-header-text">
+            <Label fx:id="tailLabel"     styleClass="acm-tail-label"     text="N/A"              />
+            <Label fx:id="progressLabel" styleClass="acm-progress-label" text="0/0 services (0%)"/>
+        </VBox>
+        <Button fx:id="closeBtn" styleClass="acm-close-btn" text="✕" />
+    </HBox>
+
+    <!-- ══ SERVICE ICONS ═══════════════════════════════════════════════════ -->
+    <!--  Populated programmatically in the controller -->
+    <HBox fx:id="serviceBar" styleClass="acm-service-bar" alignment="CENTER" spacing="0" />
+
+    <!-- ══ TIME ROW ════════════════════════════════════════════════════════ -->
+    <HBox fx:id="timeRow" styleClass="acm-time-row" alignment="CENTER_LEFT"
+          spacing="12" managed="false" visible="false">
+        <Label fx:id="arrivalLabel"   styleClass="acm-time-label" text="" />
+        <Label fx:id="departureLabel" styleClass="acm-time-label" text="" />
+    </HBox>
+
+    <!-- ══ DESCRIPTION ════════════════════════════════════════════════════ -->
+    <Label fx:id="descLabel" styleClass="acm-desc-label" text=""
+           managed="false" visible="false"
+           maxWidth="Infinity" wrapText="false" />
+
+    <!-- ══ PRIMARY ACTIONS ════════════════════════════════════════════════ -->
+    <HBox styleClass="acm-btn-row" spacing="0">
+        <Button fx:id="viewBtn"  styleClass="acm-btn,acm-btn-view" text="VIEW"
+                HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+        <Button fx:id="editBtn"  styleClass="acm-btn,acm-btn-edit" text="EDIT"
+                HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+        <Button fx:id="doneBtn"  styleClass="acm-btn,acm-btn-done" text="DONE"
+                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                managed="false" visible="false" />
+    </HBox>
+
+    <!-- ══ SECONDARY ACTIONS ══════════════════════════════════════════════ -->
+    <HBox styleClass="acm-btn-row" spacing="0">
+        <Button fx:id="unplaceBtn" styleClass="acm-btn,acm-btn-unplace" text="UNPLACE"
+                HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+        <Button fx:id="removeBtn"  styleClass="acm-btn,acm-btn-remove"  text="REMOVE"
+                HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+    </HBox>
+
+</VBox>

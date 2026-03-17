@@ -38,105 +38,75 @@ import java.util.*;
 @Component
 public class AddServiceItemController {
 
-    // ── White theme palette ──────────────────────────────────────────────────────
-    private static final String WHITE = "#ffffff";
-    private static final String BG_SUBTLE = "#f8f9fb";
-    private static final String BG_FIELD = "#ffffff";
-    private static final String BORDER = "#c8d4e0";
-    private static final String BORDER_MID = "#dde3eb";
-    private static final String TEXT_DARK = "#1a202c";
-    private static final String TEXT_BODY = "#374151";
-    private static final String TEXT_LABEL = "#4a5568";
-    private static final String TEXT_MUTED = "#8a9ab0";
-    private static final String TEXT_PROMPT = "#a0aec0";
-    private static final String NAVY = "#1e3a5f";
-    private static final String BLUE = "#1d4ed8";
     private final List<ServiceType> selectedServices = new ArrayList<>();
     private final Map<ServiceType, Node> configPanes = new EnumMap<>(ServiceType.class);
     private final Map<ServiceType, Map<String, Object>> serviceData = new EnumMap<>(ServiceType.class);
+
     @Autowired
     private ServiceItemService serviceItemService;
+
     // ── FXML nodes ──────────────────────────────────────────────────────────────
-    @FXML
-    private StackPane rootPane;
-    @FXML
-    private VBox wizardCard;
-    @FXML
-    private Label headerStepLabel;
-    @FXML
-    private Label tailPreviewLabel;
-    @FXML
-    private Button step1TabBtn;
-    @FXML
-    private Button step2TabBtn;
-    @FXML
-    private Button step3TabBtn;
-    @FXML
-    private VBox step1Pane;
-    @FXML
-    private VBox step2Pane;
-    @FXML
-    private VBox step3Pane;
+    @FXML private StackPane rootPane;
+    @FXML private VBox      wizardCard;
+    @FXML private Label     headerStepLabel;
+    @FXML private Label     tailPreviewLabel;
+    @FXML private Button    step1TabBtn;
+    @FXML private Button    step2TabBtn;
+    @FXML private Button    step3TabBtn;
+    @FXML private VBox      step1Pane;
+    @FXML private VBox      step2Pane;
+    @FXML private VBox      step3Pane;
+
     // Step 1
-    @FXML
-    private TextField tailField;
-    @FXML
-    private DatePicker arrivalDatePicker;
-    @FXML
-    private TextField arrivalTimeField;
-    @FXML
-    private DatePicker departureDatePicker;
-    @FXML
-    private TextField departureTimeField;
-    //public void setOnSaveCallback(Runnable cb) { this.onSaveCallback = cb; }
-    @FXML
-    private TextArea descriptionField;
+    @FXML private TextField  tailField;
+    @FXML private DatePicker arrivalDatePicker;
+    @FXML private TextField  arrivalTimeField;
+    @FXML private DatePicker departureDatePicker;
+    @FXML private TextField  departureTimeField;
+    @FXML private TextArea   descriptionField;
+
     // Step 2
-    @FXML
-    private FlowPane serviceSelectionPane;
+    @FXML private FlowPane serviceSelectionPane;
+
     // Step 3
-    @FXML
-    private HBox serviceTabBar;
-    @FXML
-    private StackPane serviceConfigPane;
+    @FXML private HBox       serviceTabBar;
+    @FXML private StackPane  serviceConfigPane;
+
     // Footer
-    @FXML
-    private Button cancelBtn;
-    @FXML
-    private Button backBtn;
-    @FXML
-    private Button nextBtn;
-    @FXML
-    private Button addItemBtn;
+    @FXML private Button cancelBtn;
+    @FXML private Button backBtn;
+    @FXML private Button nextBtn;
+    @FXML private Button addItemBtn;
+
     private Step currentStep = Step.BASIC;
     private ServiceType activeServiceTab = null;
+
     @Setter
     private Runnable onSaveCallback;
+
+    // ── Init ─────────────────────────────────────────────────────────────────────
 
     @FXML
     public void initialize() {
         buildServiceSelectionCards();
         updateFooterButtons();
         showStep(Step.BASIC);
+
         tailField.textProperty().addListener((obs, o, n) ->
                 tailPreviewLabel.setText(n.isBlank() ? "Tail: —" : "✈  " + n.trim().toUpperCase()));
     }
+
+    // ── Navigation ───────────────────────────────────────────────────────────────
 
     @FXML
     private void onNext() {
         switch (currentStep) {
             case BASIC -> {
-                if (tailField.getText().isBlank()) {
-                    showAlert("Tail number is required.");
-                    return;
-                }
+                if (tailField.getText().isBlank()) { showAlert("Tail number is required."); return; }
                 showStep(Step.SELECT_SERVICES);
             }
             case SELECT_SERVICES -> {
-                if (selectedServices.isEmpty()) {
-                    showAlert("Please select at least one service.");
-                    return;
-                }
+                if (selectedServices.isEmpty()) { showAlert("Please select at least one service."); return; }
                 buildServiceTabBar();
                 activateServiceTab(selectedServices.get(0));
                 showStep(Step.CONFIGURE);
@@ -145,29 +115,35 @@ public class AddServiceItemController {
         }
     }
 
-    // ── Navigation ───────────────────────────────────────────────────────────────
-
     @FXML
     private void onBack() {
         switch (currentStep) {
             case SELECT_SERVICES -> showStep(Step.BASIC);
-            case CONFIGURE -> showStep(Step.SELECT_SERVICES);
-            default -> {
-            }
+            case CONFIGURE       -> showStep(Step.SELECT_SERVICES);
+            default -> {}
         }
     }
 
+    @FXML private void onCancel()  { closeModal(); }
+
+    @FXML private void onStep1Tab() { showStep(Step.BASIC); }
+
     @FXML
-    private void onCancel() {
-        closeModal();
+    private void onStep2Tab() {
+        if (!tailField.getText().isBlank()) showStep(Step.SELECT_SERVICES);
+    }
+
+    @FXML
+    private void onStep3Tab() {
+        if (tailField.getText().isBlank() || selectedServices.isEmpty()) return;
+        buildServiceTabBar();
+        if (activeServiceTab == null) activateServiceTab(selectedServices.get(0));
+        showStep(Step.CONFIGURE);
     }
 
     @FXML
     private void onAddItem() {
-        if (tailField.getText().isBlank()) {
-            showAlert("Tail number is required.");
-            return;
-        }
+        if (tailField.getText().isBlank()) { showAlert("Tail number is required."); return; }
 
         addItemBtn.setDisable(true);
         addItemBtn.setText("Saving…");
@@ -194,66 +170,43 @@ public class AddServiceItemController {
         t.start();
     }
 
-    @FXML
-    private void onStep1Tab() {
-        showStep(Step.BASIC);
-    }
-
-    @FXML
-    private void onStep2Tab() {
-        if (!tailField.getText().isBlank()) showStep(Step.SELECT_SERVICES);
-    }
-
-    @FXML
-    private void onStep3Tab() {
-        if (tailField.getText().isBlank() || selectedServices.isEmpty()) return;
-        buildServiceTabBar();
-        if (activeServiceTab == null) activateServiceTab(selectedServices.get(0));
-        showStep(Step.CONFIGURE);
-    }
+    // ── Step visibility ───────────────────────────────────────────────────────────
 
     private void showStep(Step step) {
         currentStep = step;
 
-        step1Pane.setVisible(false);
-        step1Pane.setManaged(false);
-        step2Pane.setVisible(false);
-        step2Pane.setManaged(false);
-        step3Pane.setVisible(false);
-        step3Pane.setManaged(false);
+        step1Pane.setVisible(false); step1Pane.setManaged(false);
+        step2Pane.setVisible(false); step2Pane.setManaged(false);
+        step3Pane.setVisible(false); step3Pane.setManaged(false);
 
         VBox active = switch (step) {
-            case BASIC -> step1Pane;
-            case SELECT_SERVICES -> step2Pane;
-            case CONFIGURE -> step3Pane;
+            case BASIC            -> step1Pane;
+            case SELECT_SERVICES  -> step2Pane;
+            case CONFIGURE        -> step3Pane;
         };
         active.setVisible(true);
         active.setManaged(true);
         fadeIn(active);
 
-        // Blue underline for active tab, plain for inactive
-        String on = "-fx-background-color:" + WHITE + "; -fx-text-fill:" + NAVY + ";"
-                + "-fx-font-size:11px; -fx-font-weight:700; -fx-cursor:default;"
-                + "-fx-border-color:transparent transparent " + BLUE + " transparent;"
-                + "-fx-border-width:0 0 2 0;";
-        String off = "-fx-background-color:transparent; -fx-text-fill:" + TEXT_MUTED + ";"
-                + "-fx-font-size:11px; -fx-font-weight:600; -fx-cursor:hand;"
-                + "-fx-border-width:0;";
-
-        step1TabBtn.setStyle(step == Step.BASIC ? on : off);
-        step2TabBtn.setStyle(step == Step.SELECT_SERVICES ? on : off);
-        step3TabBtn.setStyle(step == Step.CONFIGURE ? on : off);
+        // Drive active/inactive state with CSS pseudo-class via style-class swaps
+        setTabActive(step1TabBtn, step == Step.BASIC);
+        setTabActive(step2TabBtn, step == Step.SELECT_SERVICES);
+        setTabActive(step3TabBtn, step == Step.CONFIGURE);
 
         headerStepLabel.setText("ADD SERVICE ITEM" + switch (step) {
-            case BASIC -> "  ·  BASIC INFORMATION";
+            case BASIC           -> "  ·  BASIC INFORMATION";
             case SELECT_SERVICES -> "  ·  SELECT SERVICES";
-            case CONFIGURE -> "  ·  CONFIGURE SERVICES";
+            case CONFIGURE       -> "  ·  CONFIGURE SERVICES";
         });
 
         updateFooterButtons();
     }
 
-    // ── Step rendering ───────────────────────────────────────────────────────────
+    /** Swap the step-tab-active class on/off without touching inline style. */
+    private void setTabActive(Button btn, boolean active) {
+        btn.getStyleClass().removeAll("step-tab-active");
+        if (active) btn.getStyleClass().add("step-tab-active");
+    }
 
     private void updateFooterButtons() {
         backBtn.setVisible(currentStep != Step.BASIC);
@@ -264,14 +217,14 @@ public class AddServiceItemController {
         addItemBtn.setManaged(currentStep == Step.CONFIGURE);
     }
 
+    // ── Step 2 – Service selection cards ─────────────────────────────────────────
+
     private void buildServiceSelectionCards() {
         serviceSelectionPane.getChildren().clear();
         for (ServiceType st : ServiceType.values()) {
             serviceSelectionPane.getChildren().add(buildServiceCard(st));
         }
     }
-
-    // ── Step 2 – Service selection cards ─────────────────────────────────────────
 
     private HBox buildServiceCard(ServiceType st) {
         Color fxColor = toFxColor(st.getPrimaryColor());
@@ -281,96 +234,66 @@ public class AddServiceItemController {
         tintIcon(iconView, fxColor, 22);
 
         StackPane iconBox = new StackPane(iconView);
-        iconBox.setPrefWidth(52);
-        iconBox.setMinWidth(52);
-        iconBox.setMaxWidth(52);
-        iconBox.setPrefHeight(64);
-        iconBox.setMinHeight(64);
-        iconBox.setMaxHeight(64);
-        iconBox.setStyle("-fx-background-color:" + alphaRgba(fxColor, 0.10) + ";");
+        iconBox.getStyleClass().add("service-card-icon-box");
         StackPane.setAlignment(iconView, Pos.CENTER);
 
         // Right text
         Label nameLbl = new Label(getServiceLabel(st));
-        nameLbl.setStyle("-fx-font-weight:600; -fx-font-size:12px; -fx-text-fill:" + TEXT_BODY + ";");
+        nameLbl.getStyleClass().add("service-card-name");
 
         Label selLbl = new Label("✓  Selected");
-        selLbl.setStyle("-fx-font-size:10px; -fx-text-fill:#15803d; -fx-font-weight:700;");
+        selLbl.getStyleClass().add("service-card-selected-badge");
         selLbl.setVisible(false);
         selLbl.setManaged(false);
 
         VBox textBox = new VBox(3, nameLbl, selLbl);
-        textBox.setAlignment(Pos.CENTER_LEFT);
+        textBox.getStyleClass().add("service-card-text");
 
-        HBox card = new HBox(0);
+        HBox card = new HBox();
+        card.getStyleClass().add("service-card");
         card.setAlignment(Pos.CENTER_LEFT);
         card.getChildren().addAll(iconBox, textBox);
-        HBox.setMargin(textBox, new Insets(0, 8, 0, 14));
-        card.setPrefWidth(224);
-        card.setMaxWidth(Double.MAX_VALUE);
-        card.setPrefHeight(64);
-        card.setMinHeight(64);
-        card.setStyle(cardUnselected());
         FlowPane.setMargin(card, new Insets(3));
 
         card.setOnMouseEntered(e -> {
-            if (!selectedServices.contains(st))
-                card.setStyle(cardHover());
+            if (!selectedServices.contains(st)) card.getStyleClass().add("service-card-hover");
         });
-        card.setOnMouseExited(e -> {
-            if (!selectedServices.contains(st)) card.setStyle(cardUnselected());
-        });
+        card.setOnMouseExited(e -> card.getStyleClass().remove("service-card-hover"));
 
         card.setOnMouseClicked(e -> {
             if (selectedServices.contains(st)) {
                 selectedServices.remove(st);
-                card.setStyle(cardUnselected());
+                card.getStyleClass().remove("service-card-selected");
                 selLbl.setVisible(false);
                 selLbl.setManaged(false);
-                nameLbl.setStyle("-fx-font-weight:600; -fx-font-size:12px; -fx-text-fill:" + TEXT_BODY + ";");
-                iconBox.setStyle("-fx-background-color:" + alphaRgba(fxColor, 0.10) + ";");
+                nameLbl.getStyleClass().remove("service-card-name-selected");
+                tintIcon(iconView, fxColor, 22);
             } else {
                 selectedServices.add(st);
-                card.setStyle(cardSelected(fxColor));
+                card.getStyleClass().add("service-card-selected");
                 selLbl.setVisible(true);
                 selLbl.setManaged(true);
-                nameLbl.setStyle("-fx-font-weight:700; -fx-font-size:12px; -fx-text-fill:" + TEXT_DARK + ";");
-                iconBox.setStyle("-fx-background-color:" + alphaRgba(fxColor, 0.15) + ";");
+                nameLbl.getStyleClass().add("service-card-name-selected");
+                tintIcon(iconView, fxColor, 22);
             }
         });
 
         return card;
     }
 
-    private String cardUnselected() {
-        return "-fx-border-color:" + BORDER + "; -fx-border-width:1;"
-                + "-fx-background-color:" + WHITE + ";"
-                + "-fx-background-radius:0; -fx-border-radius:0; -fx-cursor:hand;";
-    }
-
-    private String cardHover() {
-        return "-fx-border-color:#94a3b8; -fx-border-width:1;"
-                + "-fx-background-color:#f8fafc;"
-                + "-fx-background-radius:0; -fx-border-radius:0; -fx-cursor:hand;";
-    }
-
-    private String cardSelected(Color accent) {
-        return "-fx-border-color:" + toHex(accent) + "; -fx-border-width:1.5;"
-                + "-fx-background-color:" + alphaRgba(accent, 0.05) + ";"
-                + "-fx-background-radius:0; -fx-border-radius:0; -fx-cursor:hand;";
-    }
-
     private String getServiceLabel(ServiceType st) {
         return switch (st) {
-            case FUEL -> "Fuel";
-            case CATERING -> "Catering";
-            case GPU -> "GPU";
-            case LAVATORY -> "Lavatory";
-            case POTABLE_WATER -> "Potable Water";
+            case FUEL               -> "Fuel";
+            case CATERING           -> "Catering";
+            case GPU                -> "GPU";
+            case LAVATORY           -> "Lavatory";
+            case POTABLE_WATER      -> "Potable Water";
             case WINDSHIELD_CLEANING -> "Windshield Cleaning";
-            case OIL_SERVICE -> "Oil Service";
+            case OIL_SERVICE        -> "Oil Service";
         };
     }
+
+    // ── Step 3 – Service tab bar ──────────────────────────────────────────────────
 
     private void buildServiceTabBar() {
         serviceTabBar.getChildren().clear();
@@ -381,25 +304,18 @@ public class AddServiceItemController {
             tintIcon(iv, fxColor, 14);
 
             Label lbl = new Label(getServiceLabel(st));
-            lbl.setStyle("-fx-font-size:11px; -fx-font-weight:600;"
-                    + "-fx-text-fill:" + toHex(fxColor) + ";");
+            lbl.getStyleClass().add("service-tab-label");
 
             HBox tab = new HBox(6, iv, lbl);
+            tab.getStyleClass().add("service-type-tab");
             tab.setAlignment(Pos.CENTER);
-            tab.setPadding(new Insets(0, 14, 0, 14));
-            tab.setPrefHeight(48);
-            tab.setMaxWidth(Double.MAX_VALUE);
-            tab.setStyle("-fx-background-color:" + alphaRgba(fxColor, 0.07) + "; -fx-cursor:hand;"
-                    + "-fx-border-color:transparent transparent " + BORDER_MID + " transparent;"
-                    + "-fx-border-width:0 0 1 0;");
             HBox.setHgrow(tab, Priority.ALWAYS);
             tab.setUserData(st);
             tab.setOnMouseClicked(e -> activateServiceTab(st));
+
             serviceTabBar.getChildren().add(tab);
         }
     }
-
-    // ── Step 3 – Service tab bar ──────────────────────────────────────────────────
 
     private void activateServiceTab(ServiceType target) {
         activeServiceTab = target;
@@ -408,21 +324,19 @@ public class AddServiceItemController {
             if (!(n instanceof HBox tab)) continue;
             if (!(tab.getUserData() instanceof ServiceType st)) continue;
 
-            Color fxColor = toFxColor(st.getPrimaryColor());
-            ImageView iv = (ImageView) tab.getChildren().get(0);
-            Label lbl = (Label) tab.getChildren().get(1);
-            boolean active = st == target;
+            ImageView iv  = (ImageView) tab.getChildren().get(0);
+            Label     lbl = (Label)     tab.getChildren().get(1);
+            boolean   active = (st == target);
+
+            tab.getStyleClass().removeAll("service-type-tab-active");
+            lbl.getStyleClass().removeAll("service-tab-label-active");
 
             if (active) {
-                tab.setStyle("-fx-background-color:" + toHex(fxColor) + "; -fx-cursor:default;");
-                lbl.setStyle("-fx-font-size:11px; -fx-font-weight:700; -fx-text-fill:white;");
+                tab.getStyleClass().add("service-type-tab-active");
+                lbl.getStyleClass().add("service-tab-label-active");
                 tintIcon(iv, Color.WHITE, 14);
             } else {
-                tab.setStyle("-fx-background-color:" + alphaRgba(fxColor, 0.07) + "; -fx-cursor:hand;"
-                        + "-fx-border-color:transparent transparent " + BORDER_MID + " transparent;"
-                        + "-fx-border-width:0 0 1 0;");
-                lbl.setStyle("-fx-font-size:11px; -fx-font-weight:600; -fx-text-fill:" + toHex(fxColor) + ";");
-                tintIcon(iv, fxColor, 14);
+                tintIcon(iv, toFxColor(st.getPrimaryColor()), 14);
             }
         }
 
@@ -432,16 +346,16 @@ public class AddServiceItemController {
         fadeIn(pane);
     }
 
+    // ── Step 3 – Config pane builder ─────────────────────────────────────────────
+
     private Node buildConfigPane(ServiceType st) {
         ScrollPane scroll = new ScrollPane();
         scroll.setFitToWidth(true);
         scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scroll.setStyle("-fx-background-color:transparent; -fx-background:transparent;"
-                + "-fx-border-width:0;");
+        scroll.getStyleClass().add("config-scroll");
 
         VBox form = new VBox(16);
-        form.setPadding(new Insets(0, 24, 22, 24));
-        form.setStyle("-fx-background-color:" + WHITE + ";");
+        form.getStyleClass().add("config-form");
 
         Map<String, Object> data = serviceData.computeIfAbsent(st, k -> new LinkedHashMap<>());
 
@@ -450,57 +364,62 @@ public class AddServiceItemController {
 
         switch (st) {
             case FUEL -> form.getChildren().addAll(
-                    fieldRow("Fuel Type", textInput("type", data, "")),
-                    fieldRow("Gallons", numberInput("gallons", data)),
-                    fieldRow("Weight (lbs)", numberInput("weight", data)),
-                    fieldRow("Note", textArea("note", data))
+                    fieldRow("Fuel Type",    textInput("type",    data, "")),
+                    fieldRow("Gallons",      numberInput("gallons", data)),
+                    fieldRow("Weight (lbs)", numberInput("weight",  data)),
+                    fieldRow("Note",         textArea("note",       data))
             );
             case CATERING -> {
                 Label hint = new Label("Add one row per catering item.");
-                hint.setStyle("-fx-text-fill:" + TEXT_MUTED + "; -fx-font-size:11px;");
+                hint.getStyleClass().add("config-hint");
+
                 VBox rows = new VBox(6);
 
-                Button addRow = styledBtn("+ Add Item", NAVY, WHITE);
+                Button addRow = new Button("+ Add Item");
+                addRow.getStyleClass().addAll("config-add-row-btn");
+
                 addRow.setOnAction(e -> {
                     @SuppressWarnings("unchecked")
                     List<Map<String, String>> items = (List<Map<String, String>>)
                             data.computeIfAbsent("items", k -> new ArrayList<Map<String, String>>());
+
                     Map<String, String> entry = new LinkedHashMap<>();
                     entry.put("note", "");
                     entry.put("cateringNumber", "");
                     items.add(entry);
 
-                    TextField noteF = styledTextField("Note / description");
+                    TextField noteF   = styledTextField("Note / description");
                     TextField numberF = styledTextField("#");
-                    numberF.setPrefWidth(60);
-                    numberF.setMaxWidth(60);
+                    numberF.getStyleClass().add("catering-number-field");
                     noteF.textProperty().addListener((obs, o, nv) -> entry.put("note", nv));
                     numberF.textProperty().addListener((obs, o, nv) -> entry.put("cateringNumber", nv));
 
-                    Button del = styledBtn("✕", "#fee2e2", "#dc2626");
-                    del.setStyle(del.getStyle()
-                            + "-fx-border-color:#fecaca; -fx-border-width:1;");
+                    Button del = new Button("✕");
+                    del.getStyleClass().add("catering-delete-btn");
+
                     HBox row = new HBox(8, numberF, noteF, del);
                     row.setAlignment(Pos.CENTER_LEFT);
                     HBox.setHgrow(noteF, Priority.ALWAYS);
+
                     del.setOnAction(ev -> {
                         rows.getChildren().remove(row);
                         items.remove(entry);
                     });
                     rows.getChildren().add(row);
                 });
+
                 form.getChildren().addAll(hint, rows, addRow);
             }
             case GPU -> form.getChildren().add(fieldRow("Hours", numberInput("hours", data)));
             case LAVATORY -> form.getChildren().addAll(
                     fieldRow("Back-in Gallons", numberInput("backInGallons", data)),
-                    fieldRow("Note", textArea("note", data))
+                    fieldRow("Note",            textArea("note", data))
             );
-            case POTABLE_WATER -> form.getChildren().add(fieldRow("Note", textArea("note", data)));
+            case POTABLE_WATER       -> form.getChildren().add(fieldRow("Note", textArea("note", data)));
             case WINDSHIELD_CLEANING -> form.getChildren().add(fieldRow("Note", textArea("note", data)));
             case OIL_SERVICE -> form.getChildren().addAll(
-                    fieldRow("Oil Type", textInput("type", data, "")),
-                    fieldRow("Quarts", numberInput("quarts", data))
+                    fieldRow("Oil Type", textInput("type",   data, "")),
+                    fieldRow("Quarts",   numberInput("quarts", data))
             );
         }
 
@@ -508,30 +427,74 @@ public class AddServiceItemController {
         return scroll;
     }
 
-    // ── Step 3 – Config pane builder ─────────────────────────────────────────────
-
     private HBox buildConfigHeader(ServiceType st) {
-        Color fxColor = toFxColor(st.getPrimaryColor());
-
         ImageView iv = makeIconView(st, 22);
         tintIcon(iv, Color.WHITE, 22);
 
         Label name = new Label(getServiceLabel(st));
-        name.setStyle("-fx-font-size:13px; -fx-font-weight:700; -fx-text-fill:white;");
+        name.getStyleClass().add("config-header-name");
 
         Label divider = new Label("·");
-        divider.setStyle("-fx-text-fill:rgba(255,255,255,0.45); -fx-font-size:14px; -fx-padding:0 6;");
+        divider.getStyleClass().add("config-header-divider");
 
         Label subtitle = new Label("Service Configuration");
-        subtitle.setStyle("-fx-font-size:11px; -fx-text-fill:rgba(255,255,255,0.60);");
+        subtitle.getStyleClass().add("config-header-subtitle");
 
         HBox header = new HBox(10, iv, name, divider, subtitle);
+        header.getStyleClass().add("config-header");
         header.setAlignment(Pos.CENTER_LEFT);
-        VBox.setMargin(header, new Insets(0, -24, 0, -24));
-        header.setStyle("-fx-background-color:" + toHex(fxColor) + ";");
-        header.setPadding(new Insets(13, 20, 13, 20));
+
+        // Only the accent color changes per service — keep it as the sole inline style
+        Color fxColor = toFxColor(st.getPrimaryColor());
+        header.setStyle("-fx-background-color: " + toHex(fxColor) + ";");
 
         return header;
+    }
+
+    // ── Form helpers ─────────────────────────────────────────────────────────────
+
+    private HBox fieldRow(String labelText, Node input) {
+        Label lbl = new Label(labelText);
+        lbl.getStyleClass().add("config-field-label");
+
+        HBox row = new HBox(12, lbl, input);
+        row.getStyleClass().add("config-field-row");
+        row.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(input, Priority.ALWAYS);
+        return row;
+    }
+
+    private TextField textInput(String key, Map<String, Object> data, String def) {
+        TextField tf = styledTextField(null);
+        tf.setText((String) data.getOrDefault(key, def));
+        tf.textProperty().addListener((obs, o, n) -> data.put(key, n));
+        return tf;
+    }
+
+    private TextField numberInput(String key, Map<String, Object> data) {
+        TextField tf = styledTextField(null);
+        if (data.containsKey(key)) tf.setText(String.valueOf(data.get(key)));
+        tf.textProperty().addListener((obs, o, n) -> {
+            try { data.put(key, Double.parseDouble(n)); } catch (NumberFormatException ignored) {}
+        });
+        return tf;
+    }
+
+    private TextArea textArea(String key, Map<String, Object> data) {
+        TextArea ta = new TextArea((String) data.getOrDefault(key, ""));
+        ta.getStyleClass().add("field-textarea");
+        ta.setPrefRowCount(3);
+        ta.setMaxWidth(Double.MAX_VALUE);
+        ta.textProperty().addListener((obs, o, n) -> data.put(key, n));
+        return ta;
+    }
+
+    private TextField styledTextField(String prompt) {
+        TextField tf = new TextField();
+        if (prompt != null) tf.setPromptText(prompt);
+        tf.getStyleClass().add("field-input");
+        tf.setMaxWidth(Double.MAX_VALUE);
+        return tf;
     }
 
     private Region spacer(double height) {
@@ -542,10 +505,12 @@ public class AddServiceItemController {
         return r;
     }
 
+    // ── Build ServiceItem from form state ────────────────────────────────────────
+
     private ServiceItem buildItem() {
         String itemId = UUID.randomUUID().toString();
-        String tail = tailField.getText().trim().toUpperCase();
-        Instant now = Instant.now();
+        String tail   = tailField.getText().trim().toUpperCase();
+        Instant now   = Instant.now();
 
         ServiceItem item = new ServiceItem();
         item.setId(itemId);
@@ -565,18 +530,16 @@ public class AddServiceItemController {
                     f.setTail(tail);
                     f.setType((String) d.getOrDefault("type", ""));
                     if (d.get("gallons") instanceof Number n) f.setGallons(n.doubleValue());
-                    if (d.get("weight") instanceof Number n) f.setWeight(n.doubleValue());
+                    if (d.get("weight")  instanceof Number n) f.setWeight(n.doubleValue());
                     f.setNote((String) d.getOrDefault("note", ""));
-                    f.setCreatedAt(now);
-                    f.setUpdatedAt(now);
+                    f.setCreatedAt(now); f.setUpdatedAt(now);
                     item.setFuel(f);
                 }
                 case GPU -> {
                     GPU gpu = new GPU();
                     gpu.setId(UUID.randomUUID().toString());
                     if (d.get("hours") instanceof Number n) gpu.setHours(n.doubleValue());
-                    gpu.setCreatedAt(now);
-                    gpu.setUpdatedAt(now);
+                    gpu.setCreatedAt(now); gpu.setUpdatedAt(now);
                     item.setGpu(gpu);
                 }
                 case LAVATORY -> {
@@ -585,24 +548,21 @@ public class AddServiceItemController {
                     lav.setItemId(itemId);
                     if (d.get("backInGallons") instanceof Number n) lav.setBackInGallons(n.doubleValue());
                     lav.setNote((String) d.getOrDefault("note", ""));
-                    lav.setCreatedAt(now);
-                    lav.setUpdatedAt(now);
+                    lav.setCreatedAt(now); lav.setUpdatedAt(now);
                     item.setLavatory(lav);
                 }
                 case POTABLE_WATER -> {
                     PotableWater pw = new PotableWater();
                     pw.setId(UUID.randomUUID().toString());
                     pw.setNote((String) d.getOrDefault("note", ""));
-                    pw.setCreatedAt(now);
-                    pw.setUpdatedAt(now);
+                    pw.setCreatedAt(now); pw.setUpdatedAt(now);
                     item.setPotableWater(pw);
                 }
                 case WINDSHIELD_CLEANING -> {
                     WindshieldCleaning wc = new WindshieldCleaning();
                     wc.setId(UUID.randomUUID().toString());
                     wc.setNote((String) d.getOrDefault("note", ""));
-                    wc.setCreatedAt(now);
-                    wc.setUpdatedAt(now);
+                    wc.setCreatedAt(now); wc.setUpdatedAt(now);
                     item.setWindshieldCleaning(wc);
                 }
                 case OIL_SERVICE -> {
@@ -610,8 +570,7 @@ public class AddServiceItemController {
                     os.setId(UUID.randomUUID().toString());
                     os.setType((String) d.getOrDefault("type", ""));
                     if (d.get("quarts") instanceof Number n) os.setQuarts(n.doubleValue());
-                    os.setCreatedAt(now);
-                    os.setUpdatedAt(now);
+                    os.setCreatedAt(now); os.setUpdatedAt(now);
                     item.setOilService(os);
                 }
                 case CATERING -> {
@@ -630,8 +589,7 @@ public class AddServiceItemController {
                         } catch (NumberFormatException ignored) {
                             c.setCateringNumber(counter);
                         }
-                        c.setCreatedAt(now);
-                        c.setUpdatedAt(now);
+                        c.setCreatedAt(now); c.setUpdatedAt(now);
                         list.add(c);
                         counter++;
                     }
@@ -642,72 +600,7 @@ public class AddServiceItemController {
         return item;
     }
 
-    // ── Build ServiceItem from form state ────────────────────────────────────────
-
-    private HBox fieldRow(String labelText, Node input) {
-        Label lbl = new Label(labelText);
-        lbl.setStyle("-fx-font-size:12px; -fx-text-fill:" + TEXT_LABEL + "; -fx-font-weight:600;");
-        lbl.setMinWidth(160);
-        lbl.setPrefWidth(160);
-        HBox row = new HBox(12, lbl, input);
-        row.setAlignment(Pos.CENTER_LEFT);
-        HBox.setHgrow(input, Priority.ALWAYS);
-        return row;
-    }
-
-    // ── Form helpers ─────────────────────────────────────────────────────────────
-
-    private TextField textInput(String key, Map<String, Object> data, String def) {
-        TextField tf = styledTextField(null);
-        tf.setText((String) data.getOrDefault(key, def));
-        tf.textProperty().addListener((obs, o, n) -> data.put(key, n));
-        return tf;
-    }
-
-    private TextField numberInput(String key, Map<String, Object> data) {
-        TextField tf = styledTextField(null);
-        if (data.containsKey(key)) tf.setText(String.valueOf(data.get(key)));
-        tf.textProperty().addListener((obs, o, n) -> {
-            try {
-                data.put(key, Double.parseDouble(n));
-            } catch (NumberFormatException ignored) {
-            }
-        });
-        return tf;
-    }
-
-    private TextArea textArea(String key, Map<String, Object> data) {
-        TextArea ta = new TextArea((String) data.getOrDefault(key, ""));
-        ta.setStyle(inputStyle());
-        ta.setPrefRowCount(3);
-        ta.setMaxWidth(Double.MAX_VALUE);
-        ta.textProperty().addListener((obs, o, n) -> data.put(key, n));
-        return ta;
-    }
-
-    private TextField styledTextField(String prompt) {
-        TextField tf = new TextField();
-        if (prompt != null) tf.setPromptText(prompt);
-        tf.setStyle(inputStyle());
-        tf.setMaxWidth(Double.MAX_VALUE);
-        return tf;
-    }
-
-    private Button styledBtn(String text, String bg, String fg) {
-        Button b = new Button(text);
-        b.setStyle("-fx-background-color:" + bg + "; -fx-text-fill:" + fg + ";"
-                + "-fx-padding:7 16; -fx-cursor:hand; -fx-font-size:11px; -fx-font-weight:700;"
-                + "-fx-background-radius:0; -fx-border-radius:0;");
-        return b;
-    }
-
-    private String inputStyle() {
-        return "-fx-background-color:" + BG_FIELD + "; -fx-border-color:" + BORDER + ";"
-                + "-fx-border-width:1; -fx-border-radius:0; -fx-background-radius:0;"
-                + "-fx-padding:8 12; -fx-font-size:13px; -fx-text-fill:" + TEXT_DARK + ";"
-                + "-fx-prompt-text-fill:" + TEXT_PROMPT + ";"
-                + "-fx-faint-focus-color:transparent; -fx-focus-color:transparent;";
-    }
+    // ── SVG icon rendering ───────────────────────────────────────────────────────
 
     private ImageView makeIconView(ServiceType st, int size) {
         try {
@@ -728,36 +621,25 @@ public class AddServiceItemController {
         }
     }
 
-    // ── SVG icon rendering ───────────────────────────────────────────────────────
-
     private void tintIcon(ImageView iv, Color color, int size) {
-        iv.setEffect(new Blend(
-                BlendMode.SRC_ATOP,
-                null,
-                new ColorInput(0, 0, size, size, color)
-        ));
+        iv.setEffect(new Blend(BlendMode.SRC_ATOP, null,
+                new ColorInput(0, 0, size, size, color)));
     }
+
+    // ── Color utilities ───────────────────────────────────────────────────────────
 
     private Color toFxColor(java.awt.Color awt) {
         return Color.rgb(awt.getRed(), awt.getGreen(), awt.getBlue());
     }
 
-    // ── Color utilities ───────────────────────────────────────────────────────────
-
     private String toHex(Color c) {
         return String.format("#%02x%02x%02x",
-                (int) (c.getRed() * 255),
-                (int) (c.getGreen() * 255),
-                (int) (c.getBlue() * 255));
+                (int)(c.getRed()   * 255),
+                (int)(c.getGreen() * 255),
+                (int)(c.getBlue()  * 255));
     }
 
-    private String alphaRgba(Color c, double opacity) {
-        return String.format("rgba(%d,%d,%d,%.2f)",
-                (int) (c.getRed() * 255),
-                (int) (c.getGreen() * 255),
-                (int) (c.getBlue() * 255),
-                opacity);
-    }
+    // ── Misc ─────────────────────────────────────────────────────────────────────
 
     private Instant combineToInstant(LocalDate date, String time) {
         if (date == null) return null;
@@ -768,8 +650,6 @@ public class AddServiceItemController {
             return date.atStartOfDay(ZoneId.systemDefault()).toInstant();
         }
     }
-
-    // ── Misc ─────────────────────────────────────────────────────────────────────
 
     private void closeModal() {
         ((Stage) rootPane.getScene().getWindow()).close();
@@ -786,11 +666,12 @@ public class AddServiceItemController {
         node.setOpacity(0);
         node.setTranslateY(5);
         new Timeline(new KeyFrame(Duration.millis(180),
-                new KeyValue(node.opacityProperty(), 1.0, Interpolator.EASE_OUT),
+                new KeyValue(node.opacityProperty(),  1.0, Interpolator.EASE_OUT),
                 new KeyValue(node.translateYProperty(), 0.0, Interpolator.EASE_OUT)
         )).play();
     }
 
     // ── Internal state ───────────────────────────────────────────────────────────
-    private enum Step {BASIC, SELECT_SERVICES, CONFIGURE}
+
+    private enum Step { BASIC, SELECT_SERVICES, CONFIGURE }
 }

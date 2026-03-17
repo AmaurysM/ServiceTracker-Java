@@ -1,0 +1,452 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   add-service-item.css
+   All visual styling for the Add Service Item wizard.
+   The controller only applies CSS classes — no inline -fx-* properties.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Palette (CSS variables via root lookup colors) ──────────────────────── */
+/* JavaFX doesn't support CSS custom properties, so we use named colors. */
+
+/* ── Modal overlay ───────────────────────────────────────────────────────── */
+.modal-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.35);
+}
+
+/* ── Wizard card ─────────────────────────────────────────────────────────── */
+.wizard-card {
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.22), 32, 0.0, 0, 8);
+    /* No fixed size here — let it fill the StackPane via FXML maxWidth/maxHeight */
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.wizard-header {
+    -fx-background-color: #1e3a5f;
+    -fx-padding: 14 20 14 20;
+    -fx-min-height: 52;
+    -fx-max-height: 52;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.header-step-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 0.06em;
+}
+
+.tail-preview {
+    -fx-text-fill: rgba(255, 255, 255, 0.75);
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+}
+
+/* ── Step tabs ───────────────────────────────────────────────────────────── */
+.step-tabs {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent transparent #dde3eb transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-min-height: 40;
+    -fx-max-height: 40;
+}
+
+.step-tab {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8a9ab0;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+    -fx-padding: 0 16;
+}
+
+.step-tab:hover {
+    -fx-text-fill: #4a5568;
+    -fx-background-color: #f8f9fb;
+}
+
+.step-tab-active {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #1e3a5f;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-cursor: default;
+    -fx-border-color: transparent transparent #1d4ed8 transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+/* ── Content area ────────────────────────────────────────────────────────── */
+.content-area {
+    -fx-background-color: #ffffff;
+}
+
+/* ── Step panes ──────────────────────────────────────────────────────────── */
+.step-pane {
+    -fx-background-color: #ffffff;
+}
+
+.section-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1a202c;
+}
+
+/* ── Step 1 fields (declared in FXML, styled here) ───────────────────────── */
+.field-row {
+    -fx-spacing: 12;
+}
+
+.field-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #4a5568;
+    -fx-min-width: 140;
+    -fx-pref-width: 140;
+}
+
+.field-input {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a202c;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.field-input:focused {
+    -fx-border-color: #1d4ed8;
+}
+
+.field-datepicker {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.field-datepicker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a202c;
+    -fx-prompt-text-fill: #a0aec0;
+}
+
+.field-datepicker:focused,
+.field-datepicker .text-field:focused {
+    -fx-border-color: #1d4ed8;
+}
+
+.field-textarea {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1a202c;
+    -fx-prompt-text-fill: #a0aec0;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.field-textarea:focused {
+    -fx-border-color: #1d4ed8;
+}
+
+/* ── Step 2 – Services scroll ────────────────────────────────────────────── */
+.services-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-width: 0;
+}
+
+.services-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.service-flow {
+    -fx-background-color: transparent;
+    -fx-padding: 4;
+}
+
+/* ── Service selection cards ─────────────────────────────────────────────── */
+.service-card {
+    -fx-border-color: #c8d4e0;
+    -fx-border-width: 1;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-cursor: hand;
+    -fx-pref-width: 224;
+    -fx-max-width: infinity;
+    -fx-pref-height: 64;
+    -fx-min-height: 64;
+}
+
+.service-card-hover {
+    -fx-border-color: #94a3b8;
+    -fx-background-color: #f8fafc;
+}
+
+.service-card-selected {
+    -fx-border-color: #1d4ed8;
+    -fx-border-width: 1.5;
+    -fx-background-color: #eff6ff;
+}
+
+.service-card-icon-box {
+    -fx-pref-width: 52;
+    -fx-min-width: 52;
+    -fx-max-width: 52;
+    -fx-pref-height: 64;
+    -fx-min-height: 64;
+    -fx-max-height: 64;
+    -fx-background-color: #f0f4ff;
+}
+
+.service-card-text {
+    -fx-padding: 0 8 0 14;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.service-card-name {
+    -fx-font-weight: 600;
+    -fx-font-size: 12px;
+    -fx-text-fill: #374151;
+}
+
+.service-card-name-selected {
+    -fx-font-weight: 700;
+    -fx-text-fill: #1a202c;
+}
+
+.service-card-selected-badge {
+    -fx-font-size: 10px;
+    -fx-text-fill: #15803d;
+    -fx-font-weight: 700;
+}
+
+/* ── Step 3 – Service type tab bar ───────────────────────────────────────── */
+.service-tab-bar {
+    -fx-background-color: #f8f9fb;
+    -fx-border-color: transparent transparent #dde3eb transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-min-height: 48;
+    -fx-max-height: 48;
+    -fx-fill-height: true;
+}
+
+.service-type-tab {
+    -fx-background-color: #f0f4ff;
+    -fx-cursor: hand;
+    -fx-border-color: transparent transparent #dde3eb transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 14;
+    -fx-alignment: CENTER;
+}
+
+.service-type-tab:hover {
+    -fx-background-color: #e8eef8;
+}
+
+.service-type-tab-active {
+    /* Background is set inline because it is service-specific (accent color).
+       We still override cursor and border here. */
+    -fx-cursor: default;
+    -fx-border-width: 0;
+}
+
+.service-tab-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+}
+
+/* When active the label text becomes white — applied via style class swap */
+.service-tab-label-active {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #ffffff;
+}
+
+/* ── Step 3 – Config pane ────────────────────────────────────────────────── */
+.service-config-pane {
+    -fx-background-color: #ffffff;
+}
+
+.config-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-width: 0;
+}
+
+.config-scroll > .viewport {
+    -fx-background-color: #ffffff;
+}
+
+.config-form {
+    -fx-background-color: #ffffff;
+    -fx-padding: 0 24 22 24;
+    -fx-spacing: 16;
+}
+
+/* Config header — background-color set inline (accent color per service) */
+.config-header {
+    -fx-padding: 13 20 13 20;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 10;
+    /* Negative left/right margins so it bleeds to the ScrollPane edges */
+    -fx-translate-x: -24;
+    -fx-pref-width: infinity;
+}
+
+.config-header-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #ffffff;
+}
+
+.config-header-divider {
+    -fx-text-fill: rgba(255, 255, 255, 0.45);
+    -fx-font-size: 14px;
+    -fx-padding: 0 6;
+}
+
+.config-header-subtitle {
+    -fx-font-size: 11px;
+    -fx-text-fill: rgba(255, 255, 255, 0.60);
+}
+
+.config-field-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #4a5568;
+    -fx-font-weight: 600;
+    -fx-min-width: 160;
+    -fx-pref-width: 160;
+}
+
+.config-field-row {
+    -fx-spacing: 12;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.config-hint {
+    -fx-text-fill: #8a9ab0;
+    -fx-font-size: 11px;
+}
+
+.config-add-row-btn {
+    -fx-background-color: #1e3a5f;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 7 16;
+    -fx-cursor: hand;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.config-add-row-btn:hover {
+    -fx-background-color: #162d4a;
+}
+
+.catering-number-field {
+    -fx-pref-width: 60;
+    -fx-max-width: 60;
+}
+
+.catering-delete-btn {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #dc2626;
+    -fx-border-color: #fecaca;
+    -fx-border-width: 1;
+    -fx-padding: 7 10;
+    -fx-cursor: hand;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.catering-delete-btn:hover {
+    -fx-background-color: #fecaca;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.wizard-footer {
+    -fx-background-color: #f8f9fb;
+    -fx-border-color: #dde3eb transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-min-height: 52;
+    -fx-max-height: 52;
+    -fx-spacing: 0;
+}
+
+.footer-btn {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+    -fx-padding: 0 20;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-min-height: 52;
+    -fx-max-height: 52;
+    -fx-border-width: 0;
+}
+
+.btn-cancel {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8a9ab0;
+    -fx-border-color: transparent #dde3eb transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.btn-cancel:hover {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: #374151;
+}
+
+.btn-back {
+    -fx-background-color: transparent;
+    -fx-text-fill: #374151;
+    -fx-border-color: transparent #dde3eb transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.btn-back:hover {
+    -fx-background-color: #f1f5f9;
+}
+
+.btn-next {
+    -fx-background-color: #1d4ed8;
+    -fx-text-fill: #ffffff;
+}
+
+.btn-next:hover {
+    -fx-background-color: #1a44c0;
+}
+
+.btn-add {
+    -fx-background-color: #15803d;
+    -fx-text-fill: #ffffff;
+}
+
+.btn-add:hover {
+    -fx-background-color: #166534;
+}
+
+.btn-add:disabled {
+    -fx-background-color: #86efac;
+    -fx-text-fill: #ffffff;
+    -fx-cursor: default;
+}

@@ -1,0 +1,168 @@
+/* ================================================================
+   aircraft-context-menu.css
+   src/main/resources/css/aircraft-context-menu.css
+
+   Mirrors the Next.js ContextMenu component visual style.
+   ================================================================ */
+
+/* ── Root card ──────────────────────────────────────────────────────────── */
+.acm-root {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(148, 163, 184, 0.25);
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.28), 24, 0.05, 0, 6);
+    /* keep on top of map */
+}
+
+/* ── Header (dark bar) ───────────────────────────────────────────────────── */
+.acm-header {
+    -fx-background-color: #0f172a;   /* slate-900 */
+    -fx-padding: 10 14 10 14;
+    -fx-background-radius: 8 8 0 0;
+}
+
+/* green header when all services complete – apply via:
+   header.getStyleClass().add("acm-header-complete"); */
+.acm-header-complete {
+    -fx-background-color: #166534;   /* green-800 */
+}
+
+.acm-header-text {
+    -fx-spacing: 3;
+}
+
+.acm-tail-label {
+    -fx-font-family: "JetBrains Mono", "Fira Code", "Consolas", "Courier New", monospace;
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.acm-progress-label {
+    -fx-font-family: "JetBrains Mono", "Fira Code", "Consolas", "Courier New", monospace;
+    -fx-font-size: 10;
+    -fx-text-fill: rgba(255,255,255,0.65);
+}
+
+.acm-close-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.75);
+    -fx-font-size: 14;
+    -fx-cursor: hand;
+    -fx-padding: 0 2 0 8;
+    -fx-border-color: transparent;
+}
+
+.acm-close-btn:hover {
+    -fx-text-fill: white;
+}
+
+/* ── Service icon bar ────────────────────────────────────────────────────── */
+.acm-service-bar {
+    -fx-background-color: white;
+    -fx-min-height: 48;
+    -fx-pref-height: 48;
+    -fx-padding: 0;
+}
+
+/* Each service cell – set inline via node.setStyle() in controller */
+.acm-service-cell {
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+    -fx-min-width: 40;
+    -fx-min-height: 48;
+    -fx-pref-height: 48;
+}
+
+.acm-service-cell:hover {
+    -fx-scale-x: 1.08;
+    -fx-scale-y: 1.08;
+}
+
+/* Empty state label */
+.acm-service-empty {
+    -fx-font-size: 10;
+    -fx-text-fill: #9ca3af;
+    -fx-padding: 0 16;
+}
+
+/* ── Time / description row ─────────────────────────────────────────────── */
+.acm-time-row {
+    -fx-background-color: rgba(249,250,251,0.6);
+    -fx-padding: 7 12 7 12;
+    -fx-border-color: transparent transparent transparent transparent;
+}
+
+.acm-time-label {
+    -fx-font-family: "JetBrains Mono", "Fira Code", "Consolas", "Courier New", monospace;
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+}
+
+.acm-desc-label {
+    -fx-font-size: 10;
+    -fx-text-fill: #4b5563;
+    -fx-padding: 0 12 6 12;
+    -fx-background-color: rgba(249,250,251,0.6);
+}
+
+/* ── Button rows ─────────────────────────────────────────────────────────── */
+.acm-btn-row {
+    -fx-pref-height: 32;
+    -fx-min-height: 32;
+    -fx-spacing: 0;
+}
+
+.acm-btn {
+    -fx-font-family: "JetBrains Mono", "Fira Code", "Consolas", "Courier New", monospace;
+    -fx-font-size: 10;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-pref-height: 32;
+    -fx-background-radius: 0;
+}
+
+/* VIEW — blue-600 */
+.acm-btn-view {
+    -fx-background-color: #2563eb;
+}
+.acm-btn-view:hover { -fx-background-color: #1d4ed8; }
+
+/* EDIT — green-600 */
+.acm-btn-edit {
+    -fx-background-color: #16a34a;
+}
+.acm-btn-edit:hover { -fx-background-color: #15803d; }
+
+/* DONE — emerald-600 */
+.acm-btn-done {
+    -fx-background-color: #059669;
+}
+.acm-btn-done:hover { -fx-background-color: #047857; }
+
+/* UNPLACE — orange-600 */
+.acm-btn-unplace {
+    -fx-background-color: #ea580c;
+}
+.acm-btn-unplace:hover { -fx-background-color: #c2410c; }
+
+/* REMOVE — red-600 */
+.acm-btn-remove {
+    -fx-background-color: #dc2626;
+    -fx-background-radius: 0 0 0 8;   /* rounds bottom-right on last row right btn */
+}
+.acm-btn-remove:hover { -fx-background-color: #b91c1c; }
+
+/* Round bottom corners of the card on the outer action buttons */
+.acm-btn-unplace {
+    -fx-background-radius: 0 0 0 8;
+}
+.acm-btn-remove {
+    -fx-background-radius: 0 0 8 0;
+}

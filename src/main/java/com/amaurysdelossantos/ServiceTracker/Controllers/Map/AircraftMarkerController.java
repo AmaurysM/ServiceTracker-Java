@@ -1,6 +1,7 @@
 package com.amaurysdelossantos.ServiceTracker.Controllers.Map;
 
 import com.amaurysdelossantos.ServiceTracker.Helper.Lib;
+import com.amaurysdelossantos.ServiceTracker.Services.ContextMenuService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceType;
 import fxmapcontrol.Location;
@@ -11,18 +12,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -30,58 +30,61 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import javafx.scene.shape.Rectangle;
 
 @Component
 @Scope("prototype")
 public class AircraftMarkerController {
 
-    private static final long DBL_CLICK_MS = 300;
-
     @FXML private StackPane root;
     @FXML private StackPane innerRotating;
-    @FXML private Circle selectionRing;
-    @FXML private Circle rotateHandle;
-    @FXML private SVGPath planeIcon;
+    @FXML private Circle    selectionRing;
+    @FXML private Circle    rotateHandle;
+    @FXML private SVGPath   planeIcon;
     @FXML private StackPane labelContainer;
-    @FXML private Label tailLabel;
-    @FXML private HBox serviceBar;
+    @FXML private Label     tailLabel;
+    @FXML private HBox      serviceBar;
 
+    // ── Spring dependency ──────────────────────────────────────────────────
+    @Autowired
+    private ContextMenuService contextMenuService;
+
+    // ── Marker state ───────────────────────────────────────────────────────
     private double dragLatOffset, dragLngOffset;
+    private double posX, posY, rotation = 0;
 
-    private double posX;
-    private double posY;
-    private double rotation = 0;
-    @Getter
-    private ServiceItem item;
+    @Getter private ServiceItem item;
     private MapBase map;
-    private boolean selected = false;
+    private boolean selected  = false;
     private DragMode dragMode = DragMode.NONE;
 
-    private double dragOffsetX, dragOffsetY;
-    private double rotateCenterX, rotateCenterY;
-    private double rotationOffset;
+    private double  rotateCenterX, rotateCenterY, rotationOffset;
     private boolean hasDragged = false;
-    private long lastClickMs = 0;
 
-    private ContextMenu contextMenu;
+    @Setter private Consumer<AircraftMarkerController>        onSelect;
+    @Setter private TriConsumer<String, Double, Double>       onPositionUpdate;
+    @Setter private BiConsumer<String, Double>                onRotationUpdate;
 
-    @Setter
-    private Consumer<AircraftMarkerController> onSelect;
-    @Setter
-    private Consumer<AircraftMarkerController> onContextMenu;
-    @Setter
-    private TriConsumer<String, Double, Double> onPositionUpdate;
-    @Setter
-    private BiConsumer<String, Double> onRotationUpdate;
-
-    // ── Factory ───────────────────────────────────────────────────────────────
-
-    public static AircraftMarkerController create(ServiceItem item, MapBase map) {
+    // ── Factory ───────────────────────────────────────────────────────────
+    /**
+     * Creates and initialises a marker.
+     *
+     * <p>Because this controller is {@code @Scope("prototype")} and loaded
+     * via FXMLLoader outside the normal Spring request path, the
+     * {@link ContextMenuService} is injected manually via the factory so that
+     * Spring does not need to manage the FXMLLoader call.
+     */
+    public static AircraftMarkerController create(ServiceItem item,
+                                                  MapBase map,
+                                                  ContextMenuService contextMenuService) {
         try {
             FXMLLoader loader = new FXMLLoader(
                     AircraftMarkerController.class.getResource(
                             "/components/map/aircraft-marker.fxml"));
+            loader.setControllerFactory(clazz -> {
+                AircraftMarkerController ctrl = new AircraftMarkerController();
+                ctrl.contextMenuService = contextMenuService;
+                return ctrl;
+            });
             loader.load();
             AircraftMarkerController ctrl = loader.getController();
             ctrl.init(item, map);
@@ -91,7 +94,7 @@ public class AircraftMarkerController {
         }
     }
 
-    // ── Static helpers ────────────────────────────────────────────────────────
+    // ── Static helpers ────────────────────────────────────────────────────
 
     @SuppressWarnings("unchecked")
     public static Map<String, Object> mapPosition(ServiceItem item) {
@@ -115,17 +118,17 @@ public class AircraftMarkerController {
 
     private static String serviceColor(ServiceType type) {
         return switch (type) {
-            case FUEL              -> "#f59e0b";
-            case CATERING          -> "#10b981";
-            case GPU               -> "#8b5cf6";
-            case LAVATORY          -> "#06b6d4";
-            case POTABLE_WATER     -> "#3b82f6";
+            case FUEL                -> "#f59e0b";
+            case CATERING            -> "#10b981";
+            case GPU                 -> "#8b5cf6";
+            case LAVATORY            -> "#06b6d4";
+            case POTABLE_WATER       -> "#3b82f6";
             case WINDSHIELD_CLEANING -> "#f97316";
-            case OIL_SERVICE       -> "#ef4444";
+            case OIL_SERVICE         -> "#ef4444";
         };
     }
 
-    // ── Lifecycle ─────────────────────────────────────────────────────────────
+    // ── Lifecycle ─────────────────────────────────────────────────────────
 
     @FXML
     public void initialize() { }
@@ -136,17 +139,15 @@ public class AircraftMarkerController {
         applyClipping();
         readPosition();
         rebuildLabel();
-        buildContextMenu();
         wireEvents();
         refreshVisuals();
-        Platform.runLater(this::relocate); // wait for layout pass
+        Platform.runLater(this::relocate);
     }
 
-    // ── Public API ────────────────────────────────────────────────────────────
+    // ── Public API ────────────────────────────────────────────────────────
 
-    public StackPane getNode()  { return root; }
-
-    public String getId()        { return item.getId(); }
+    public StackPane getNode() { return root; }
+    public String    getId()   { return item.getId(); }
 
     public void setSelected(boolean sel) {
         selected = sel;
@@ -154,14 +155,12 @@ public class AircraftMarkerController {
     }
 
     public void refresh(ServiceItem updated) {
-        double oldX = this.posX, oldY = this.posY, oldRot = this.rotation;
+        double oldX = posX, oldY = posY, oldRot = rotation;
         this.item = updated;
         readPosition();
         rebuildLabel();
         refreshVisuals();
-        if (posX != oldX || posY != oldY || rotation != oldRot) {
-            relocate();
-        }
+        if (posX != oldX || posY != oldY || rotation != oldRot) relocate();
     }
 
     public void relocate() {
@@ -173,78 +172,30 @@ public class AircraftMarkerController {
         root.setLayoutY(pt.getY() - h / 2.0);
     }
 
-    public void relocateAsync() {
-        Platform.runLater(this::relocate);
-    }
+    public void relocateAsync() { Platform.runLater(this::relocate); }
+
+    // ── Visuals ───────────────────────────────────────────────────────────
 
     private void applyClipping() {
         Rectangle clip = new Rectangle();
-
         clip.setArcWidth(40);
         clip.setArcHeight(40);
-
         clip.widthProperty().bind(labelContainer.widthProperty());
         clip.heightProperty().bind(labelContainer.heightProperty());
-
         labelContainer.setClip(clip);
     }
 
-    // ── Context menu ──────────────────────────────────────────────────────────
-
-    private void buildContextMenu() {
-        contextMenu = new ContextMenu();
-        contextMenu.getStyleClass().add("marker-context-menu");
-
-        MenuItem r0   = new MenuItem("Rotate — North  (0°)");
-        MenuItem r90  = new MenuItem("Rotate — East   (90°)");
-        MenuItem r180 = new MenuItem("Rotate — South  (180°)");
-        MenuItem r270 = new MenuItem("Rotate — West   (270°)");
-
-        r0.setOnAction(e   -> applyRotation(0));
-        r90.setOnAction(e  -> applyRotation(90));
-        r180.setOnAction(e -> applyRotation(180));
-        r270.setOnAction(e -> applyRotation(270));
-
-        MenuItem resetRotation = new MenuItem("Reset rotation");
-        resetRotation.setOnAction(e -> applyRotation(0));
-
-        MenuItem removeFromMap = new MenuItem("Remove from map");
-        removeFromMap.getStyleClass().add("menu-item-danger");
-        removeFromMap.setOnAction(e -> {
-            if (onContextMenu != null) onContextMenu.accept(this);
-        });
-
-        contextMenu.getItems().addAll(
-                r0, r90, r180, r270,
-                new SeparatorMenuItem(),
-                resetRotation,
-                new SeparatorMenuItem(),
-                removeFromMap
-        );
-    }
-
-    private void applyRotation(double degrees) {
-        rotation = norm(degrees);
-        innerRotating.setRotate(rotation);
-        if (onRotationUpdate != null) onRotationUpdate.accept(getId(), rotation);
-    }
-
-
     private void refreshVisuals() {
         boolean allDone = Lib.areAllServicesCompleted(item);
-
         selectionRing.setVisible(selected);
         rotateHandle.setVisible(selected);
-
         String fill = selected ? "#2563eb" : allDone ? "#16a34a" : "#1e293b";
         planeIcon.setStyle("-fx-fill: " + fill + ";");
-
         innerRotating.setRotate(rotation);
     }
 
     private void rebuildLabel() {
         tailLabel.setText(item.getTail() != null ? item.getTail() : item.getId());
-
         serviceBar.getChildren().clear();
         Map<ServiceType, Boolean> active = Lib.getActiveServices(item);
         boolean hasIncomplete = active.values().stream().anyMatch(done -> !done);
@@ -268,34 +219,29 @@ public class AircraftMarkerController {
         }
     }
 
-    // ── Events ────────────────────────────────────────────────────────────────
+    // ── Events ────────────────────────────────────────────────────────────
 
     private void wireEvents() {
         root.setCursor(Cursor.HAND);
 
-        // ── Root mouse pressed (only for move, ignore rotate handle) ──
         root.setOnMousePressed(e -> {
             if (!e.isPrimaryButtonDown()) return;
+            if (e.getTarget() == rotateHandle) return;
 
-            // If the target is the rotate handle, let its own handler take over
-            if (e.getTarget() == rotateHandle) {
-                return;                     // do not start move drag
-            }
+            // Primary click closes any open context-menu card
+            contextMenuService.close();
 
-            contextMenu.hide();
             Location cursorLoc = toLatLng(e.getSceneX(), e.getSceneY());
             if (cursorLoc == null) return;
 
-            hasDragged = false;
-            dragMode = DragMode.MOVE;
+            hasDragged    = false;
+            dragMode      = DragMode.MOVE;
             dragLatOffset = cursorLoc.getLatitude()  - posX;
             dragLngOffset = cursorLoc.getLongitude() - posY;
-
             root.setCursor(Cursor.CLOSED_HAND);
             e.consume();
         });
 
-        // ── Move drag (already correct) ──
         root.setOnMouseDragged(e -> {
             if (dragMode == DragMode.MOVE) {
                 hasDragged = true;
@@ -316,7 +262,6 @@ public class AircraftMarkerController {
             e.consume();
         });
 
-        // ── Move release ──
         root.setOnMouseReleased(e -> {
             if (dragMode == DragMode.MOVE && onPositionUpdate != null)
                 onPositionUpdate.accept(getId(), posX, posY);
@@ -327,21 +272,22 @@ public class AircraftMarkerController {
             e.consume();
         });
 
-        // ── Click handling (selection & context menu) ──
         root.setOnMouseClicked(e -> {
             if (hasDragged) return;
             switch (e.getButton()) {
-                case PRIMARY  -> { if (onSelect != null) onSelect.accept(this); }
+                case PRIMARY -> {
+                    if (onSelect != null) onSelect.accept(this);
+                }
                 case SECONDARY -> {
                     if (onSelect != null) onSelect.accept(this);
-                    contextMenu.show(root, e.getScreenX(), e.getScreenY());
+                    // ── The only call needed to open the context menu ──
+                    contextMenuService.show(item, root);
                 }
                 default -> { }
             }
             e.consume();
         });
 
-        // ── Scroll rotation ──
         root.setOnScroll(e -> {
             if (!selected) return;
             double step = e.isShiftDown() ? 15.0 : 5.0;
@@ -351,7 +297,6 @@ public class AircraftMarkerController {
             e.consume();
         });
 
-        // ── Rotate handle (unchanged, but ensure it consumes) ──
         rotateHandle.setOnMousePressed(e -> {
             if (!e.isPrimaryButtonDown()) return;
             dragMode = DragMode.ROTATE;
@@ -361,11 +306,12 @@ public class AircraftMarkerController {
             rotationOffset = rotation
                     - angleTo(rotateCenterX, rotateCenterY, e.getSceneX(), e.getSceneY());
             rotateHandle.setCursor(Cursor.CROSSHAIR);
-            e.consume();   // already present
+            e.consume();
         });
     }
 
-    // ── Position helpers ──────────────────────────────────────────────────────
+    // ── Position helpers ──────────────────────────────────────────────────
+
     private void readPosition() {
         Map<String, Object> mp = mapPosition(item);
         if (mp == null) return;
@@ -375,28 +321,21 @@ public class AircraftMarkerController {
     }
 
     private Point2D toPixel(double lat, double lng) {
-        try {
-            return map.locationToView(new Location(lat, lng));
-        } catch (Exception e) {
-            return null;
-        }
+        try { return map.locationToView(new Location(lat, lng)); }
+        catch (Exception e) { return null; }
     }
 
     private Location toLatLng(double sceneX, double sceneY) {
         try {
             Point2D local = map.sceneToLocal(sceneX, sceneY);
             return map.viewToLocation(local);
-        } catch (Exception e) {
-            return null;
-        }
+        } catch (Exception e) { return null; }
     }
 
-    // ── Inner types ───────────────────────────────────────────────────────────
+    // ── Inner types ───────────────────────────────────────────────────────
 
     private enum DragMode { NONE, MOVE, ROTATE }
 
     @FunctionalInterface
-    public interface TriConsumer<A, B, C> {
-        void accept(A a, B b, C c);
-    }
+    public interface TriConsumer<A, B, C> { void accept(A a, B b, C c); }
 }

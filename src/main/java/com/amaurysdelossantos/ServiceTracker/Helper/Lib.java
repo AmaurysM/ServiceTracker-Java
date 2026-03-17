@@ -188,4 +188,35 @@ public class Lib {
         Map<ServiceType, Boolean> active = getActiveServices(item);
         return !active.isEmpty() && active.values().stream().allMatch(Boolean::booleanValue);
     }
+
+
+    static public boolean hasMapPosition(ServiceItem item) {
+        if (item.getMetadata() == null) return false;
+        return item.getMetadata().containsKey("lat")
+                && item.getMetadata().containsKey("lng");
+    }
+
+    static public String colorForService(ServiceType type) {
+        return switch (type) {
+            case FUEL -> "#F59E0B";
+            case CATERING -> "#10B981";
+            case GPU -> "#8B5CF6";
+            case LAVATORY -> "#3B82F6";
+            case POTABLE_WATER -> "#06B6D4";
+            case WINDSHIELD_CLEANING -> "#F43F5E";
+            case OIL_SERVICE -> "#78716C";
+        };
+    }
+
+    static public String labelForService(ServiceType type) {
+        return switch (type) {
+            case FUEL -> "Fuel";
+            case CATERING -> "Catering";
+            case GPU -> "GPU";
+            case LAVATORY -> "Lavatory";
+            case POTABLE_WATER -> "Water";
+            case WINDSHIELD_CLEANING -> "Windshield";
+            case OIL_SERVICE -> "Oil";
+        };
+    }
 }
