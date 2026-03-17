@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import javafx.scene.shape.Rectangle;
 
 @Component
 @Scope("prototype")
@@ -132,6 +133,7 @@ public class AircraftMarkerController {
     private void init(ServiceItem item, MapBase map) {
         this.item = item;
         this.map  = map;
+        applyClipping();
         readPosition();
         rebuildLabel();
         buildContextMenu();
@@ -173,6 +175,18 @@ public class AircraftMarkerController {
 
     public void relocateAsync() {
         Platform.runLater(this::relocate);
+    }
+
+    private void applyClipping() {
+        Rectangle clip = new Rectangle();
+
+        clip.setArcWidth(40);
+        clip.setArcHeight(40);
+
+        clip.widthProperty().bind(labelContainer.widthProperty());
+        clip.heightProperty().bind(labelContainer.heightProperty());
+
+        labelContainer.setClip(clip);
     }
 
     // ── Context menu ──────────────────────────────────────────────────────────
@@ -224,12 +238,6 @@ public class AircraftMarkerController {
 
         String fill = selected ? "#2563eb" : allDone ? "#16a34a" : "#1e293b";
         planeIcon.setStyle("-fx-fill: " + fill + ";");
-
-        labelContainer.getStyleClass()
-                .removeAll("label-default", "label-selected", "label-completed");
-        if (selected)       labelContainer.getStyleClass().add("label-selected");
-        else if (allDone)   labelContainer.getStyleClass().add("label-completed");
-        else                labelContainer.getStyleClass().add("label-default");
 
         innerRotating.setRotate(rotation);
     }

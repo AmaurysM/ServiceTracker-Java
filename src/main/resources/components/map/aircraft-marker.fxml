@@ -4,73 +4,49 @@
     src/main/resources/fxml/map/aircraft-marker.fxml
     Instantiate only via AircraftMarkerController.create(item, map).
 -->
-<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.SVGPath?>
-<StackPane xmlns:fx="http://javafx.com/fxml/1"
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+
+<StackPane fx:id="root" styleClass="aircraft-marker-root" stylesheets="@aircraft-marker.css"
            xmlns="http://javafx.com/javafx/17.0.12"
-           fx:id="root"
-           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.AircraftMarkerController"
-           styleClass="aircraft-marker-root"
-           stylesheets="@aircraft-marker.css">
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.AircraftMarkerController">
 
-    <!--
-        innerRotating: rotated as a unit by the controller.
-        Contains the selection ring, rotate handle, and plane icon.
-    -->
-    <StackPane fx:id="innerRotating"
-               styleClass="aircraft-inner"
-               pickOnBounds="false">
-
-        <!-- Selection ring – shown only when this aircraft is selected -->
-        <Circle fx:id="selectionRing"
-                radius="28"
-                styleClass="selection-ring"
-                mouseTransparent="true"
-                visible="false"/>
-
-        <!--
-            Rotate handle – small dot pinned to the top-left of the icon.
-            Negative translate pushes it just outside the icon boundary.
-        -->
-        <Circle fx:id="rotateHandle"
-                radius="6"
-                styleClass="rotate-handle"
+    <StackPane fx:id="innerRotating" pickOnBounds="false" styleClass="aircraft-inner">
+        <Circle fx:id="selectionRing" mouseTransparent="true" radius="28"
+                styleClass="selection-ring" visible="false" />
+        <Circle fx:id="rotateHandle" radius="6" styleClass="rotate-handle"
                 visible="false"
-                StackPane.alignment="TOP_LEFT"
-                translateX="-22"
-                translateY="-22"/>
-
-        <!--
-            Plane SVG – top-view silhouette.
-            Fill is overridden inline by the controller to reflect state.
-        -->
+                StackPane.alignment="TOP_LEFT" />
         <SVGPath fx:id="planeIcon"
-                 styleClass="plane-icon"
                  content="M21 16v-2l-8-5V3.5C13 2.67 12.33 2 11.5 2S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
-                 mouseTransparent="true"/>
+                 mouseTransparent="true" styleClass="plane-icon" />
     </StackPane>
 
-    <!--
-        Label pill – floated above the icon.
-        Tail number + optional coloured service-type bar (built in code).
-    -->
     <StackPane fx:id="labelContainer"
-               styleClass="label-container label-default"
+               maxHeight="-Infinity" maxWidth="-Infinity"
+               minHeight="-Infinity" minWidth="-Infinity"
                mouseTransparent="true"
-               StackPane.alignment="TOP_CENTER"
-               translateY="-60">
+               styleClass="label-container"
+               translateY="-60"
+               StackPane.alignment="BOTTOM_CENTER">
 
-        <Label fx:id="tailLabel"
-               text="—"
-               styleClass="tail-label"/>
+        <Pane styleClass="glass-body" mouseTransparent="true" />
 
-        <HBox fx:id="serviceBar"
-              styleClass="service-bar"
-              StackPane.alignment="BOTTOM_CENTER"
-              visible="false"
-              managed="false"/>
+        <Pane styleClass="glass-shine" mouseTransparent="true"
+              StackPane.alignment="TOP_CENTER"
+              maxHeight="10" minHeight="10" />
+
+        <VBox styleClass="glass-content" spacing="0" mouseTransparent="true">
+            <Label fx:id="tailLabel" minHeight="-Infinity" minWidth="-Infinity"
+                   styleClass="tail-label" text="—" />
+            <HBox fx:id="serviceBar" managed="false"
+                  styleClass="service-bar" visible="false"
+                  StackPane.alignment="BOTTOM_CENTER" />
+        </VBox>
 
     </StackPane>
 

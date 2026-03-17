@@ -442,7 +442,7 @@
     -fx-min-height: 40px;
     -fx-max-width: 40px;
     -fx-max-height: 40px;
-    -fx-background-color: linear-gradient(to top left, #3b82f6 50%, #0f172b 50%);
+    -fx-background-color: linear-gradient(to top left, #3b82f6 50%, #1a3a6e 50%);
 }
 
 .map-back-btn:hover .page-corner {
