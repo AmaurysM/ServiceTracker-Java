@@ -17,7 +17,7 @@
       fillWidth="true"
       HBox.hgrow="ALWAYS"
       xmlns="http://javafx.com/javafx/17.0.12"
-      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.EmptyStateController">
+      fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.EmptyStateController">
 
     <padding>
         <Insets top="60" bottom="60" left="40" right="40"/>

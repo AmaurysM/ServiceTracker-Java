@@ -5,7 +5,7 @@
 
 <VBox fx:id="root"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.item.AircraftContextMenuController"
+      fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.map.item.AircraftContextMenuController"
       styleClass="acm-root"
       stylesheets="@/components/map/item/aircraft-context-menu.css"
       spacing="0"

@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane maxHeight="Infinity" maxWidth="Infinity" pickOnBounds="false" styleClass="map-root" stylesheets="@map-view-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.MapViewController">
+<StackPane maxHeight="Infinity" maxWidth="Infinity" pickOnBounds="false" styleClass="map-root" stylesheets="@map-view-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.map.MapViewController">
 
     <Map fx:id="fxMap" center="25.7959,-80.2870" maxHeight="Infinity" maxWidth="Infinity" maxZoomLevel="20" zoomLevel="14" />
 

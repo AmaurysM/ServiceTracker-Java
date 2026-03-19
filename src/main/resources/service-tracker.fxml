@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Text?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="500.0" prefWidth="900.0" styleClass="root"
             stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12"
-            fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ServiceTrackerController">
+            fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.ServiceTrackerController">
 
     <!-- TOP BAR -->
     <top>

@@ -5,7 +5,7 @@
 <VBox xmlns:fx="http://javafx.com/fxml/1"
       xmlns="http://javafx.com/javafx/17"
       stylesheets="@/components/map/tab/item/item-styles.css"
-      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab.Item.FilterItemController">
+      fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.map.Tab.Item.FilterItemController">
 
     <!-- Collapsed row -->
     <HBox fx:id="rowHeader"

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxWidth="Infinity" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.StandardViewController">
+<BorderPane maxWidth="Infinity" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.Standard.StandardViewController">
     <top>
         <HBox BorderPane.alignment="CENTER">
             <children>

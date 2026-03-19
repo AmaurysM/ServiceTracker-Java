@@ -13,7 +13,7 @@
 <StackPane fx:id="root" styleClass="aircraft-marker-root" stylesheets="@aircraft-marker.css"
            xmlns="http://javafx.com/javafx/17.0.12"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.AircraftMarkerController">
+           fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.map.AircraftMarkerController">
 
     <StackPane fx:id="innerRotating" pickOnBounds="false" styleClass="aircraft-inner">
         <Circle fx:id="selectionRing" mouseTransparent="true" radius="28"

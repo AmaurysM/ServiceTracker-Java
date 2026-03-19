@@ -6,6 +6,6 @@
             styleClass="scroll-pane"
             vbarPolicy="AS_NEEDED" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
             AnchorPane.topAnchor="110" xmlns="http://javafx.com/javafx/17.0.12"
-            fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.ListViewController">
+            fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.Standard.ListViewController">
     <VBox fx:id="mainVBox" managed="false" style="-fx-padding: 0 0 0 0;"/>
 </ScrollPane>

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.*?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" fx:id="rootPane" style="-fx-background-color: white;"
            stylesheets="@../item-modal.css" xmlns="http://javafx.com/javafx/17.0.12"
-           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemEditController">
+           fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.ItemInteractions.ItemEditController">
 
     <VBox fx:id="modalCard" maxWidth="1.7976931348623157E308" styleClass="modal-card-window"
           StackPane.alignment="TOP_LEFT" VBox.vgrow="ALWAYS">

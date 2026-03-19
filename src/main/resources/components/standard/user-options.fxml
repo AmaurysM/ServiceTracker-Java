@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" styleClass="user-options-root"
       xmlns="http://javafx.com/javafx/17.0.12"
-      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Standard.Options.UserOptionsController">
+      fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.Standard.Options.UserOptionsController">
 
     <!-- User Info Header -->
     <VBox styleClass="user-info-section">

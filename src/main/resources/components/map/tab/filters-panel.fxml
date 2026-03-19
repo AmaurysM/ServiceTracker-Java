@@ -5,7 +5,7 @@
 <?import javafx.scene.text.*?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="267.0"
       stylesheets="@/components/map/tab/panel-styles.css" xmlns="http://javafx.com/javafx/17.0.12"
-      fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab.FiltersPanelController">
+      fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.map.Tab.FiltersPanelController">
 
     <!-- ── Header ─────────────────────────────────────────────────────── -->
     <HBox alignment="CENTER_LEFT" styleClass="panel-header">

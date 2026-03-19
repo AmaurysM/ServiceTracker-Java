@@ -10,7 +10,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane fx:id="rootPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="modal-overlay" stylesheets="@add-service-item.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.AddServiceItemController">
+<StackPane fx:id="rootPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="modal-overlay" stylesheets="@add-service-item.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.ItemInteractions.AddServiceItemController">
 
     <VBox fx:id="wizardCard" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="wizard-card">
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox fx:id="root"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.map.item.MapContextMenuController"
+      styleClass="mcm-root"
+      stylesheets="@/components/map/item/map-context-menu.css"
+      spacing="0"
+      prefWidth="210"
+      maxWidth="210">
+
+    <!-- ══ HEADER ══ -->
+    <HBox fx:id="header" styleClass="mcm-header" alignment="CENTER_LEFT" spacing="6">
+        <VBox HBox.hgrow="ALWAYS" spacing="1">
+            <Label styleClass="mcm-header-eyebrow" text="MAP" />
+            <Label fx:id="coordLabel" styleClass="mcm-coord-label" text="—" />
+        </VBox>
+        <Button fx:id="closeBtn" styleClass="mcm-close-btn" text="✕" />
+    </HBox>
+
+    <!-- ══ AIRCRAFT ══ -->
+    <HBox fx:id="addBtn" styleClass="mcm-row" alignment="CENTER_LEFT" spacing="8">
+        <Label styleClass="mcm-row-icon mcm-icon-blue" text="✈" />
+        <Label styleClass="mcm-row-label" HBox.hgrow="ALWAYS" text="Add Aircraft Here" />
+    </HBox>
+
+    <Region styleClass="mcm-sep" />
+
+    <!-- ══ NAVIGATION ══ -->
+    <HBox fx:id="flyToBtn" styleClass="mcm-row" alignment="CENTER_LEFT" spacing="8">
+        <Label styleClass="mcm-row-icon mcm-icon-slate" text="◎" />
+        <Label styleClass="mcm-row-label" HBox.hgrow="ALWAYS" text="Center Here" />
+    </HBox>
+
+    <HBox fx:id="zoomInBtn" styleClass="mcm-row" alignment="CENTER_LEFT" spacing="8">
+        <Label styleClass="mcm-row-icon mcm-icon-slate" text="⊕" />
+        <Label styleClass="mcm-row-label" HBox.hgrow="ALWAYS" text="Zoom In" />
+        <Label fx:id="zoomLevelLabel" styleClass="mcm-badge" text="—" />
+    </HBox>
+
+    <HBox fx:id="zoomOutBtn" styleClass="mcm-row" alignment="CENTER_LEFT" spacing="8">
+        <Label styleClass="mcm-row-icon mcm-icon-slate" text="⊖" />
+        <Label styleClass="mcm-row-label" HBox.hgrow="ALWAYS" text="Zoom Out" />
+    </HBox>
+
+    <HBox fx:id="resetNorthBtn" styleClass="mcm-row" alignment="CENTER_LEFT" spacing="8">
+        <Label styleClass="mcm-row-icon mcm-icon-slate" text="↑" />
+        <Label styleClass="mcm-row-label" HBox.hgrow="ALWAYS" text="Reset North" />
+    </HBox>
+
+    <Region styleClass="mcm-sep" />
+
+    <!-- ══ ZOOM PRESETS ══ -->
+    <HBox styleClass="mcm-chip-row" alignment="CENTER_LEFT" spacing="3">
+        <Button fx:id="zoomStreetBtn"  styleClass="mcm-chip" text="Street"  />
+        <Button fx:id="zoomCityBtn"    styleClass="mcm-chip" text="City"    />
+        <Button fx:id="zoomRegionBtn"  styleClass="mcm-chip" text="Region"  />
+        <Button fx:id="zoomCountryBtn" styleClass="mcm-chip" text="Country" />
+    </HBox>
+
+    <Region styleClass="mcm-sep" />
+
+    <!-- ══ MAP STYLE — active state set dynamically in controller, NOT hardcoded here ══ -->
+    <HBox styleClass="mcm-chip-row" alignment="CENTER_LEFT" spacing="3">
+        <Button fx:id="styleStreetsBtn"   styleClass="mcm-chip" text="Streets"   />
+        <Button fx:id="styleSatelliteBtn" styleClass="mcm-chip" text="Satellite" />
+        <Button fx:id="styleTopoBtn"      styleClass="mcm-chip" text="Topo"      />
+    </HBox>
+
+    <!-- ══ FOOTER ══ -->
+    <HBox styleClass="mcm-footer" alignment="CENTER_LEFT" spacing="0">
+        <Label fx:id="footerZoomLabel"   styleClass="mcm-footer-stat" text="Z —" HBox.hgrow="ALWAYS" />
+        <Label fx:id="footerCenterLabel" styleClass="mcm-footer-stat" text="—, —" />
+    </HBox>
+
+</VBox>

@@ -1,8 +1,8 @@
 package com.amaurysdelossantos.ServiceTracker.Helper;
 
-import com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemDeleteController;
-import com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemEditController;
-import com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemInfoController;
+import com.amaurysdelossantos.ServiceTracker.controllers.ItemInteractions.ItemDeleteController;
+import com.amaurysdelossantos.ServiceTracker.controllers.ItemInteractions.ItemEditController;
+import com.amaurysdelossantos.ServiceTracker.controllers.ItemInteractions.ItemInfoController;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceType;

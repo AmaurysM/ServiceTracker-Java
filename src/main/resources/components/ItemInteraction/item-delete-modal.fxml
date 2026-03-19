@@ -13,7 +13,7 @@
            style="-fx-background-color: white;"
            stylesheets="@../item-modal.css"
            xmlns="http://javafx.com/javafx/17.0.12"
-           fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.ItemInteractions.ItemDeleteController">
+           fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.ItemInteractions.ItemDeleteController">
 
     <VBox fx:id="modalCard" styleClass="modal-card-window" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS"
           StackPane.alignment="TOP_LEFT">

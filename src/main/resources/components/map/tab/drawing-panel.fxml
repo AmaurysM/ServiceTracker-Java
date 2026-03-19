@@ -5,7 +5,7 @@
 <?import javafx.scene.text.Text?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="512.0" prefWidth="267.0"
             stylesheets="@/components/map/tab/panel-styles.css" xmlns="http://javafx.com/javafx/17.0.12"
-            fx:controller="com.amaurysdelossantos.ServiceTracker.Controllers.Map.Tab.DrawingPanelController">
+            fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.map.Tab.DrawingPanelController">
     <AnchorPane prefHeight="47.0" prefWidth="211.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                 AnchorPane.topAnchor="0.0">
         <Text layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Drawing"
