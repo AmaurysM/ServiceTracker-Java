@@ -1,22 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="512.0" prefWidth="267.0"
-            stylesheets="@/components/map/tab/panel-styles.css" xmlns="http://javafx.com/javafx/17.0.12"
-            fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.map.Tab.DrawingPanelController">
-    <AnchorPane prefHeight="47.0" prefWidth="211.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                AnchorPane.topAnchor="0.0">
-        <Text layoutX="14.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Drawing"
-              AnchorPane.bottomAnchor="9.478515625" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="8.259765625">
-            <font>
-                <Font name="System Bold" size="22.0"/>
-            </font>
-        </Text>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      xmlns="http://javafx.com/javafx/17.0.12"
+      fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.map.Tab.DrawingPanelController"
+      stylesheets="@/components/map/tab/panel-styles.css"
+      prefWidth="260"
+      spacing="0">
+
+    <!-- ═══════════════════════════ HEADER ════════════════════════════════ -->
+    <AnchorPane fx:id="headerPane" styleClass="panel-header">
+        <Label styleClass="panel-title-text" text="DRAWING"
+               AnchorPane.leftAnchor="12" AnchorPane.topAnchor="0"
+               AnchorPane.bottomAnchor="0"/>
+        <Button fx:id="closeBtn" text="✕" styleClass="panel-close-btn"
+                AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0"/>
     </AnchorPane>
-    <AnchorPane fx:id="exitButton" layoutX="217.0" prefHeight="47.0" prefWidth="50.0" AnchorPane.leftAnchor="217.0"
-                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <Text layoutX="21.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X"/>
-    </AnchorPane>
-</AnchorPane>
+
+    <!-- ═══════════════════════ START / STOP TOGGLE ═══════════════════════ -->
+    <Button fx:id="drawToggleBtn" text="START DRAWING"
+            styleClass="draw-toggle-btn,draw-toggle-off"
+            maxWidth="Infinity"/>
+
+    <!-- ═══════════════════ CONTROLS (visible only while drawing) ═════════ -->
+    <VBox fx:id="drawingControls" spacing="0" visible="false" managed="false">
+
+        <!-- ── MODE ──────────────────────────────────────────────────────── -->
+        <VBox styleClass="panel-section" spacing="4">
+            <Label text="MODE" styleClass="section-label"/>
+            <HBox spacing="4">
+                <Button fx:id="penBtn"    text="PEN"    styleClass="mode-btn,mode-btn-active-pen"
+                        maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="eraserBtn" text="ERASER" styleClass="mode-btn"
+                        maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            </HBox>
+        </VBox>
+
+        <!-- ── COLOR (pen only) ──────────────────────────────────────────── -->
+        <VBox fx:id="colorSection" styleClass="panel-section" spacing="4">
+            <Label text="COLOR" styleClass="section-label"/>
+            <!-- 8 swatches are built dynamically in the controller -->
+            <HBox fx:id="colorGrid" spacing="3"/>
+            <!-- Active color row -->
+            <HBox styleClass="active-color-row" spacing="6" alignment="CENTER_LEFT">
+                <Rectangle fx:id="activeColorSwatch" width="14" height="14"
+                           arcWidth="2" arcHeight="2"/>
+                <Label fx:id="activeColorName" text="Red" styleClass="active-color-name"/>
+            </HBox>
+        </VBox>
+
+        <!-- ── WIDTH + OPACITY ───────────────────────────────────────────── -->
+        <VBox styleClass="panel-section" spacing="6">
+
+            <!-- Width -->
+            <VBox spacing="2">
+                <Label fx:id="widthLabel" text="WIDTH: 4px" styleClass="section-label"/>
+                <Slider fx:id="widthSlider" styleClass="panel-slider"
+                        min="1" max="20" value="4" blockIncrement="1"
+                        showTickLabels="false" showTickMarks="false"/>
+                <HBox>
+                    <Label text="Fine" styleClass="range-hint" HBox.hgrow="ALWAYS"/>
+                    <Label text="Bold" styleClass="range-hint"/>
+                </HBox>
+            </VBox>
+
+            <!-- Opacity -->
+            <VBox spacing="2">
+                <Label fx:id="opacityLabel" text="OPACITY: 100%" styleClass="section-label"/>
+                <Slider fx:id="opacitySlider" styleClass="panel-slider"
+                        min="10" max="100" value="100" blockIncrement="5"
+                        showTickLabels="false" showTickMarks="false"/>
+                <HBox>
+                    <Label text="Transparent" styleClass="range-hint" HBox.hgrow="ALWAYS"/>
+                    <Label text="Solid"        styleClass="range-hint"/>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <!-- ── HISTORY + ACTIONS ─────────────────────────────────────────── -->
+        <VBox styleClass="panel-section" spacing="6">
+
+            <!-- Undo / Redo row -->
+            <VBox spacing="4">
+                <Label fx:id="historyLabel" text="HISTORY (0)" styleClass="section-label"/>
+                <HBox spacing="4">
+                    <Button fx:id="undoBtn" text="UNDO" styleClass="ctrl-btn"
+                            disable="true"
+                            maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="redoBtn" text="REDO" styleClass="ctrl-btn"
+                            disable="true"
+                            maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </VBox>
+
+            <!-- Hide/Show · Clear · Save · Load -->
+            <HBox spacing="4" prefHeight="28">
+                <!-- Row 1: toggle layers + clear -->
+                <Button fx:id="toggleLayersBtn" text="HIDE" styleClass="ctrl-btn"
+                        maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="clearBtn" text="CLEAR" styleClass="ctrl-btn"
+                        disable="true"
+                        maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            </HBox>
+            <HBox spacing="4" prefHeight="28">
+                <!-- Row 2: save + load -->
+                <Button fx:id="saveBtn" text="SAVE" styleClass="ctrl-btn"
+                        disable="true"
+                        maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="loadBtn" text="LOAD" styleClass="ctrl-btn-blue"
+                        maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+            </HBox>
+        </VBox>
+
+        <!-- ── TIPS ──────────────────────────────────────────────────────── -->
+        <VBox styleClass="panel-section-tips" spacing="3">
+            <Label text="TIPS" styleClass="tips-title"/>
+            <Label text="• Pen: drag to draw  |  Eraser: click strokes"
+                   styleClass="tips-text" wrapText="true"/>
+            <Label text="• Ctrl+Z / Ctrl+Y to undo / redo"
+                   styleClass="tips-text"/>
+        </VBox>
+
+    </VBox>
+</VBox>

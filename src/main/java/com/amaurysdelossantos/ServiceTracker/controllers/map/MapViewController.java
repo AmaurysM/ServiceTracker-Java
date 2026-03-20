@@ -1,5 +1,6 @@
 package com.amaurysdelossantos.ServiceTracker.controllers.map;
 
+import com.amaurysdelossantos.ServiceTracker.Services.DrawingService;
 import com.amaurysdelossantos.ServiceTracker.Services.MapContextMenuService;
 import com.amaurysdelossantos.ServiceTracker.controllers.map.Tab.PlacementPanelController;
 import com.amaurysdelossantos.ServiceTracker.Services.ContextMenuService;
@@ -7,6 +8,7 @@ import com.amaurysdelossantos.ServiceTracker.Services.DataService;
 import com.amaurysdelossantos.ServiceTracker.Services.MapService;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceTrackerService;
+import com.amaurysdelossantos.ServiceTracker.controllers.map.item.DrawingCanvasController;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceFilter;
 import com.amaurysdelossantos.ServiceTracker.models.enums.TimeFilter;
@@ -20,6 +22,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -62,14 +65,16 @@ public class MapViewController {
     @FXML private Tab              tabPlacement;
     @FXML private VBox             tabContent;
 
-    @Autowired private ServiceTrackerService  serviceTrackerService;
-    @Autowired private ServiceItemService     serviceItemService;
-    @Autowired private DataService            dataService;
-    @Autowired private MongoTemplate          mongoTemplate;
-    @Autowired private ApplicationContext     applicationContext;
-    @Autowired private MapService             mapService;
-    @Autowired private ContextMenuService     contextMenuService;
-    @Autowired private MapContextMenuService  mapContextMenuService;  // ← new service
+    @Autowired private ServiceTrackerService   serviceTrackerService;
+    @Autowired private ServiceItemService      serviceItemService;
+    @Autowired private DataService             dataService;
+    @Autowired private MongoTemplate           mongoTemplate;
+    @Autowired private ApplicationContext      applicationContext;
+    @Autowired private MapService              mapService;
+    @Autowired private ContextMenuService      contextMenuService;
+    @Autowired private MapContextMenuService   mapContextMenuService;
+    @Autowired private DrawingService          drawingService;
+    @Autowired private DrawingCanvasController drawingCanvasController;
 
     private Pane   markerPane;
     private String selectedId = null;
@@ -93,8 +98,9 @@ public class MapViewController {
 
         contextMenuService.registerMarkerPane(markerPane);
         mapContextMenuService.registerMarkerPane(markerPane, fxMap);
-
         mapContextMenuService.installOn(fxMap);
+
+        drawingCanvasController.install(fxMap, markerPane);
 
         PlacementPanelController.installMapDropTarget(fxMap, fxMap, (itemId, lat, lon) -> {
             mapService.getItems().stream()
@@ -142,10 +148,10 @@ public class MapViewController {
         });
 
         fxMap.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+            if (drawingService.isDrawing() && e.getButton() == MouseButton.PRIMARY) return;
             if (e.isSecondaryButtonDown()) return;
 
             if (contextMenuService.isClickInsideOpenCard(e.getSceneX(), e.getSceneY())) return;
-
             if (mapContextMenuService.isClickInsideOpenCard(e.getSceneX(), e.getSceneY())) return;
 
             contextMenuService.close();
