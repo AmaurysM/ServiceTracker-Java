@@ -8,6 +8,11 @@ import com.amaurysdelossantos.ServiceTracker.models.enums.TimeFilter;
 import java.util.List;
 
 public interface ServiceItemRepoCustom {
-    List<ServiceItem> findWithFilters(ActivityFilter activity, TimeFilter time, ServiceFilter service, String search);
-
+    List<ServiceItem> findWithFilters(
+            ActivityFilter activity,
+            TimeFilter time,
+            ServiceFilter service,
+            String search,
+            String companyId        // ← company isolation
+    );
 }

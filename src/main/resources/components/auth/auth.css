@@ -1,0 +1,220 @@
+/* ═══════════════════════════════════════════════════════════════
+   auth.css  —  LineTrainer JavaFX  |  Taxi / Road aesthetic
+   Asphalt dark bg · Yellow checker borders · Glass right panel
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Root ───────────────────────────────────────────────────── */
+.root-stack {
+    -fx-background-color: transparent;
+    -fx-font-family: "Segoe UI", "SF Pro Display", "Helvetica Neue", sans-serif;
+
+    /* Design tokens */
+    -yellow:        #facc15;
+    -yellow-hover:  #fde047;
+    -yellow-press:  #eab308;
+    -asphalt-dark:  #020617;
+    -asphalt-mid:   #1f2937;
+    -glass-bg:      rgba(10, 14, 26, 0.72);
+    -glass-border:  rgba(255, 255, 255, 0.10);
+    -text-primary:  #ffffff;
+    -text-secondary:#d1d5db;
+    -text-muted:    #6b7280;
+    -input-bg:      rgba(255, 255, 255, 0.82);
+    -input-focus:   rgba(255, 255, 255, 0.95);
+    -error:         #f87171;
+    -success:       #4ade80;
+}
+
+/* ─── Full-screen asphalt background ─────────────────────────── */
+.bg-asphalt {
+    -fx-background-color: linear-gradient(to bottom, #1f2937 0%, #020617 100%);
+    -fx-background-radius: 0;
+    -fx-pref-width: 9999;
+    -fx-pref-height: 9999;
+}
+
+/* ─── Canvas layer (animated lines drawn via Java) ───────────── */
+.road-canvas {
+    -fx-opacity: 1.0;
+}
+
+/* ─── Right-side glass panel ─────────────────────────────────── */
+.glass-panel {
+    -fx-background-color: rgba(10, 14, 26, 0.72);
+    -fx-background-radius: 0;
+    -fx-border-color: rgba(255, 255, 255, 0.10) transparent rgba(255, 255, 255, 0.10) rgba(255, 255, 255, 0.10);
+    -fx-border-width: 0 0 0 3;
+    -fx-pref-width: 300;
+    -fx-min-width: 280;
+    -fx-max-width: 320;
+    -fx-pref-height: 9999;
+}
+
+/* ─── Yellow stripe accent (vertical, left edge of panel) ────── */
+.stripe-top {
+    -fx-background-color: #facc15;
+    -fx-opacity: 0.80;
+    -fx-pref-width: 6;
+    -fx-min-width: 6;
+    -fx-max-width: 6;
+}
+
+/* ─── Checker border frame around form ───────────────────────── */
+/* Outer solid border */
+.checker-outer {
+    -fx-border-color: #facc15;
+    -fx-border-width: 6;
+    -fx-border-style: solid;
+    -fx-background-color: transparent;
+    -fx-padding: 4;
+}
+
+/* Inner dashed border (simulated via segment style) */
+.checker-inner {
+    -fx-border-color: #facc15;
+    -fx-border-width: 5;
+    -fx-border-style: segments(16, 20, 16, 20) segments(16, 20, 16, 20) segments(16, 20, 16, 20) segments(16, 20, 16, 20);
+    -fx-background-color: transparent;
+    -fx-padding: 6;
+}
+
+/* ─── Form content inside checker frame ─────────────────────── */
+.form-content {
+    -fx-background-color: transparent;
+    -fx-padding: 4 0 4 0;
+}
+
+.form-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI Semibold", "Segoe UI", sans-serif;
+    -fx-alignment: center;
+}
+
+.form-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #d1d5db;
+    -fx-alignment: center;
+}
+
+/* ─── Fields ─────────────────────────────────────────────────── */
+.field-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #e5e7eb;
+    -fx-letter-spacing: 0.3;
+}
+
+.field-input {
+    -fx-background-color: rgba(255, 255, 255, 0.82);
+    -fx-background-radius: 3;
+    -fx-border-color: rgba(209, 213, 219, 0.30);
+    -fx-border-radius: 3;
+    -fx-border-width: 1;
+    -fx-text-fill: #111827;
+    -fx-prompt-text-fill: #6b7280;
+    -fx-font-size: 13px;
+    -fx-padding: 9 12 9 12;
+    -fx-pref-height: 38;
+}
+
+.field-input:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-border-color: #facc15;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(250,204,21,0.30), 10, 0, 0, 0);
+}
+
+.field-input:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.90);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────── */
+.primary-btn {
+    -fx-background-color: linear-gradient(to right, #facc15, #eab308);
+    -fx-text-fill: #111827;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 3;
+    -fx-cursor: hand;
+    -fx-pref-height: 40;
+    -fx-effect: dropshadow(gaussian, rgba(250,204,21,0.25), 12, 0, 0, 3);
+}
+
+.primary-btn:hover {
+    -fx-background-color: linear-gradient(to right, #fde047, #facc15);
+    -fx-effect: dropshadow(gaussian, rgba(250,204,21,0.45), 18, 0, 0, 4);
+    -fx-scale-y: 1.02;
+    -fx-scale-x: 1.005;
+}
+
+.primary-btn:pressed {
+    -fx-background-color: #ca8a04;
+    -fx-scale-y: 0.98;
+    -fx-scale-x: 0.995;
+    -fx-effect: none;
+}
+
+.primary-btn:disabled {
+    -fx-opacity: 0.45;
+    -fx-cursor: default;
+}
+
+.link-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #facc15;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.link-btn:hover {
+    -fx-text-fill: #fde047;
+    -fx-underline: true;
+}
+
+/* ─── Feedback Labels ────────────────────────────────────────── */
+.error-label {
+    -fx-text-fill: #f87171;
+    -fx-font-size: 11.5px;
+    -fx-font-weight: 500;
+    -fx-background-color: rgba(248, 113, 113, 0.10);
+    -fx-background-radius: 3;
+    -fx-padding: 5 8 5 8;
+    -fx-border-color: rgba(248, 113, 113, 0.30);
+    -fx-border-radius: 3;
+    -fx-border-width: 1;
+}
+
+.success-label {
+    -fx-text-fill: #4ade80;
+    -fx-font-size: 11.5px;
+    -fx-font-weight: 500;
+    -fx-background-color: rgba(74, 222, 128, 0.10);
+    -fx-background-radius: 3;
+    -fx-padding: 5 8 5 8;
+    -fx-border-color: rgba(74, 222, 128, 0.30);
+    -fx-border-radius: 3;
+    -fx-border-width: 1;
+}
+
+.loading-label {
+    -fx-text-fill: #9ca3af;
+    -fx-font-size: 11px;
+    -fx-font-style: italic;
+}
+
+/* ─── Switch row ─────────────────────────────────────────────── */
+.switch-row {
+    -fx-padding: 10 0 0 0;
+    -fx-alignment: center;
+}
+
+.switch-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9ca3af;
+}

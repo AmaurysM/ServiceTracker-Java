@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.settings.StatisticsViewController"
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            styleClass="settings-scroll"
+            stylesheets="@settings.css">
+
+    <VBox spacing="14" styleClass="settings-scroll-content">
+
+        <!-- ── Company information card ───────────────────────── -->
+        <VBox styleClass="settings-card">
+            <HBox styleClass="card-header">
+                <Label text="COMPANY INFORMATION" styleClass="card-header-label" />
+            </HBox>
+            <VBox styleClass="card-body">
+                <GridPane hgap="16" vgap="12">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                    </columnConstraints>
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="2">
+                        <Label text="COMPANY NAME" styleClass="info-label" />
+                        <Label fx:id="companyNameLabel" text="—" styleClass="info-value" />
+                    </VBox>
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="2">
+                        <Label text="LOCATION" styleClass="info-label" />
+                        <Label fx:id="companyLocationLabel" text="—" styleClass="info-value" />
+                    </VBox>
+                </GridPane>
+            </VBox>
+        </VBox>
+
+        <!-- ── Overview stat cards ────────────────────────────── -->
+        <HBox spacing="10">
+            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                <Label text="TOTAL ITEMS" styleClass="stat-label" />
+                <Label fx:id="totalItemsLabel" text="0" styleClass="stat-value" />
+            </VBox>
+            <VBox styleClass="stat-card stat-card-green" HBox.hgrow="ALWAYS">
+                <Label text="COMPLETED" styleClass="stat-label" />
+                <Label fx:id="completedItemsLabel" text="0" styleClass="stat-value stat-value-green" />
+            </VBox>
+            <VBox styleClass="stat-card stat-card-blue" HBox.hgrow="ALWAYS">
+                <Label text="ACTIVE" styleClass="stat-label" />
+                <Label fx:id="activeItemsLabel" text="0" styleClass="stat-value stat-value-blue" />
+            </VBox>
+            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                <Label text="COMPLETION RATE" styleClass="stat-label" />
+                <Label fx:id="completionRateLabel" text="0%" styleClass="stat-value" />
+            </VBox>
+        </HBox>
+
+        <!-- ── Service breakdown (built programmatically) ─────── -->
+        <VBox styleClass="settings-card">
+            <HBox styleClass="card-header">
+                <Label text="SERVICE BREAKDOWN" styleClass="card-header-label" />
+            </HBox>
+            <VBox styleClass="card-body">
+                <!-- GridPane rows injected by StatisticsViewController -->
+                <GridPane fx:id="serviceBreakdownGrid" hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="33.33" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="33.33" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="33.33" />
+                    </columnConstraints>
+                </GridPane>
+            </VBox>
+        </VBox>
+
+        <!-- ── Recent activity ────────────────────────────────── -->
+        <VBox styleClass="settings-card">
+            <HBox styleClass="card-header">
+                <Label text="RECENT ACTIVITY" styleClass="card-header-label" />
+            </HBox>
+            <VBox styleClass="card-body">
+                <HBox spacing="10">
+                    <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                        <Label text="ITEMS (7 DAYS)" styleClass="stat-label" />
+                        <Label fx:id="items7Label" text="0" styleClass="stat-value stat-value-sm" />
+                    </VBox>
+                    <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                        <Label text="ITEMS (30 DAYS)" styleClass="stat-label" />
+                        <Label fx:id="items30Label" text="0" styleClass="stat-value stat-value-sm" />
+                    </VBox>
+                    <VBox styleClass="stat-card stat-card-green" HBox.hgrow="ALWAYS">
+                        <Label text="DONE (7 DAYS)" styleClass="stat-label" />
+                        <Label fx:id="completed7Label" text="0" styleClass="stat-value stat-value-sm stat-value-green" />
+                    </VBox>
+                    <VBox styleClass="stat-card stat-card-green" HBox.hgrow="ALWAYS">
+                        <Label text="DONE (30 DAYS)" styleClass="stat-label" />
+                        <Label fx:id="completed30Label" text="0" styleClass="stat-value stat-value-sm stat-value-green" />
+                    </VBox>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <!-- ── Service summary ────────────────────────────────── -->
+        <VBox styleClass="settings-card">
+            <HBox styleClass="card-header">
+                <Label text="SERVICE SUMMARY" styleClass="card-header-label" />
+            </HBox>
+            <VBox styleClass="card-body">
+                <GridPane hgap="16" vgap="12">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                    </columnConstraints>
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="2">
+                        <Label text="TOTAL SERVICES" styleClass="info-label" />
+                        <Label fx:id="totalServicesLabel" text="0" styleClass="stat-value stat-value-sm" />
+                    </VBox>
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="2">
+                        <Label text="COMPLETED SERVICES" styleClass="info-label" />
+                        <Label fx:id="completedServicesLabel" text="0"
+                               styleClass="stat-value stat-value-sm stat-value-green" />
+                    </VBox>
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="2">
+                        <Label text="PENDING SERVICES" styleClass="info-label" />
+                        <Label fx:id="pendingServicesLabel" text="0"
+                               styleClass="stat-value stat-value-sm stat-value-blue" />
+                    </VBox>
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="2">
+                        <Label text="SERVICE COMPLETION RATE" styleClass="info-label" />
+                        <Label fx:id="serviceRateLabel" text="0%" styleClass="stat-value stat-value-sm" />
+                    </VBox>
+                </GridPane>
+            </VBox>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

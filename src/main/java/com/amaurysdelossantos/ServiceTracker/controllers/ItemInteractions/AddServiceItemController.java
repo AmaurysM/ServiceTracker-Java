@@ -1,5 +1,6 @@
 package com.amaurysdelossantos.ServiceTracker.controllers.ItemInteractions;
 
+import com.amaurysdelossantos.ServiceTracker.Services.AuthService;
 import com.amaurysdelossantos.ServiceTracker.Services.PendingMapPositionService;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.models.*;
@@ -43,10 +44,11 @@ public class AddServiceItemController {
     private final Map<ServiceType, Node>                configPanes      = new EnumMap<>(ServiceType.class);
     private final Map<ServiceType, Map<String, Object>> serviceData      = new EnumMap<>(ServiceType.class);
 
-    @Autowired private ServiceItemService       serviceItemService;
-    @Autowired private PendingMapPositionService pendingMapPosition;   // ← injected
+    @Autowired private ServiceItemService        serviceItemService;
+    @Autowired private PendingMapPositionService  pendingMapPosition;
+    @Autowired private AuthService               authService;          // ← injected
 
-    // ── FXML nodes ──────────────────────────────────────────────────────────────
+    // ── FXML nodes ─────────────────────────────────────────────────
     @FXML private StackPane rootPane;
     @FXML private VBox      wizardCard;
     @FXML private Label     headerStepLabel;
@@ -91,6 +93,8 @@ public class AddServiceItemController {
                 tailPreviewLabel.setText(n.isBlank() ? "Tail: —" : "✈  " + n.trim().toUpperCase()));
     }
 
+    // ── Navigation ─────────────────────────────────────────────────
+
     @FXML
     private void onNext() {
         switch (currentStep) {
@@ -117,11 +121,7 @@ public class AddServiceItemController {
         }
     }
 
-    @FXML private void onCancel() {
-        pendingMapPosition.clear();
-        closeModal();
-    }
-
+    @FXML private void onCancel() { pendingMapPosition.clear(); closeModal(); }
     @FXML private void onStep1Tab() { showStep(Step.BASIC); }
 
     @FXML
@@ -141,10 +141,17 @@ public class AddServiceItemController {
     private void onAddItem() {
         if (tailField.getText().isBlank()) { showAlert("Tail number is required."); return; }
 
+        // Guard: must have a company to associate the item with
+        String companyId = resolveCompanyId();
+        if (companyId == null || companyId.isBlank()) {
+            showAlert("Cannot save item: your account has no associated company. Please contact your administrator.");
+            return;
+        }
+
         addItemBtn.setDisable(true);
         addItemBtn.setText("Saving…");
 
-        ServiceItem item = buildItem();
+        ServiceItem item = buildItem(companyId);
 
         Thread t = new Thread(() -> {
             try {
@@ -166,6 +173,126 @@ public class AddServiceItemController {
         t.start();
     }
 
+    // ── Item builder ───────────────────────────────────────────────
+
+    /**
+     * Builds the ServiceItem and stamps it with the logged-in user's companyId
+     * so MongoDB queries can scope results to the correct company.
+     */
+    private ServiceItem buildItem(String companyId) {
+        String  itemId = UUID.randomUUID().toString();
+        String  tail   = tailField.getText().trim().toUpperCase();
+        Instant now    = Instant.now();
+
+        ServiceItem item = new ServiceItem();
+        item.setId(itemId);
+        item.setTail(tail);
+        item.setCompanyId(companyId);                          // ← company isolation
+        item.setDescription(descriptionField.getText());
+        item.setArrival(combineToInstant(arrivalDatePicker.getValue(), arrivalTimeField.getText()));
+        item.setDeparture(combineToInstant(departureDatePicker.getValue(), departureTimeField.getText()));
+        item.setCreatedAt(now);
+        item.setUpdatedAt(now);
+
+        // Optional map position from placement drag
+        double[] pos = pendingMapPosition.consumeIfPresent();
+        if (pos != null) {
+            Map<String, Object> mapPosition = new LinkedHashMap<>();
+            mapPosition.put("x", pos[0]);
+            mapPosition.put("y", pos[1]);
+            mapPosition.put("rotation", 0.0);
+            Map<String, Object> metadata = new LinkedHashMap<>();
+            metadata.put("mapPosition", mapPosition);
+            item.setMetadata(metadata);
+        }
+
+        // ── Service sub-documents ───────────────────────────────────
+        for (ServiceType st : selectedServices) {
+            Map<String, Object> d = serviceData.getOrDefault(st, new HashMap<>());
+            switch (st) {
+                case FUEL -> {
+                    Fuel f = new Fuel();
+                    f.setId(UUID.randomUUID().toString());
+                    f.setTail(tail);
+                    f.setType((String) d.getOrDefault("type", ""));
+                    if (d.get("gallons") instanceof Number n) f.setGallons(n.doubleValue());
+                    if (d.get("weight")  instanceof Number n) f.setWeight(n.doubleValue());
+                    f.setNote((String) d.getOrDefault("note", ""));
+                    f.setCreatedAt(now); f.setUpdatedAt(now);
+                    item.setFuel(f);
+                }
+                case GPU -> {
+                    GPU gpu = new GPU();
+                    gpu.setId(UUID.randomUUID().toString());
+                    if (d.get("hours") instanceof Number n) gpu.setHours(n.doubleValue());
+                    gpu.setCreatedAt(now); gpu.setUpdatedAt(now);
+                    item.setGpu(gpu);
+                }
+                case LAVATORY -> {
+                    Lavatory lav = new Lavatory();
+                    lav.setId(UUID.randomUUID().toString());
+                    lav.setItemId(itemId);
+                    if (d.get("backInGallons") instanceof Number n) lav.setBackInGallons(n.doubleValue());
+                    lav.setNote((String) d.getOrDefault("note", ""));
+                    lav.setCreatedAt(now); lav.setUpdatedAt(now);
+                    item.setLavatory(lav);
+                }
+                case POTABLE_WATER -> {
+                    PotableWater pw = new PotableWater();
+                    pw.setId(UUID.randomUUID().toString());
+                    pw.setNote((String) d.getOrDefault("note", ""));
+                    pw.setCreatedAt(now); pw.setUpdatedAt(now);
+                    item.setPotableWater(pw);
+                }
+                case WINDSHIELD_CLEANING -> {
+                    WindshieldCleaning wc = new WindshieldCleaning();
+                    wc.setId(UUID.randomUUID().toString());
+                    wc.setNote((String) d.getOrDefault("note", ""));
+                    wc.setCreatedAt(now); wc.setUpdatedAt(now);
+                    item.setWindshieldCleaning(wc);
+                }
+                case OIL_SERVICE -> {
+                    OilService os = new OilService();
+                    os.setId(UUID.randomUUID().toString());
+                    os.setType((String) d.getOrDefault("type", ""));
+                    if (d.get("quarts") instanceof Number n) os.setQuarts(n.doubleValue());
+                    os.setCreatedAt(now); os.setUpdatedAt(now);
+                    item.setOilService(os);
+                }
+                case CATERING -> {
+                    @SuppressWarnings("unchecked")
+                    List<Map<String, String>> raw =
+                            (List<Map<String, String>>) d.getOrDefault("items", List.of());
+                    List<Catering> list = new ArrayList<>();
+                    int counter = 1;
+                    for (Map<String, String> ci : raw) {
+                        Catering c = new Catering();
+                        c.setId(UUID.randomUUID().toString());
+                        c.setItemId(itemId);
+                        c.setNote(ci.getOrDefault("note", ""));
+                        try {
+                            c.setCateringNumber(Integer.parseInt(ci.getOrDefault("cateringNumber", "0")));
+                        } catch (NumberFormatException ignored) {
+                            c.setCateringNumber(counter);
+                        }
+                        c.setCreatedAt(now); c.setUpdatedAt(now);
+                        list.add(c);
+                        counter++;
+                    }
+                    item.setCatering(list);
+                }
+            }
+        }
+        return item;
+    }
+
+    /** Returns the companyId of the currently logged-in user, or null if unavailable. */
+    private String resolveCompanyId() {
+        var user = authService.getCurrentUser();
+        return (user != null) ? user.getCompanyId() : null;
+    }
+
+    // ── Step rendering ─────────────────────────────────────────────
 
     private void showStep(Step step) {
         currentStep = step;
@@ -209,6 +336,8 @@ public class AddServiceItemController {
         addItemBtn.setVisible(currentStep == Step.CONFIGURE);
         addItemBtn.setManaged(currentStep == Step.CONFIGURE);
     }
+
+    // ── Service card / tab builders ────────────────────────────────
 
     private void buildServiceSelectionCards() {
         serviceSelectionPane.getChildren().clear();
@@ -431,15 +560,14 @@ public class AddServiceItemController {
 
         Color fxColor = toFxColor(st.getPrimaryColor());
         header.setStyle("-fx-background-color: " + toHex(fxColor) + ";");
-
         return header;
     }
 
+    // ── Form helpers ───────────────────────────────────────────────
 
     private HBox fieldRow(String labelText, Node input) {
         Label lbl = new Label(labelText);
         lbl.getStyleClass().add("config-field-label");
-
         HBox row = new HBox(12, lbl, input);
         row.getStyleClass().add("config-field-row");
         row.setAlignment(Pos.CENTER_LEFT);
@@ -482,132 +610,24 @@ public class AddServiceItemController {
 
     private Region spacer(double height) {
         Region r = new Region();
-        r.setPrefHeight(height);
-        r.setMinHeight(height);
-        r.setMaxHeight(height);
+        r.setPrefHeight(height); r.setMinHeight(height); r.setMaxHeight(height);
         return r;
     }
 
-    private ServiceItem buildItem() {
-        String itemId = UUID.randomUUID().toString();
-        String tail   = tailField.getText().trim().toUpperCase();
-        Instant now   = Instant.now();
-
-        ServiceItem item = new ServiceItem();
-        item.setId(itemId);
-        item.setTail(tail);
-        item.setDescription(descriptionField.getText());
-        item.setArrival(combineToInstant(arrivalDatePicker.getValue(), arrivalTimeField.getText()));
-        item.setDeparture(combineToInstant(departureDatePicker.getValue(), departureTimeField.getText()));
-        item.setCreatedAt(now);
-        item.setUpdatedAt(now);
-
-        double[] pos = pendingMapPosition.consumeIfPresent();
-        if (pos != null) {
-            Map<String, Object> mapPosition = new LinkedHashMap<>();
-            mapPosition.put("x", pos[0]);          // latitude
-            mapPosition.put("y", pos[1]);          // longitude
-            mapPosition.put("rotation", 0.0);
-
-            Map<String, Object> metadata = new LinkedHashMap<>();
-            metadata.put("mapPosition", mapPosition);
-            item.setMetadata(metadata);
-        }
-
-        for (ServiceType st : selectedServices) {
-            Map<String, Object> d = serviceData.getOrDefault(st, new HashMap<>());
-            switch (st) {
-                case FUEL -> {
-                    Fuel f = new Fuel();
-                    f.setId(UUID.randomUUID().toString());
-                    f.setTail(tail);
-                    f.setType((String) d.getOrDefault("type", ""));
-                    if (d.get("gallons") instanceof Number n) f.setGallons(n.doubleValue());
-                    if (d.get("weight")  instanceof Number n) f.setWeight(n.doubleValue());
-                    f.setNote((String) d.getOrDefault("note", ""));
-                    f.setCreatedAt(now); f.setUpdatedAt(now);
-                    item.setFuel(f);
-                }
-                case GPU -> {
-                    GPU gpu = new GPU();
-                    gpu.setId(UUID.randomUUID().toString());
-                    if (d.get("hours") instanceof Number n) gpu.setHours(n.doubleValue());
-                    gpu.setCreatedAt(now); gpu.setUpdatedAt(now);
-                    item.setGpu(gpu);
-                }
-                case LAVATORY -> {
-                    Lavatory lav = new Lavatory();
-                    lav.setId(UUID.randomUUID().toString());
-                    lav.setItemId(itemId);
-                    if (d.get("backInGallons") instanceof Number n) lav.setBackInGallons(n.doubleValue());
-                    lav.setNote((String) d.getOrDefault("note", ""));
-                    lav.setCreatedAt(now); lav.setUpdatedAt(now);
-                    item.setLavatory(lav);
-                }
-                case POTABLE_WATER -> {
-                    PotableWater pw = new PotableWater();
-                    pw.setId(UUID.randomUUID().toString());
-                    pw.setNote((String) d.getOrDefault("note", ""));
-                    pw.setCreatedAt(now); pw.setUpdatedAt(now);
-                    item.setPotableWater(pw);
-                }
-                case WINDSHIELD_CLEANING -> {
-                    WindshieldCleaning wc = new WindshieldCleaning();
-                    wc.setId(UUID.randomUUID().toString());
-                    wc.setNote((String) d.getOrDefault("note", ""));
-                    wc.setCreatedAt(now); wc.setUpdatedAt(now);
-                    item.setWindshieldCleaning(wc);
-                }
-                case OIL_SERVICE -> {
-                    OilService os = new OilService();
-                    os.setId(UUID.randomUUID().toString());
-                    os.setType((String) d.getOrDefault("type", ""));
-                    if (d.get("quarts") instanceof Number n) os.setQuarts(n.doubleValue());
-                    os.setCreatedAt(now); os.setUpdatedAt(now);
-                    item.setOilService(os);
-                }
-                case CATERING -> {
-                    @SuppressWarnings("unchecked")
-                    List<Map<String, String>> raw =
-                            (List<Map<String, String>>) d.getOrDefault("items", List.of());
-                    List<Catering> list = new ArrayList<>();
-                    int counter = 1;
-                    for (Map<String, String> ci : raw) {
-                        Catering c = new Catering();
-                        c.setId(UUID.randomUUID().toString());
-                        c.setItemId(itemId);
-                        c.setNote(ci.getOrDefault("note", ""));
-                        try {
-                            c.setCateringNumber(Integer.parseInt(ci.getOrDefault("cateringNumber", "0")));
-                        } catch (NumberFormatException ignored) {
-                            c.setCateringNumber(counter);
-                        }
-                        c.setCreatedAt(now); c.setUpdatedAt(now);
-                        list.add(c);
-                        counter++;
-                    }
-                    item.setCatering(list);
-                }
-            }
-        }
-        return item;
-    }
+    // ── Utilities ──────────────────────────────────────────────────
 
     private ImageView makeIconView(ServiceType st, int size) {
         try {
             BufferedImage bi = st.getImage(size);
             WritableImage  wi = SwingFXUtils.toFXImage(bi, null);
             ImageView iv = new ImageView(wi);
-            iv.setFitWidth(size);
-            iv.setFitHeight(size);
-            iv.setPreserveRatio(true);
-            iv.setSmooth(true);
+            iv.setFitWidth(size); iv.setFitHeight(size);
+            iv.setPreserveRatio(true); iv.setSmooth(true);
             return iv;
         } catch (Exception e) {
             e.printStackTrace();
             ImageView iv = new ImageView();
-            iv.setFitWidth(size);
-            iv.setFitHeight(size);
+            iv.setFitWidth(size); iv.setFitHeight(size);
             return iv;
         }
     }
@@ -638,9 +658,7 @@ public class AddServiceItemController {
         }
     }
 
-    private void closeModal() {
-        ((Stage) rootPane.getScene().getWindow()).close();
-    }
+    private void closeModal() { ((Stage) rootPane.getScene().getWindow()).close(); }
 
     private void showAlert(String msg) {
         Alert a = new Alert(Alert.AlertType.WARNING, msg, ButtonType.OK);

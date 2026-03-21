@@ -5,15 +5,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane maxHeight="Infinity" maxWidth="Infinity" pickOnBounds="false" styleClass="map-root" stylesheets="@map-view-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.map.MapViewController">
+<StackPane pickOnBounds="false" styleClass="map-root" stylesheets="@map-view-styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.map.MapViewController">
 
-    <Map fx:id="fxMap" center="25.7959,-80.2870" maxHeight="Infinity" maxWidth="Infinity" maxZoomLevel="20" zoomLevel="14" />
+    <Map fx:id="fxMap" center="25.7959,-80.2870" maxZoomLevel="20" zoomLevel="14" />
 
     <!-- Layer 1: Tab strip + back button, centered vertically on the right edge -->
-    <VBox alignment="CENTER_RIGHT" maxHeight="Infinity" pickOnBounds="false" prefHeight="Infinity" StackPane.alignment="CENTER_RIGHT">
+    <VBox alignment="CENTER_RIGHT" pickOnBounds="false" StackPane.alignment="CENTER_RIGHT">
 
         <VBox alignment="CENTER_RIGHT" maxWidth="45" pickOnBounds="false" prefWidth="45" VBox.vgrow="ALWAYS">
-            <TabPane fx:id="rightTabPane" maxWidth="45" pickOnBounds="false" prefWidth="45" side="RIGHT" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="rightTabPane" maxWidth="45" pickOnBounds="false" prefWidth="45" side="RIGHT" styleClass="tab-pane" tabClosingPolicy="UNAVAILABLE">
                 <Tab fx:id="dummyTab" styleClass="dummy-tab">
                     <StackPane />
                 </Tab>
@@ -24,6 +24,9 @@
                     <StackPane />
                 </Tab>
                 <Tab fx:id="tabPlacement" text="Placement">
+                    <StackPane />
+                </Tab>
+                <Tab fx:id="tabInfo" text="Placement" styleClass="info-tab">
                     <StackPane />
                 </Tab>
             </TabPane>
@@ -49,7 +52,7 @@
     </VBox>
 
     <!-- Layer 2: Content panel overlays on top, slides in from right, covers the tabs -->
-    <VBox fx:id="tabContent" maxHeight="Infinity" maxWidth="0" pickOnBounds="false" prefHeight="Infinity" style="-fx-background-color: RGBA(255, 255, 255, 0.5);" StackPane.alignment="CENTER_RIGHT">
+    <VBox fx:id="tabContent" maxWidth="0" pickOnBounds="false" style="-fx-background-color: RGBA(255, 255, 255, 0.5);" StackPane.alignment="CENTER_RIGHT">
 
     </VBox>
 

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<StackPane
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.auth.AuthController"
+        fx:id="rootStack"
+        styleClass="root-stack"
+        stylesheets="@auth.css"
+        prefWidth="900"
+        prefHeight="600">
+
+    <!-- Asphalt background -->
+    <Pane styleClass="bg-asphalt" />
+
+    <!-- Animated road lines canvas holder (controller injects RoadLinesCanvas here) -->
+    <Pane fx:id="canvasHolder" />
+
+    <!-- Right-docked glass panel -->
+    <HBox alignment="CENTER_RIGHT">
+        <VBox styleClass="glass-panel" alignment="CENTER" spacing="0">
+
+            <!-- Top stripe spacer -->
+            <Region VBox.vgrow="ALWAYS" />
+
+            <!-- Form area -->
+            <VBox alignment="CENTER" spacing="0"
+                  style="-fx-padding: 0 18 0 18;">
+
+                <!-- Outer yellow border -->
+                <VBox styleClass="checker-outer">
+                    <!-- Inner dashed yellow border -->
+                    <VBox styleClass="checker-inner">
+                        <VBox styleClass="form-content">
+
+                            <!-- ══ LOGIN PANE ══ -->
+                            <VBox fx:id="loginPane" spacing="13" alignment="TOP_CENTER">
+
+                                <VBox spacing="2" alignment="CENTER">
+                                    <Label styleClass="form-title" text="Line Tracker" />
+                                    <Label styleClass="form-subtitle" text="Sign in to continue" />
+                                </VBox>
+
+                                <VBox spacing="5">
+                                    <Label styleClass="field-label" text="Email" />
+                                    <TextField fx:id="loginEmailField"
+                                               styleClass="field-input"
+                                               promptText="you@example.com" />
+                                </VBox>
+
+                                <VBox spacing="5">
+                                    <Label styleClass="field-label" text="Password" />
+                                    <PasswordField fx:id="loginPasswordField"
+                                                   styleClass="field-input"
+                                                   promptText="••••••••" />
+                                </VBox>
+
+                                <Label fx:id="loginErrorLabel" styleClass="error-label"
+                                       wrapText="true" maxWidth="230" />
+                                <Label fx:id="loginLoadingLabel" styleClass="loading-label"
+                                       text="Signing in…" />
+
+                                <Button fx:id="loginButton"
+                                        styleClass="primary-btn"
+                                        text="Log In"
+                                        maxWidth="Infinity"
+                                        onAction="#handleLogin" />
+
+                                <HBox alignment="CENTER" spacing="4" styleClass="switch-row">
+                                    <Label styleClass="switch-label" text="No account?" />
+                                    <Button styleClass="link-btn" text="Register"
+                                            onAction="#showRegister" />
+                                </HBox>
+
+                            </VBox>
+
+                            <!-- ══ REGISTER PANE ══ -->
+                            <VBox fx:id="registerPane" spacing="9" alignment="TOP_CENTER"
+                                  visible="false" managed="false">
+
+                                <VBox spacing="2" alignment="CENTER">
+                                    <Label styleClass="form-title" text="Line Tracker" />
+                                    <Label styleClass="form-subtitle" text="Create your account" />
+                                </VBox>
+
+                                <HBox spacing="8">
+                                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                        <Label styleClass="field-label" text="First name" />
+                                        <TextField fx:id="regFirstnameField"
+                                                   styleClass="field-input"
+                                                   promptText="John" />
+                                    </VBox>
+                                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                        <Label styleClass="field-label" text="Last name" />
+                                        <TextField fx:id="regLastnameField"
+                                                   styleClass="field-input"
+                                                   promptText="Doe" />
+                                    </VBox>
+                                </HBox>
+
+                                <VBox spacing="4">
+                                    <Label styleClass="field-label" text="Email" />
+                                    <TextField fx:id="regEmailField"
+                                               styleClass="field-input"
+                                               promptText="you@example.com" />
+                                </VBox>
+
+                                <VBox spacing="4">
+                                    <Label styleClass="field-label" text="Username" />
+                                    <TextField fx:id="regUsernameField"
+                                               styleClass="field-input"
+                                               promptText="johndoe" />
+                                </VBox>
+
+                                <HBox spacing="8">
+                                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                        <Label styleClass="field-label" text="Password" />
+                                        <PasswordField fx:id="regPasswordField"
+                                                       styleClass="field-input"
+                                                       promptText="Min 8 chars" />
+                                    </VBox>
+                                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                        <Label styleClass="field-label" text="Confirm" />
+                                        <PasswordField fx:id="regConfirmPasswordField"
+                                                       styleClass="field-input"
+                                                       promptText="••••••••" />
+                                    </VBox>
+                                </HBox>
+
+                                <Label fx:id="registerErrorLabel" styleClass="error-label"
+                                       wrapText="true" maxWidth="230" />
+                                <Label fx:id="registerSuccessLabel" styleClass="success-label"
+                                       wrapText="true" maxWidth="230" />
+                                <Label fx:id="registerLoadingLabel" styleClass="loading-label"
+                                       text="Creating account…" />
+
+                                <Button fx:id="registerButton"
+                                        styleClass="primary-btn"
+                                        text="Create Account"
+                                        maxWidth="Infinity"
+                                        onAction="#handleRegister" />
+
+                                <HBox alignment="CENTER" spacing="4" styleClass="switch-row">
+                                    <Label styleClass="switch-label" text="Have an account?" />
+                                    <Button styleClass="link-btn" text="Sign in"
+                                            onAction="#showLogin" />
+                                </HBox>
+
+                            </VBox>
+
+                        </VBox>
+                    </VBox>
+                </VBox>
+
+            </VBox>
+
+            <!-- Bottom stripe spacer -->
+            <Region VBox.vgrow="ALWAYS" />
+
+        </VBox>
+    </HBox>
+
+</StackPane>

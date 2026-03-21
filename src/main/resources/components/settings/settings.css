@@ -1,0 +1,358 @@
+/* ═══════════════════════════════════════════════════════════════
+   settings.css  —  LineTrainer Settings Page
+   Design: Navy/slate header · clean white cards · flat utility
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Root ───────────────────────────────────────────────────── */
+.settings-root {
+    -fx-background-color: #f1f5f9;
+    -fx-font-family: "Segoe UI", "SF Pro Display", "Helvetica Neue", sans-serif;
+}
+
+/* ─── Dark header ────────────────────────────────────────────── */
+.settings-header {
+    -fx-background-color: #0f172a;
+    -fx-border-color: #334155;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 12 0 12;
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+}
+
+.settings-initials {
+    -fx-background-color: #334155;
+    -fx-min-width: 34;
+    -fx-min-height: 34;
+    -fx-max-width: 34;
+    -fx-max-height: 34;
+    -fx-cursor: hand;
+}
+
+.settings-initials-text {
+    -fx-fill: #ffffff;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.settings-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-letter-spacing: 1.5;
+    -fx-alignment: center;
+}
+
+/* ─── Back button ────────────────────────────────────────────── */
+.settings-back-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #94a3b8;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 4 8 4 8;
+}
+
+.settings-back-btn:hover {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #1e293b;
+}
+
+/* ─── Tab bar ────────────────────────────────────────────────── */
+.settings-tab-bar {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 0 1 0;
+    -fx-min-height: 40;
+    -fx-max-height: 40;
+}
+
+.settings-tab {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 12.5px;
+    -fx-font-weight: 500;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-cursor: hand;
+    -fx-pref-height: 40;
+}
+
+.settings-tab:hover {
+    -fx-background-color: #f9fafb;
+    -fx-text-fill: #374151;
+}
+
+.settings-tab-active {
+    -fx-background-color: #1e3a5f;
+    -fx-text-fill: #ffffff;
+}
+
+.settings-tab-active:hover {
+    -fx-background-color: #1d4ed8;
+    -fx-text-fill: #ffffff;
+}
+
+/* ─── Banner ─────────────────────────────────────────────────── */
+.settings-banner-hidden {
+    -fx-padding: 0;
+}
+
+.settings-banner-success {
+    -fx-background-color: #f0fdf4;
+    -fx-text-fill: #166534;
+    -fx-border-color: #bbf7d0;
+    -fx-border-width: 1;
+    -fx-padding: 10 14 10 14;
+    -fx-font-size: 12.5px;
+}
+
+.settings-banner-error {
+    -fx-background-color: #fef2f2;
+    -fx-text-fill: #991b1b;
+    -fx-border-color: #fecaca;
+    -fx-border-width: 1;
+    -fx-padding: 10 14 10 14;
+    -fx-font-size: 12.5px;
+}
+
+/* ─── Content area ───────────────────────────────────────────── */
+.settings-content {
+    -fx-background-color: #f1f5f9;
+}
+
+/* ─── Scroll pane ────────────────────────────────────────────── */
+.settings-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.settings-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.settings-scroll-content {
+    -fx-padding: 16 16 16 16;
+    -fx-background-color: transparent;
+}
+
+/* ─── Cards ──────────────────────────────────────────────────── */
+.settings-card {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.card-header {
+    -fx-background-color: #0f172a;
+    -fx-padding: 8 14 8 14;
+    -fx-min-height: 34;
+    -fx-max-height: 34;
+}
+
+.card-header-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-letter-spacing: 1;
+}
+
+.card-body {
+    -fx-padding: 14 16 14 16;
+}
+
+/* ─── Info grid (read-only account info) ─────────────────────── */
+.info-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6b7280;
+    -fx-letter-spacing: 0.5;
+}
+
+.info-value {
+    -fx-font-size: 13.5px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.info-value-small {
+    -fx-font-size: 11px;
+    -fx-font-family: "Consolas", "Courier New", monospace;
+}
+
+/* ─── Form fields ────────────────────────────────────────────── */
+.field-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #374151;
+    -fx-letter-spacing: 0.5;
+}
+
+.field-input {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d1d5db;
+    -fx-border-width: 1;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-text-fill: #111827;
+    -fx-prompt-text-fill: #9ca3af;
+    -fx-font-size: 13px;
+    -fx-padding: 7 10 7 10;
+    -fx-pref-height: 36;
+}
+
+.field-input:focused {
+    -fx-border-color: #1d4ed8;
+    -fx-effect: dropshadow(gaussian, rgba(29,78,216,0.15), 6, 0, 0, 0);
+}
+
+.field-input:hover {
+    -fx-border-color: #9ca3af;
+}
+
+/* ─── Save button ────────────────────────────────────────────── */
+.save-btn {
+    -fx-background-color: #1e3a5f;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 0.5;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-padding: 8 18 8 18;
+    -fx-cursor: hand;
+}
+
+.save-btn:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.save-btn:pressed {
+    -fx-background-color: #1e40af;
+    -fx-scale-y: 0.97;
+}
+
+.save-btn:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* ─── Stat cards ─────────────────────────────────────────────── */
+.stat-card {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1;
+    -fx-padding: 12 14 12 14;
+    -fx-background-radius: 0;
+}
+
+.stat-card-green {
+    -fx-border-color: #bbf7d0;
+}
+
+.stat-card-blue {
+    -fx-border-color: #bfdbfe;
+}
+
+.stat-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6b7280;
+    -fx-letter-spacing: 0.5;
+}
+
+.stat-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.stat-value-sm {
+    -fx-font-size: 18px;
+}
+
+.stat-value-green {
+    -fx-text-fill: #16a34a;
+}
+
+.stat-value-blue {
+    -fx-text-fill: #1d4ed8;
+}
+
+/* ─── Service breakdown cards (built in Java) ────────────────── */
+.svc-card {
+    -fx-padding: 10;
+    -fx-background-radius: 0;
+}
+
+.svc-name {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.svc-stat-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #6b7280;
+}
+
+.svc-stat-value {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.svc-stat-value-green  { -fx-text-fill: #16a34a; }
+.svc-stat-value-blue   { -fx-text-fill: #1d4ed8; }
+
+.progress-track {
+    -fx-background-color: #e5e7eb;
+    -fx-background-radius: 0;
+    -fx-pref-height: 5;
+    -fx-min-height: 5;
+    -fx-max-height: 5;
+}
+
+.progress-fill {
+    -fx-background-radius: 0;
+    -fx-pref-height: 5;
+    -fx-min-height: 5;
+    -fx-max-height: 5;
+}
+
+.svc-pct-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* ─── Scrollbar styling ──────────────────────────────────────── */
+.scroll-bar {
+    -fx-background-color: #f1f5f9;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #cbd5e1;
+    -fx-background-radius: 3;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #94a3b8;
+}
+
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-pref-height: 0;
+    -fx-pref-width: 0;
+}

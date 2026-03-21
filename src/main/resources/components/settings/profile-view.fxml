@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.settings.ProfileViewController"
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            styleClass="settings-scroll"
+            stylesheets="@settings.css">
+
+    <VBox spacing="14" styleClass="settings-scroll-content">
+
+        <!-- ── Account information card ───────────────────────── -->
+        <VBox styleClass="settings-card">
+            <HBox styleClass="card-header">
+                <Label text="ACCOUNT INFORMATION" styleClass="card-header-label" />
+            </HBox>
+            <VBox styleClass="card-body" spacing="0">
+                <GridPane styleClass="info-grid" hgap="16" vgap="12">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                    </columnConstraints>
+
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="2">
+                        <Label text="ROLE" styleClass="info-label" />
+                        <Label fx:id="roleLabel" text="—" styleClass="info-value" />
+                    </VBox>
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="2">
+                        <Label text="COMPANY ID" styleClass="info-label" />
+                        <Label fx:id="companyIdLabel" text="—" styleClass="info-value info-value-small"
+                               wrapText="true" />
+                    </VBox>
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="2">
+                        <Label text="MEMBER SINCE" styleClass="info-label" />
+                        <Label fx:id="memberSinceLabel" text="—" styleClass="info-value" />
+                    </VBox>
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="2">
+                        <Label text="LAST UPDATED" styleClass="info-label" />
+                        <Label fx:id="lastUpdatedLabel" text="—" styleClass="info-value" />
+                    </VBox>
+                </GridPane>
+            </VBox>
+        </VBox>
+
+        <!-- ── Edit profile card ──────────────────────────────── -->
+        <VBox styleClass="settings-card">
+            <HBox styleClass="card-header">
+                <Label text="EDIT PROFILE" styleClass="card-header-label" />
+            </HBox>
+            <VBox styleClass="card-body" spacing="10">
+
+                <GridPane hgap="12" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="50" />
+                    </columnConstraints>
+
+                    <!-- First name -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="4">
+                        <Label text="FIRST NAME *" styleClass="field-label" />
+                        <TextField fx:id="firstnameField" styleClass="field-input"
+                                   promptText="John" />
+                    </VBox>
+
+                    <!-- Last name -->
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="4">
+                        <Label text="LAST NAME *" styleClass="field-label" />
+                        <TextField fx:id="lastnameField" styleClass="field-input"
+                                   promptText="Doe" />
+                    </VBox>
+
+                    <!-- Email -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="4">
+                        <Label text="EMAIL *" styleClass="field-label" />
+                        <TextField fx:id="emailField" styleClass="field-input"
+                                   promptText="you@example.com" />
+                    </VBox>
+
+                    <!-- Username -->
+                    <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="4">
+                        <Label text="USERNAME *" styleClass="field-label" />
+                        <TextField fx:id="usernameField" styleClass="field-input"
+                                   promptText="johndoe" />
+                    </VBox>
+
+                    <!-- Nickname — full width -->
+                    <VBox GridPane.columnIndex="0" GridPane.rowIndex="2"
+                          GridPane.columnSpan="2" spacing="4">
+                        <Label text="NICKNAME (OPTIONAL)" styleClass="field-label" />
+                        <TextField fx:id="nicknameField" styleClass="field-input"
+                                   promptText="Optional nickname" />
+                    </VBox>
+                </GridPane>
+
+                <!-- Save button -->
+                <HBox alignment="CENTER_RIGHT" style="-fx-padding: 6 0 0 0;">
+                    <Button fx:id="saveBtn" styleClass="save-btn"
+                            text="SAVE PROFILE" onAction="#onSaveProfile" />
+                </HBox>
+
+            </VBox>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

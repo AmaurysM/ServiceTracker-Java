@@ -1,15 +1,17 @@
 package com.amaurysdelossantos.ServiceTracker.controllers.map;
 
-import com.amaurysdelossantos.ServiceTracker.Services.DrawingService;
-import com.amaurysdelossantos.ServiceTracker.Services.MapContextMenuService;
-import com.amaurysdelossantos.ServiceTracker.controllers.map.Tab.PlacementPanelController;
+import com.amaurysdelossantos.ServiceTracker.Services.AuthService;
 import com.amaurysdelossantos.ServiceTracker.Services.ContextMenuService;
 import com.amaurysdelossantos.ServiceTracker.Services.DataService;
+import com.amaurysdelossantos.ServiceTracker.Services.DrawingService;
+import com.amaurysdelossantos.ServiceTracker.Services.MapContextMenuService;
 import com.amaurysdelossantos.ServiceTracker.Services.MapService;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceItemService;
 import com.amaurysdelossantos.ServiceTracker.Services.ServiceTrackerService;
+import com.amaurysdelossantos.ServiceTracker.controllers.map.Tab.PlacementPanelController;
 import com.amaurysdelossantos.ServiceTracker.controllers.map.item.DrawingCanvasController;
 import com.amaurysdelossantos.ServiceTracker.models.ServiceItem;
+import com.amaurysdelossantos.ServiceTracker.models.User;
 import com.amaurysdelossantos.ServiceTracker.models.enums.ServiceFilter;
 import com.amaurysdelossantos.ServiceTracker.models.enums.TimeFilter;
 import com.amaurysdelossantos.ServiceTracker.models.enums.views.ServiceView;
@@ -22,10 +24,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -34,6 +36,7 @@ import org.bson.BsonValue;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -48,6 +51,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Scope("prototype")
 public class MapViewController {
 
     private static final double PANEL_WIDTH = 260.0;
@@ -75,12 +79,27 @@ public class MapViewController {
     @Autowired private MapContextMenuService   mapContextMenuService;
     @Autowired private DrawingService          drawingService;
     @Autowired private DrawingCanvasController drawingCanvasController;
+    @Autowired private AuthService             authService;
 
     private Pane   markerPane;
     private String selectedId = null;
 
+    /** Resolved once on initialize from the logged-in user — never changes mid-session. */
+    private String companyId;
+
     @FXML
     public void initialize() {
+
+        // ── Resolve company id ──────────────────────────────────────
+        User user = authService.getCurrentUser();
+        companyId = (user != null) ? user.getCompanyId() : null;
+
+        if (companyId == null || companyId.isBlank()) {
+            System.err.println("[MapViewController] No companyId on current user — " +
+                    "map data will not load.");
+        }
+
+        // ── Map setup ───────────────────────────────────────────────
         TileImageLoader.setCache(new ImageFileCache());
         fxMap.setProjection(new WebMercatorProjection());
 
@@ -137,7 +156,7 @@ public class MapViewController {
         });
 
         reload();
-        dataService.startChangeStream(this::handleChange);
+        dataService.startChangeStream(companyId, this::handleChange);
 
         mapService.getTimeFilter().addListener((obs, o, n)    -> reloadAndRestart());
         mapService.getServiceFilter().addListener((obs, o, n) -> reloadAndRestart());
@@ -150,7 +169,6 @@ public class MapViewController {
         fxMap.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
             if (drawingService.isDrawing() && e.getButton() == MouseButton.PRIMARY) return;
             if (e.isSecondaryButtonDown()) return;
-
             if (contextMenuService.isClickInsideOpenCard(e.getSceneX(), e.getSceneY())) return;
             if (mapContextMenuService.isClickInsideOpenCard(e.getSceneX(), e.getSceneY())) return;
 
@@ -172,20 +190,25 @@ public class MapViewController {
         Platform.runLater(() -> fxMap.requestLayout());
     }
 
+    // ─── Reload helpers ────────────────────────────────────────────
+
     private void reloadAndRestart() {
         reload();
-        dataService.restartChangeStream(this::handleChange);
+        dataService.restartChangeStream(companyId, this::handleChange);
     }
 
     private void reload() {
         dataService.reload(
-                null,
+                null,                                   // no activity filter on map
                 mapService.getTimeFilter().get(),
                 mapService.getServiceFilter().get(),
                 mapService.getSearchText().get(),
+                companyId,                              // ← company isolation
                 mapService.getItems()::setAll
         );
     }
+
+    // ─── Change stream handler ─────────────────────────────────────
 
     private void handleChange(ChangeStreamDocument<Document> change) {
         OperationType op = change.getOperationType();
@@ -202,6 +225,10 @@ public class MapViewController {
 
         Document doc = change.getFullDocument();
         if (doc == null) return;
+
+        // Defence-in-depth: discard documents from other companies
+        String docCompanyId = doc.getString("companyId");
+        if (companyId == null || !companyId.equals(docCompanyId)) return;
 
         ServiceItem updated = mongoTemplate.getConverter().read(ServiceItem.class, doc);
         Platform.runLater(() -> {
@@ -231,8 +258,13 @@ public class MapViewController {
         return -1;
     }
 
+    // ─── Client-side filter mirror ─────────────────────────────────
+
     private boolean matchesCurrentFilter(ServiceItem item) {
         if (item.getDeletedAt() != null) return false;
+
+        // Company guard — defence in depth alongside the stream filter
+        if (companyId != null && !companyId.equals(item.getCompanyId())) return false;
 
         ServiceFilter service = mapService.getServiceFilter().get();
         if (service != null && service != ServiceFilter.ALL) {
@@ -275,6 +307,8 @@ public class MapViewController {
         return true;
     }
 
+    // ─── Marker management ─────────────────────────────────────────
+
     private void relocateAllAsync() {
         markers.values().forEach(AircraftMarkerController::relocateAsync);
     }
@@ -297,7 +331,6 @@ public class MapViewController {
         ctrl.setOnSelect(c -> {
             if (selectedId != null && !selectedId.equals(c.getId()))
                 contextMenuService.close();
-
             if (selectedId != null && !selectedId.equals(c.getId())) {
                 AircraftMarkerController prev = markers.get(selectedId);
                 if (prev != null) prev.setSelected(false);
@@ -326,6 +359,8 @@ public class MapViewController {
         if (itemCountText != null)
             itemCountText.setText(String.valueOf(markers.size()));
     }
+
+    // ─── Persistence ───────────────────────────────────────────────
 
     private void persistPosition(String itemId, double x, double y) {
         mapService.getItems().stream()
@@ -383,6 +418,8 @@ public class MapViewController {
         t.start();
     }
 
+    // ─── Tab panel ─────────────────────────────────────────────────
+
     private void attachTabToggleHandlers() {
         rightTabPane.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldTab, newTab) -> {
@@ -400,8 +437,8 @@ public class MapViewController {
 
     private void renderTab() {
         try {
-            Tab selected = rightTabPane.getSelectionModel().getSelectedItem();
-            String fxml  = null;
+            Tab    selected = rightTabPane.getSelectionModel().getSelectedItem();
+            String fxml     = null;
             if      (selected.equals(tabFilters))   fxml = "/components/map/tab/filters-panel.fxml";
             else if (selected.equals(tabDrawing))   fxml = "/components/map/tab/drawing-panel.fxml";
             else if (selected.equals(tabPlacement)) fxml = "/components/map/tab/placement-panel.fxml";
@@ -422,6 +459,8 @@ public class MapViewController {
         tabContent.getChildren().clear();
         rightTabPane.getSelectionModel().select(dummyTab);
     }
+
+    // ─── Public API ────────────────────────────────────────────────
 
     public void flyTo(double lat, double lon, double zoom) {
         Platform.runLater(() -> {

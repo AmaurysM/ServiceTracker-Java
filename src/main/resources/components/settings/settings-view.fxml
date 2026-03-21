@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.amaurysdelossantos.ServiceTracker.controllers.settings.SettingsViewController"
+      styleClass="settings-root"
+      stylesheets="@settings.css">
+
+    <!-- ── Dark header ────────────────────────────────────────── -->
+    <HBox styleClass="settings-header" alignment="CENTER_LEFT">
+
+        <!-- Clickable initials — opens user-options popup -->
+        <StackPane fx:id="initialsPane" styleClass="settings-initials"
+                   onMouseClicked="#onInitialsClicked">
+            <Text fx:id="initialsText" styleClass="settings-initials-text" text="?" />
+        </StackPane>
+
+        <Label styleClass="settings-title" text="SETTINGS"
+               HBox.hgrow="ALWAYS" maxWidth="Infinity"
+               style="-fx-alignment: center;" />
+
+        <!-- Back button — returns to SERVICES view -->
+        <Button fx:id="backBtn" styleClass="settings-back-btn"
+                text="&#8592; Back" onAction="#onBack" />
+
+    </HBox>
+
+    <!-- ── Tab bar ────────────────────────────────────────────── -->
+    <HBox styleClass="settings-tab-bar">
+        <Button fx:id="profileTabBtn"
+                styleClass="settings-tab,settings-tab-active"
+                text="Profile" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                onAction="#onProfileTab" />
+        <Button fx:id="statisticsTabBtn"
+                styleClass="settings-tab"
+                text="Statistics" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                onAction="#onStatisticsTab" />
+    </HBox>
+
+    <!-- ── Message banner ─────────────────────────────────────── -->
+    <Label fx:id="messageBanner" styleClass="settings-banner-hidden"
+           wrapText="true" maxWidth="Infinity"
+           visible="false" managed="false" />
+
+    <!-- ── Content area ───────────────────────────────────────── -->
+    <AnchorPane fx:id="contentPane" VBox.vgrow="ALWAYS"
+                styleClass="settings-content" />
+
+</VBox>
